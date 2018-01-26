@@ -45,7 +45,7 @@ void read_config(pt::ptree &config, const string &profile, string &instance, str
 
     // Read config file, get access token
     try {
-        pt::read_json(filepath + "config.json", config);
+        pt::read_json(filepath + "config-" + profile + ".json", config);
         instance = config.get(profile + ".instance", "");
         access_token = config.get(profile + ".access_token", "");
         feedurl = config.get(profile + ".feedurl", "");
@@ -81,7 +81,7 @@ void read_config(pt::ptree &config, const string &profile, string &instance, str
     }
     if (config_changed)
     {
-        pt::write_json(filepath + "config.json", config);
+        pt::write_json(filepath + "config-" + profile + ".json", config);
     }
 }
 
@@ -190,7 +190,7 @@ int main(int argc, char *argv[])
     {
         config.put(profile + ".last_entry", entries.front());
     }
-    pt::write_json(filepath + "config.json", config);
+    pt::write_json(filepath + "config-" + profile + ".json", config);
 
     bool new_content = false;
     for (auto rit = entries.rbegin(); rit != entries.rend(); ++rit)

@@ -1,5 +1,5 @@
-#ifndef AFRINTICKER_HPP
-#define AFRINTICKER_HPP
+#ifndef RSS2MASTODON_HPP
+#define RSS2MASTODON_HPP
 
 #include <cstdint>
 #include <string>
@@ -16,4 +16,4 @@ std::vector<string> parse_website(const string &profile, const string &xml);
 const std::uint16_t http_get(const string &host, const string &path,
                              string &answer, const string &useragent = "");
 
-#endif // AFRINTICKER_HPP
+#endif // RSS2MASTODON_HPP
