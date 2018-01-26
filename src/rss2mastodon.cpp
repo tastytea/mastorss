@@ -181,7 +181,15 @@ int main(int argc, char *argv[])
     http_get(hostname, path, answer);
     entries = parse_website(profile, answer);
 
-    config.put(profile + ".last_entry", entries.front());
+    if (last_entry.empty())
+    {
+        last_entry = entries.at(1);
+        config.put(profile + ".last_entry", last_entry);
+    }
+    else
+    {
+        config.put(profile + ".last_entry", entries.front());
+    }
     pt::write_json(filepath + "config.json", config);
 
     bool new_content = false;

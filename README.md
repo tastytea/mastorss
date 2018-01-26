@@ -32,8 +32,9 @@ Install with `make install`.
 # Usage
 
 Put watchwords.json into `~/.config/rss2mastodon/`. Launch with profile name.
-In the first run nothing is tooted, only the newest entry is saved.
-In the next run only newer entries are tooted.
+In the first run only the newest entry is tooted.
+
+The profile can't be named "global".
 
 ## Error codes
 
