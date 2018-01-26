@@ -21,63 +21,13 @@
             "Erfurt"
         ]
     },
-    "anfdeutsch":
+    "example":
     {
         "tags":
         [
-            "Syrien",
-            "Efrîn",
-            "Afrin",
-            "Kobanî",
-            "Kobanê",
-            "Şehba",
-            "Cizîrê",
-            "Heleb",
-            "Aleppo",
-            "Amûdê",
-            "Amûdê",
-            "Basûtê",
-            "Basuta",
-            "Şam",
-            "Damaskus",
-            "Dirbêsî",
-            "Hesîçe",
-            "Jindrêsê",
-            "Cindirêsê",
-            "Qitmê",
-            "Tirbesipî",
-            "Raco",
-            "Qamişlo",
-            "Keferjenê",
-            "Bilbilê",
-            "Bilbile",
-            "Minbic",
-            "Badina",
-            "Mebata",
-            "Rojava",
-            "Kilis",
-            "Şırnak",
-            "Şirnex",
-            "Silêmanî",
-            "Erbil",
-            "Hewlêr",
-            "Arbil",
-            "Köln",
-            "Basel",
-            "QSD",
-            "YPJ",
-            "YPG",
-            "Türkei",
-            "KCK",
-            "HDP",
-            "PKK",
-            "Gabriel",
-            "Erdoğan",
-            "Putin",
-            "Assad",
-            "Öcalan",
-            "NATO",
-            "DIK"
+            "banana",
+            "apple",
+            "mastodon"
         ]
     }
 }

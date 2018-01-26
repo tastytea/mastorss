@@ -22,6 +22,8 @@
 #include <random>
 #include <regex>
 #include <sstream>
+#include <thread>
+#include <chrono>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/xml_parser.hpp>
@@ -96,6 +98,7 @@ std::vector<string> parse_website(const string &profile, const string &xml)
     {
         // most likely file not found
         std::cerr << "ERROR: " << filepath << "watchwords.json not found or not readable.\n";
+        std::cerr << e.what() << '\n';
         return {};
     }
 
@@ -214,6 +217,8 @@ int main(int argc, char *argv[])
             std::cerr << "Error code: " << ret << '\n';
             return ret;
         }
+
+        std::this_thread::sleep_for(std::chrono::seconds(2));
     }
 
     return 0;
