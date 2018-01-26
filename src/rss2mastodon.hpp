@@ -9,7 +9,7 @@
 namespace pt = boost::property_tree;
 using std::string;
 
-void read_config(pt::ptree &config, const string &profile, string &instance, string &access_token);
+void read_config(pt::ptree &config, const string &profile, string &instance, string &access_token, string &feedurl);
 std::vector<string> parse_website(const string &profile, const string &xml);
 
 // http.cpp

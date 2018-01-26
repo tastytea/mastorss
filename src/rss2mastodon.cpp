@@ -37,7 +37,7 @@ using std::string;
 
 const string filepath = string(getenv("HOME")) + "/.config/rss2mastodon/";
 
-void read_config(pt::ptree &config, const string &profile, string &instance, string &access_token)
+void read_config(pt::ptree &config, const string &profile, string &instance, string &access_token, string &feedurl)
 {
     bool config_changed = false;
 
@@ -46,6 +46,7 @@ void read_config(pt::ptree &config, const string &profile, string &instance, str
         pt::read_json(filepath + "config.json", config);
         instance = config.get(profile + ".instance", "");
         access_token = config.get(profile + ".access_token", "");
+        feedurl = config.get(profile + ".feedurl", "");
     }
     catch (std::exception &e)
     {
@@ -67,6 +68,13 @@ void read_config(pt::ptree &config, const string &profile, string &instance, str
         cout << "access_token: ";
         std::cin >> access_token;
         config.put(profile + ".access_token", access_token);
+        config_changed = true;
+    }
+    if (feedurl.empty())
+    {
+        cout << "feedurl: ";
+        std::cin >> feedurl;
+        config.put(profile + ".feedurl", feedurl);
         config_changed = true;
     }
     if (config_changed)
@@ -155,14 +163,19 @@ int main(int argc, char *argv[])
     pt::ptree config;
     string instance = "";
     string access_token = "";
+    string feedurl = "";
     const string profile = argv[1];
 
-    read_config(config, profile, instance, access_token);
+    read_config(config, profile, instance, access_token, feedurl);
+    std::size_t pos = 0;
+    pos = feedurl.find("//") + 2;
+    const string hostname = feedurl.substr(pos, feedurl.find('/', pos) - pos);
+    const string path = feedurl.substr(pos + hostname.size());
 
     string answer;
     string last_entry = config.get(profile + ".last_entry", "");
     std::vector<string> entries;
-    http_get("anfdeutsch.com", "/feed.rss", answer);
+    http_get(hostname, path, answer);
     entries = parse_website(profile, answer);
 
     config.put(profile + ".last_entry", entries.front());
@@ -181,28 +194,26 @@ int main(int argc, char *argv[])
             continue;
         }
 
-        cout << *rit << "\n========\n";
-    //     string answer;
-    //     std::uint16_t ret;
-    //     Mastodon::API masto(instance, access_token);
-    //     masto.set_useragent("afrinticker");
+        string answer;
+        std::uint16_t ret;
+        Mastodon::API masto(instance, access_token);
 
-    //     API::parametermap parameters =
-    //     {
-    //         { "status", { entry + "\n\n#bot"} },
-    //         { "visibility", { "public" } }
-    //     };
-    //     ret = masto.post(API::v1::statuses, parameters, answer);
+        API::parametermap parameters =
+        {
+            { "status", { *rit } },
+            { "visibility", { "public" } }
+        };
+        ret = masto.post(API::v1::statuses, parameters, answer);
 
-    //     if (ret == 0)
-    //     {
-    //         //cout << answer << '\n';
-    //     }
-    //     else
-    //     {
-    //         std::cerr << "Error code: " << ret << '\n';
-    //         return ret;
-    //     }
+        if (ret == 0)
+        {
+            //cout << answer << '\n';
+        }
+        else
+        {
+            std::cerr << "Error code: " << ret << '\n';
+            return ret;
+        }
     }
 
     return 0;
