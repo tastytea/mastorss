@@ -143,8 +143,10 @@ std::vector<string> parse_website(const string &profile, const string &xml)
 
                 for (const string &hashtag : watchwords)
                 {
-                    std::regex rehashtag("\\b(" + hashtag + ")\\b", std::regex_constants::icase);
-                    str = std::regex_replace(str, rehashtag, "#$1");
+                    std::regex rehashtag("\\b(" + hashtag + ")\\b",
+                                         std::regex_constants::icase);
+                    str = std::regex_replace(str, rehashtag, "#$1",
+                                             std::regex_constants::format_first_only);
                 }
                 str += "\n\n" + link + "\n\n#bot";
                 ret.push_back(str);
