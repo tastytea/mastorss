@@ -37,6 +37,7 @@ using std::cout;
 using std::cerr;
 using std::string;
 
+uint16_t max_size = 500;
 const string filepath = string(getenv("HOME")) + "/.config/rss2mastodon/";
 
 void read_config(pt::ptree &config, const string &profile, string &instance, string &access_token, string &feedurl)
@@ -53,7 +54,7 @@ void read_config(pt::ptree &config, const string &profile, string &instance, str
     catch (std::exception &e)
     {
         // most likely no config file found
-        cout << "No config file found. Building new one.\n";
+        cout << "Config file not readable. Building new one.\n";
         const boost::filesystem::path path(filepath);
         boost::filesystem::create_directory(filepath);
     }
@@ -141,12 +142,34 @@ std::vector<string> parse_website(const string &profile, const string &xml)
                 string desc = v.second.get_child("description").data();
                 string str = title + "\n\n" + desc;
 
+                // Some feeds contain encoded xhtml-tags >:|
+                std::regex relt("&lt;");
+                std::regex regt("&gt;");
+                std::regex reparagraph("</p><p>");
+                std::regex recdata1("<!\\[CDATA\\[");
+                std::regex recdata2("\\]\\]>");
+                std::regex restrip("<[^>]*>");
+                std::regex reindyfuckup("\\/\\* Style Definitions \\*\\/[.[:space:]]*$");
+
+                str = std::regex_replace(str, relt, "<");
+                str = std::regex_replace(str, regt, ">");
+                str = std::regex_replace(str, reparagraph, "\n\n");
+                str = std::regex_replace(str, recdata1, "");
+                str = std::regex_replace(str, recdata2, "");
+                str = std::regex_replace(str, restrip, "");
+                str = std::regex_replace(str, reindyfuckup, "");
+
                 for (const string &hashtag : watchwords)
                 {
-                    std::regex rehashtag("[[:space:][:punct:]](" + hashtag + ")[[:space:][:punct:]]",
+                    std::regex rehashtag("([[:space:][:punct:]^])(" + hashtag + ")([[:space:][:punct:]$])",
                                          std::regex_constants::icase);
-                    str = std::regex_replace(str, rehashtag, "#$1",
+                    str = std::regex_replace(str, rehashtag, "$1#$2$3",
                                              std::regex_constants::format_first_only);
+                }
+                if ((str.size() + link.size()) > (max_size - 15))
+                {
+                    str.resize((max_size - link.size() - 15));
+                    str += " […]";
                 }
                 str += "\n\n" + link + "\n\n#bot";
                 ret.push_back(str);
@@ -161,8 +184,13 @@ int main(int argc, char *argv[])
 {
     if (argc < 2)
     {
-        cerr << "usage: " << argv[0] << " <profile>\n";
+        cerr << "usage: " << argv[0] << " <profile> [max size]\n";
         return 32;
+    }
+
+    if (argc == 3)
+    {
+        max_size == std::stoi(argv[2]);
     }
 
     pt::ptree config;
@@ -170,6 +198,7 @@ int main(int argc, char *argv[])
     string access_token = "";
     string feedurl = "";
     const string profile = argv[1];
+    std::uint16_t ret;
 
     read_config(config, profile, instance, access_token, feedurl);
     std::size_t pos = 0;
@@ -180,19 +209,18 @@ int main(int argc, char *argv[])
     string answer;
     string last_entry = config.get(profile + ".last_entry", "");
     std::vector<string> entries;
-    http_get(hostname, path, answer);
+    ret = http_get(hostname, path, answer);
+    if (ret != 0)
+    {
+        return ret;
+    }
     entries = parse_website(profile, answer);
 
     if (last_entry.empty())
     {
         last_entry = entries.at(1);
-        config.put(profile + ".last_entry", last_entry);
     }
-    else
-    {
-        config.put(profile + ".last_entry", entries.front());
-    }
-    pt::write_json(filepath + "config-" + profile + ".json", config);
+    config.put(profile + ".last_entry", entries.front());
 
     bool new_content = false;
     for (auto rit = entries.rbegin(); rit != entries.rend(); ++rit)
@@ -208,7 +236,6 @@ int main(int argc, char *argv[])
         }
 
         string answer;
-        std::uint16_t ret;
         Mastodon::API masto(instance, access_token);
 
         API::parametermap parameters =
@@ -220,11 +247,12 @@ int main(int argc, char *argv[])
 
         if (ret == 0)
         {
-            //cout << answer << '\n';
+            pt::write_json(filepath + "config-" + profile + ".json", config);
         }
         else
         {
             std::cerr << "Error code: " << ret << '\n';
+            std::cerr << answer << '\n';
             return ret;
         }
 

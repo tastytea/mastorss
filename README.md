@@ -1,4 +1,6 @@
 **rss2mastodon** dumps RSS feeds into a mastodon account.
+It is hacked together and generally only extended/fixed when it fails.
+Use at your own risk.
 
 # Install
 

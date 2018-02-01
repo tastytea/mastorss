@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.7)
 include(GNUInstallDirs)
 
 project (rss2mastodon
-         VERSION 0.1.6
+         VERSION 0.1.7
          LANGUAGES CXX
 )
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall")
