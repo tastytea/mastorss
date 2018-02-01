@@ -190,7 +190,7 @@ int main(int argc, char *argv[])
 
     if (argc == 3)
     {
-        max_size == std::stoi(argv[2]);
+        max_size = std::stoi(argv[2]);
     }
 
     pt::ptree config;
