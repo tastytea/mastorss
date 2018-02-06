@@ -37,7 +37,7 @@ using std::cout;
 using std::cerr;
 using std::string;
 
-uint16_t max_size = 500;
+std::uint16_t max_size = 500;
 const string filepath = string(getenv("HOME")) + "/.config/rss2mastodon/";
 
 void read_config(pt::ptree &config, const string &profile, string &instance, string &access_token, string &feedurl)
@@ -161,12 +161,12 @@ std::vector<string> parse_website(const string &profile, const string &xml)
 
                 for (const string &hashtag : watchwords)
                 {
-                    std::regex rehashtag("([[:space:][:punct:]^])(" + hashtag + ")([[:space:][:punct:]$])",
+                    std::regex rehashtag("([[:space:][:punct:]]|^)(" + hashtag + ")([[:space:][:punct:]]|$)",
                                          std::regex_constants::icase);
                     str = std::regex_replace(str, rehashtag, "$1#$2$3",
                                              std::regex_constants::format_first_only);
                 }
-                if ((str.size() + link.size()) > (max_size - 15))
+                if ((str.size() + link.size()) > (std::uint16_t)(max_size - 15))
                 {
                     str.resize((max_size - link.size() - 15));
                     str += " […]";
@@ -209,7 +209,8 @@ int main(int argc, char *argv[])
     string answer;
     string last_entry = config.get(profile + ".last_entry", "");
     std::vector<string> entries;
-    ret = http_get(hostname, path, answer);
+    //FIXME: User-Agent
+    ret = http_get(hostname, path, answer, "rss2mastodon/experimental");
     if (ret != 0)
     {
         return ret;
