@@ -201,16 +201,12 @@ int main(int argc, char *argv[])
     std::uint16_t ret;
 
     read_config(config, profile, instance, access_token, feedurl);
-    std::size_t pos = 0;
-    pos = feedurl.find("//") + 2;
-    const string hostname = feedurl.substr(pos, feedurl.find('/', pos) - pos);
-    const string path = feedurl.substr(pos + hostname.size());
 
     string answer;
     string last_entry = config.get(profile + ".last_entry", "");
     std::vector<string> entries;
     //FIXME: User-Agent
-    ret = http_get(hostname, path, answer, "rss2mastodon/experimental");
+    ret = http_get(feedurl, answer, "rss2mastodon/experimental");
     if (ret != 0)
     {
         return ret;

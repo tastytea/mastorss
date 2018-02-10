@@ -13,7 +13,7 @@ void read_config(pt::ptree &config, const string &profile, string &instance, str
 std::vector<string> parse_website(const string &profile, const string &xml);
 
 // http.cpp
-const std::uint16_t http_get(const string &host, const string &path,
+const std::uint16_t http_get(const string &feedurl,
                              string &answer, const string &useragent = "");
 
 #endif // RSS2MASTODON_HPP
