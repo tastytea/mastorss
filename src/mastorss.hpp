@@ -15,5 +15,6 @@ std::vector<string> parse_website(const string &profile, const string &xml);
 // http.cpp
 const std::uint16_t http_get(const string &feedurl,
                              string &answer, const string &useragent = "");
+void curlpp_init();
 
 #endif // mastorss_HPP

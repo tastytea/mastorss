@@ -242,11 +242,12 @@ int main(int argc, char *argv[])
     std::uint16_t ret;
 
     read_config(config, profile, instance, access_token, feedurl);
+    curlpp_init();
 
     string answer;
     string last_entry = config.get(profile + ".last_entry", "");
     std::vector<string> entries;
-    //FIXME: User-Agent
+
     ret = http_get(feedurl, answer, "mastorss/" + (string)global::version);
     if (ret != 0)
     {
