@@ -13,7 +13,7 @@ Use at your own risk.
  * [boost](http://www.boost.org/) (tested: 1.63.0)
  * [libcurl](https://curl.haxx.se/) (tested: 7.58.0)
  * [curlpp](http://www.curlpp.org/) (tested: 0.8.1)
- * [mastodon-cpp](https://github.com/tastytea/mastodon-cpp) (at least: 0.2.0)
+ * [mastodon-cpp](https://github.com/tastytea/mastodon-cpp) (at least: 0.2.13)
 
 ## Get sourcecode
 
