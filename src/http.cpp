@@ -1,4 +1,4 @@
-/*  This file is part of rss2mastodon.
+/*  This file is part of mastorss.
  *  Copyright © 2018 tastytea <tastytea@tastytea.de>
  *                                                                   
  *  This program is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
 #include <curlpp/Easy.hpp>
 #include <curlpp/Options.hpp>
 #include <curlpp/Exception.hpp>
-#include "rss2mastodon.hpp"
+#include "mastorss.hpp"
 
 using std::string;
 using std::cerr;
@@ -43,6 +43,7 @@ const std::uint16_t http_get(const string &feedurl, string &answer, const string
         {
             "Connection: close",
         });
+        
         
         oss << request;
         answer = oss.str();

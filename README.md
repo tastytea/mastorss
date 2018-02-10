@@ -1,4 +1,4 @@
-**rss2mastodon** dumps RSS feeds into a mastodon account.
+**mastorss** dumps RSS feeds into a mastodon account.
 It is hacked together and generally only extended/fixed when it fails.
 Use at your own risk.
 
@@ -35,7 +35,7 @@ Install with `make install`.
 
 # Usage
 
-Put watchwords.json into `~/.config/rss2mastodon/`. Launch with profile name.
+Put watchwords.json into `~/.config/mastorss/`. Launch with profile name.
 In the first run only the newest entry is tooted.
 
 The profile can't be named "global".

@@ -1,4 +1,4 @@
-/*  This file is part of rss2mastodon.
+/*  This file is part of mastorss.
  *  Copyright © 2018 tastytea <tastytea@tastytea.de>
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -29,18 +29,20 @@
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/filesystem.hpp>
 #include <mastodon-cpp.hpp>
-#include "rss2mastodon.hpp"
+#include "version.hpp"
+#include "mastorss.hpp"
 
 namespace pt = boost::property_tree;
 using Mastodon::API;
 using std::cout;
 using std::cerr;
+using std::cin;
 using std::string;
 
 std::uint16_t max_size = 500;
-const string filepath = string(getenv("HOME")) + "/.config/rss2mastodon/";
+const string filepath = string(getenv("HOME")) + "/.config/mastorss/";
 
-void read_config(pt::ptree &config, const string &profile, string &instance, string &access_token, string &feedurl)
+std::uint16_t read_config(pt::ptree &config, const string &profile, string &instance, string &access_token, string &feedurl)
 {
     bool config_changed = false;
 
@@ -62,21 +64,58 @@ void read_config(pt::ptree &config, const string &profile, string &instance, str
     if (instance.empty())
     {
         cout << "Instance: ";
-        std::cin >> instance;
+        cin >> instance;
         config.put(profile + ".instance", instance);
         config_changed = true;
     }
     if (access_token.empty())
     {
-        cout << "access_token: ";
-        std::cin >> access_token;
-        config.put(profile + ".access_token", access_token);
-        config_changed = true;
+        cout << "No access token found.\n";
+        string client_id, client_secret, url;
+        Mastodon::API masto(instance, "");
+        std::uint16_t ret = masto.register_app1(instance,
+                                                "mastorss",
+                                                "urn:ietf:wg:oauth:2.0:oob",
+                                                "write",
+                                                "",
+                                                client_id,
+                                                client_secret,
+                                                url);
+        if (ret == 0)
+        {
+            string code;
+            cout << "Visit " << url << " to authorize this application.\n";
+            cout << "Insert code: ";
+            cin >> code;
+
+            masto.register_app2(instance,
+                                client_id,
+                                client_secret,
+                                "urn:ietf:wg:oauth:2.0:oob",
+                                code,
+                                access_token);
+            if (ret == 0)
+            {
+                config.put(profile + ".access_token", access_token);
+                config_changed = true;
+            }
+            else
+            {
+                cerr << "Error code: " << ret << '\n';
+                return ret;
+            }
+        }
+        else
+        {
+            cerr << "Error code: " << ret << '\n';
+            return ret;
+        }
+        
     }
     if (feedurl.empty())
     {
         cout << "feedurl: ";
-        std::cin >> feedurl;
+        cin >> feedurl;
         config.put(profile + ".feedurl", feedurl);
         config_changed = true;
     }
@@ -84,6 +123,8 @@ void read_config(pt::ptree &config, const string &profile, string &instance, str
     {
         pt::write_json(filepath + "config-" + profile + ".json", config);
     }
+
+    return 0;
 }
 
 std::vector<string> parse_website(const string &profile, const string &xml)
@@ -206,7 +247,7 @@ int main(int argc, char *argv[])
     string last_entry = config.get(profile + ".last_entry", "");
     std::vector<string> entries;
     //FIXME: User-Agent
-    ret = http_get(feedurl, answer, "rss2mastodon/experimental");
+    ret = http_get(feedurl, answer, "mastorss/" + (string)global::version);
     if (ret != 0)
     {
         return ret;
