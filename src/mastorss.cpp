@@ -77,7 +77,7 @@ std::uint16_t read_config(pt::ptree &config, const string &profile, string &inst
                                                 "mastorss",
                                                 "urn:ietf:wg:oauth:2.0:oob",
                                                 "write",
-                                                "",
+                                                "https://github.com/tastytea/mastorss",
                                                 client_id,
                                                 client_secret,
                                                 url);

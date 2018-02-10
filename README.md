@@ -1,5 +1,6 @@
 **mastorss** dumps RSS feeds into a mastodon account.
 It is hacked together and generally only extended/fixed when it fails.
+Do NOT assume it follows any standards.
 Use at your own risk.
 
 # Install
@@ -18,7 +19,7 @@ Use at your own risk.
 
 ### Development version
 
-    git clone …
+    git clone https://github.com/tastytea/mastorss.git
 
 ## Compile
 
@@ -35,7 +36,9 @@ Install with `make install`.
 
 # Usage
 
-Put watchwords.json into `~/.config/mastorss/`. Launch with profile name.
+Put `watchwords.json` into `~/.config/mastorss/`. Launch with profile name.
+The first occurence of every watchword in an RSS item will be turned into a hashtag.
+For profile-specific watchwords see the example in `watchwords.json`.
 In the first run only the newest entry is tooted.
 
 The profile can't be named "global".
