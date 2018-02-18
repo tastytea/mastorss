@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
     if (argc < 2)
     {
         cerr << "usage: " << argv[0] << " <profile> [max size]\n";
-        return 32;
+        return 10;
     }
 
     if (argc == 3)

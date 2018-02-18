@@ -99,12 +99,12 @@ std::vector<string> parse_website(const string &profile, const string &xml)
 
                 str = std::regex_replace(str, relt, "<");
                 str = std::regex_replace(str, regt, ">");
+                str = std::regex_replace(str, std::regex("[\\n\\r]+"), "\n");    // remove excess newlines
                 str = std::regex_replace(str, reparagraph, "\n\n");
                 str = std::regex_replace(str, recdata1, "");
                 str = std::regex_replace(str, recdata2, "");
                 str = std::regex_replace(str, restrip, "");
                 str = std::regex_replace(str, reindyfuckup, "");
-                str = std::regex_replace(str, std::regex("[\\n\\r]+"), "\n");    // remove excess newlines
 
                 for (const string &hashtag : watchwords)
                 {

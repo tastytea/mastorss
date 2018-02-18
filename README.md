@@ -50,11 +50,7 @@ The profile can't be named "global".
 |         0 | No error                      |
 |         1 | Invalid call                  |
 |         2 | Not implemented               |
-|        16 | Connection failed             |
-|        17 | TLS error                     |
-|        18 | Invalid response from server  |
-|        32 | Wrong number of arguments     |
-|        33 | File not found                |
+|        10 | Wrong number of arguments     |
 | 100 - 999 | HTTP status codes             |
 |     65535 | Unknown exception             |
 
