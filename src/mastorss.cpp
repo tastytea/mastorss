@@ -17,11 +17,8 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <cstdlib>  // getenv()
 #include <cstdint>
-#include <cstdlib>
-#include <random>
-#include <regex>
-#include <sstream>
 #include <thread>
 #include <chrono>
 #include <boost/property_tree/ptree.hpp>
@@ -39,187 +36,9 @@ using std::cerr;
 using std::cin;
 using std::string;
 
+// Initialize global variables
 std::uint16_t max_size = 500;
 const string filepath = string(getenv("HOME")) + "/.config/mastorss/";
-
-std::uint16_t read_config(pt::ptree &config, const string &profile, string &instance, string &access_token, string &feedurl)
-{
-    bool config_changed = false;
-
-    // Read config file, get access token
-    try {
-        pt::read_json(filepath + "config-" + profile + ".json", config);
-        instance = config.get(profile + ".instance", "");
-        access_token = config.get(profile + ".access_token", "");
-        feedurl = config.get(profile + ".feedurl", "");
-    }
-    catch (std::exception &e)
-    {
-        // most likely no config file found
-        cout << "Config file not readable. Building new one.\n";
-        const boost::filesystem::path path(filepath);
-        boost::filesystem::create_directory(filepath);
-    }
-
-    if (instance.empty())
-    {
-        cout << "Instance: ";
-        cin >> instance;
-        config.put(profile + ".instance", instance);
-        config_changed = true;
-    }
-    if (access_token.empty())
-    {
-        cout << "No access token found.\n";
-        string client_id, client_secret, url;
-        Mastodon::API masto(instance, "");
-        std::uint16_t ret = masto.register_app1(instance,
-                                                "mastorss",
-                                                "urn:ietf:wg:oauth:2.0:oob",
-                                                "write",
-                                                "https://github.com/tastytea/mastorss",
-                                                client_id,
-                                                client_secret,
-                                                url);
-        if (ret == 0)
-        {
-            string code;
-            cout << "Visit " << url << " to authorize this application.\n";
-            cout << "Insert code: ";
-            cin >> code;
-
-            masto.register_app2(instance,
-                                client_id,
-                                client_secret,
-                                "urn:ietf:wg:oauth:2.0:oob",
-                                code,
-                                access_token);
-            if (ret == 0)
-            {
-                config.put(profile + ".access_token", access_token);
-                config_changed = true;
-            }
-            else
-            {
-                cerr << "Error code: " << ret << '\n';
-                return ret;
-            }
-        }
-        else
-        {
-            cerr << "Error code: " << ret << '\n';
-            return ret;
-        }
-        
-    }
-    if (feedurl.empty())
-    {
-        cout << "feedurl: ";
-        cin >> feedurl;
-        config.put(profile + ".feedurl", feedurl);
-        config_changed = true;
-    }
-    if (config_changed)
-    {
-        pt::write_json(filepath + "config-" + profile + ".json", config);
-    }
-
-    return 0;
-}
-
-std::vector<string> parse_website(const string &profile, const string &xml)
-{
-    pt::ptree json;
-    std::vector<string> watchwords;
-
-    try
-    {
-        pt::read_json(filepath + "watchwords.json", json);
-    }
-    catch (std::exception &e)
-    {
-        // most likely file not found
-        std::cerr << "ERROR: " << filepath << "watchwords.json not found or not readable.\n";
-        std::cerr << e.what() << '\n';
-        return {};
-    }
-
-    try
-    {
-        for (const pt::ptree::value_type &value : json.get_child(profile + ".tags"))
-        {
-            watchwords.push_back(value.second.data());
-        }
-    }
-    catch (const std::exception &e)
-    {
-        // Node not found, no problem
-    }
-    try
-    {
-        for (const pt::ptree::value_type &value : json.get_child("global.tags"))
-        {
-            watchwords.push_back(value.second.data());
-        }
-    }
-    catch (const std::exception &e)
-    {
-        // Node not found, no problem
-    }
-
-    pt::ptree rss;
-    std::istringstream iss(xml);
-    pt::read_xml(iss, rss);
-    std::vector<string> ret;
-
-    for (const pt::ptree::value_type &v : rss.get_child("rss.channel"))
-    {
-        if (v.second.size() > 0)
-        {
-            if (string(v.first.data()).compare("item") == 0)
-            {
-                string title = v.second.get_child("title").data();
-                string link = v.second.get_child("link").data();
-                string desc = v.second.get_child("description").data();
-                string str = title + "\n\n" + desc;
-
-                // Some feeds contain encoded xhtml-tags >:|
-                std::regex relt("&lt;");
-                std::regex regt("&gt;");
-                std::regex reparagraph("</p><p>");
-                std::regex recdata1("<!\\[CDATA\\[");
-                std::regex recdata2("\\]\\]>");
-                std::regex restrip("<[^>]*>");
-                std::regex reindyfuckup("\\/\\* Style Definitions \\*\\/[.[:space:]]*$");
-
-                str = std::regex_replace(str, relt, "<");
-                str = std::regex_replace(str, regt, ">");
-                str = std::regex_replace(str, reparagraph, "\n\n");
-                str = std::regex_replace(str, recdata1, "");
-                str = std::regex_replace(str, recdata2, "");
-                str = std::regex_replace(str, restrip, "");
-                str = std::regex_replace(str, reindyfuckup, "");
-
-                for (const string &hashtag : watchwords)
-                {
-                    std::regex rehashtag("([[:space:][:punct:]]|^)(" + hashtag + ")([[:space:][:punct:]]|$)",
-                                         std::regex_constants::icase);
-                    str = std::regex_replace(str, rehashtag, "$1#$2$3",
-                                             std::regex_constants::format_first_only);
-                }
-                if ((str.size() + link.size()) > (std::uint16_t)(max_size - 15))
-                {
-                    str.resize((max_size - link.size() - 15));
-                    str += " […]";
-                }
-                str += "\n\n" + link + "\n\n#bot";
-                ret.push_back(str);
-            }
-        }
-    }
-
-    return ret;
-}
 
 int main(int argc, char *argv[])
 {
@@ -284,11 +103,7 @@ int main(int argc, char *argv[])
         };
         ret = masto.post(API::v1::statuses, parameters, answer);
 
-        if (ret == 0)
-        {
-            pt::write_json(filepath + "config-" + profile + ".json", config);
-        }
-        else
+        if (ret != 0)
         {
             std::cerr << "Error code: " << ret << '\n';
             std::cerr << answer << '\n';
@@ -297,6 +112,8 @@ int main(int argc, char *argv[])
 
         std::this_thread::sleep_for(std::chrono::seconds(2));
     }
+
+    pt::write_json(filepath + "config-" + profile + ".json", config);
 
     return 0;
 }

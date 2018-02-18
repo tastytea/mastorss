@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.7)
 include(GNUInstallDirs)
 
 project (mastorss
-         VERSION 0.2.2
+         VERSION 0.2.3
          LANGUAGES CXX
 )
 
@@ -21,6 +21,6 @@ configure_file (
 include(FindCURL)
 find_package(CURL REQUIRED)
 
-add_executable(mastorss src/mastorss.cpp src/http.cpp)
+add_executable(mastorss src/mastorss.cpp src/http.cpp src/config.cpp src/parse.cpp)
 target_link_libraries(mastorss mastodon-cpp boost_system boost_filesystem ssl crypto ${CURL_LIBRARIES} curlpp)
 install(TARGETS mastorss DESTINATION ${CMAKE_INSTALL_BINDIR})
