@@ -99,7 +99,7 @@ std::vector<string> parse_website(const string &profile, const string &xml)
                 // Direkte Action closing
                 std::regex redaclosing("Der Beitrag .* erschien zuerst auf Direkte Aktion.");
                 // GG/BO closing
-                std::regex reggboclosing("Die von den einzelnen AutorInnen .* jeweiligen Text kenntlich gemacht ist.");
+                std::regex reggboclosing("Die von den einzelnen AutorInnen .*$");
 
                 str = std::regex_replace(str, relt, "<");
                 str = std::regex_replace(str, regt, ">");
