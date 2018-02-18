@@ -96,15 +96,21 @@ std::vector<string> parse_website(const string &profile, const string &xml)
                 std::regex recdata2("\\]\\]>");
                 std::regex restrip("<[^>]*>");
                 std::regex reindyfuckup("\\/\\* Style Definitions \\*\\/[.[:space:]]*$");
+                // Direkte Action closing
+                std::regex redaclosing("Der Beitrag .* erschien zuerst auf Direkte Aktion.");
+                // GG/BO closing
+                std::regex reggboclosing("Die von den einzelnen AutorInnen .* jeweiligen Text kenntlich gemacht ist.");
 
                 str = std::regex_replace(str, relt, "<");
                 str = std::regex_replace(str, regt, ">");
-                str = std::regex_replace(str, std::regex("[\\n\\r]+"), "\n");    // remove excess newlines
                 str = std::regex_replace(str, reparagraph, "\n\n");
                 str = std::regex_replace(str, recdata1, "");
                 str = std::regex_replace(str, recdata2, "");
                 str = std::regex_replace(str, restrip, "");
                 str = std::regex_replace(str, reindyfuckup, "");
+                str = std::regex_replace(str, redaclosing, "");
+                str = std::regex_replace(str, reggboclosing, "");
+                str = std::regex_replace(str, std::regex("[\\n\\r]{3,}"), "\n");    // remove excess newlines
 
                 for (const string &hashtag : watchwords)
                 {

@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.7)
 include(GNUInstallDirs)
 
 project (mastorss
-         VERSION 0.2.4
+         VERSION 0.2.5
          LANGUAGES CXX
 )
 
