@@ -88,6 +88,12 @@ std::vector<string> parse_website(const string &profile, const string &xml)
                 string desc = v.second.get_child("description").data();
                 string str = title + "\n\n" + desc;
 
+                // ANF News puts this always on top, causing us to think it's new
+                if (title.compare("Newsticker zu den Angriffen auf Efrîn") == 0)
+                {
+                    continue;
+                }
+
                 // Some feeds contain encoded xhtml-tags >:|
                 std::regex relt("&lt;");
                 std::regex regt("&gt;");
@@ -95,6 +101,8 @@ std::vector<string> parse_website(const string &profile, const string &xml)
                 std::regex recdata1("<!\\[CDATA\\[");
                 std::regex recdata2("\\]\\]>");
                 std::regex restrip("<[^>]*>");
+
+                // de.indymedia.org articles sometimes have CSS in the description
                 std::regex reindyfuckup("\\/\\* Style Definitions \\*\\/[.[:space:]]*$");
                 // Direkte Action closing
                 std::regex redaclosing("Der Beitrag .* erschien zuerst auf Direkte Aktion.");
