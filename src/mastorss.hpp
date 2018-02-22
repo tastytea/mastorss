@@ -13,9 +13,10 @@ extern std::uint16_t max_size;
 extern const string filepath;
 
 std::uint16_t read_config(pt::ptree &config, const string &profile, string &instance, string &access_token, string &feedurl);
-std::vector<string> parse_website(const string &profile, const string &xml);
 
-// http.cpp
+std::vector<string> parse_website(const string &profile, const string &xml);
+void unescape_html(const string &str);
+
 const std::uint16_t http_get(const string &feedurl,
                              string &answer, const string &useragent = "");
 void curlpp_init();

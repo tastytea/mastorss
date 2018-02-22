@@ -20,6 +20,8 @@
 #include <cstdint>
 #include <regex>
 #include <sstream>
+#include <locale>
+#include <codecvt>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/xml_parser.hpp>
@@ -31,6 +33,29 @@ namespace pt = boost::property_tree;
 
 using std::cerr;
 using std::string;
+
+// Translate &#0123; to chars, translate some named entities to chars
+void unescape_html(string &str)
+{
+    string html = str;
+    str = "";
+    // Used to convert int to utf-8 char
+    std::wstring_convert<std::codecvt_utf8<char16_t>, char16_t> u8c;
+    std::regex reentity("&#(\\d{4});");
+    std::smatch match;
+    
+    while (std::regex_search(html, match, reentity))
+    {
+        str += match.prefix().str() + u8c.to_bytes(std::stoi(match[1].str()));
+        html = match.suffix().str();
+    }
+    str += html;
+
+    std::regex relt("&lt;");
+    std::regex regt("&gt;");
+    str = std::regex_replace(str, relt, "<");
+    str = std::regex_replace(str, regt, ">");
+}
 
 std::vector<string> parse_website(const string &profile, const string &xml)
 {
@@ -89,14 +114,13 @@ std::vector<string> parse_website(const string &profile, const string &xml)
                 string str = title + "\n\n" + desc;
 
                 // ANF News puts this always on top, causing us to think it's new
-                if (title.compare("Newsticker zu den Angriffen auf Efrîn") == 0)
+                if (title.compare("Newsticker zu den Angriffen auf Efrîn ") == 0)
                 {
                     continue;
                 }
 
-                // Some feeds contain encoded xhtml-tags >:|
-                std::regex relt("&lt;");
-                std::regex regt("&gt;");
+                unescape_html(str);
+
                 std::regex reparagraph("</p><p>");
                 std::regex recdata1("<!\\[CDATA\\[");
                 std::regex recdata2("\\]\\]>");
@@ -109,8 +133,6 @@ std::vector<string> parse_website(const string &profile, const string &xml)
                 // GG/BO closing
                 std::regex reggboclosing("Die von den einzelnen AutorInnen .*$");
 
-                str = std::regex_replace(str, relt, "<");
-                str = std::regex_replace(str, regt, ">");
                 str = std::regex_replace(str, reparagraph, "\n\n");
                 str = std::regex_replace(str, recdata1, "");
                 str = std::regex_replace(str, recdata2, "");
