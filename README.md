@@ -43,16 +43,22 @@ In the first run only the newest entry is tooted.
 
 The profile can't be named "global".
 
+## Example config file
+
+    {
+        "example": {
+            "instance": "botsin.space",
+            "feedurl": "https:\/\/example.com\/feed.rss",
+            "access_token": "123abc",
+            "max_size": "400",
+            "last_entry": "Example\n\nThis is an example.\n\nhttps:\/\/example.com\/12345.html\n\n#bot"
+        }
+    }
+
+
 ## Error codes
 
-|      Code | Explanation                   |
-| --------: |:------------------------------|
-|         0 | No error                      |
-|         1 | Invalid call                  |
-|         2 | Not implemented               |
-|        10 | Wrong number of arguments     |
-| 100 - 999 | HTTP status codes             |
-|     65535 | Unknown exception             |
+Same as [mastodon-cpp](https://github.com/tastytea/mastodon-cpp/blob/master/README.md#error-codes)
 
 If you use a debug build, you get more verbose error messages.
 

@@ -53,8 +53,15 @@ void unescape_html(string &str)
 
     std::regex relt("&lt;");
     std::regex regt("&gt;");
+    std::regex reamp("&amp;");
+    std::regex requot("&quot;");
+    std::regex reapos("&apos;");
+
     str = std::regex_replace(str, relt, "<");
     str = std::regex_replace(str, regt, ">");
+    str = std::regex_replace(str, reamp, "&");
+    str = std::regex_replace(str, requot, "\"");
+    str = std::regex_replace(str, reapos, "\'");
 }
 
 std::vector<string> parse_website(const string &profile, const string &xml)
@@ -140,7 +147,7 @@ std::vector<string> parse_website(const string &profile, const string &xml)
                 str = std::regex_replace(str, reindyfuckup, "");
                 str = std::regex_replace(str, redaclosing, "");
                 str = std::regex_replace(str, reggboclosing, "");
-                str = std::regex_replace(str, std::regex("[\\n\\r]{3,}"), "\n");    // remove excess newlines
+                str = std::regex_replace(str, std::regex("[\\n\\r ]{3,}"), "\n");    // remove excess newlines
 
                 for (const string &hashtag : watchwords)
                 {

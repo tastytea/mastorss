@@ -41,6 +41,7 @@ std::uint16_t read_config(pt::ptree &config, const string &profile, string &inst
         instance = config.get(profile + ".instance", "");
         access_token = config.get(profile + ".access_token", "");
         feedurl = config.get(profile + ".feedurl", "");
+        max_size = config.get(profile + ".max_size", max_size);
     }
     catch (std::exception &e)
     {
