@@ -152,6 +152,7 @@ std::vector<string> parse_website(const string &profile, const string &xml)
                 if ((str.size() + link.size()) > (std::uint16_t)(max_size - 15))
                 {
                     str.resize((max_size - link.size() - 15));
+                    str.resize(str.rfind(' '));
                     str += " […]";
                 }
                 str += "\n\n" + link + "\n\n#bot";
