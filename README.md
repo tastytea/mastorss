@@ -45,6 +45,8 @@ The profile can't be named "global".
 
 ## Example config file
 
+${HOME}/.config/mastorss/config-example.json
+
     {
         "example": {
             "instance": "botsin.space",
