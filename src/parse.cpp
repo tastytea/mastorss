@@ -157,6 +157,8 @@ std::vector<string> parse_website(const string &profile, const string &xml)
                     str = std::regex_replace(str, rehashtag, "$1#$2$3",
                                              std::regex_constants::format_first_only);
                 }
+                // Why is this necessary? Why does ##hashtag happen?
+                str = std::regex_replace(str, std::regex("##"), "#");
                 if ((str.size() + link.size()) > (std::uint16_t)(max_size - 15))
                 {
                     str.resize((max_size - link.size() - 15));
