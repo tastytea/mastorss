@@ -70,6 +70,7 @@ const std::uint16_t http_get(const string &feedurl, string &answer, const string
 
         return 0;
     }
+    // TODO: More error codes
     catch (curlpp::RuntimeError &e)
     {
         cerr << "RUNTIME ERROR: " << e.what() << std::endl;

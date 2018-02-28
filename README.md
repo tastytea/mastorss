@@ -62,8 +62,6 @@ ${HOME}/.config/mastorss/config-example.json
 
 Same as [mastodon-cpp](https://github.com/tastytea/mastodon-cpp/blob/master/README.md#error-codes)
 
-If you use a debug build, you get more verbose error messages.
-
 # Copyright
 
     Copyright © 2018 tastytea <tastytea@tastytea.de>.
