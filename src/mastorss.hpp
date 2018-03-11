@@ -16,6 +16,7 @@ std::uint16_t read_config(pt::ptree &config, const string &profile, string &inst
 
 std::vector<string> parse_website(const string &profile, const string &xml);
 void unescape_html(const string &str);
+void individual_fixes(string &str);
 
 const std::uint16_t http_get(const string &feedurl,
                              string &answer, const string &useragent = "");
