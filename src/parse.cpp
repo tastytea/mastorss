@@ -121,7 +121,7 @@ std::vector<string> parse_website(const string &profile, const string &xml)
                 string str = title + "\n\n" + desc;
 
                 // ANF News puts this always on top, causing us to think it's new
-                if (title.compare("Newsticker zu den Angriffen auf Efrîn ") == 0)
+                if (title.compare(0, 35, "Newsticker zu den Angriffen auf Efr") == 0)
                 {
                     continue;
                 }
@@ -147,8 +147,8 @@ std::vector<string> parse_website(const string &profile, const string &xml)
                 str = std::regex_replace(str, reindyfuckup, "");
                 str = std::regex_replace(str, redaclosing, "");
                 str = std::regex_replace(str, reggboclosing, "");
-                str = std::regex_replace(str, std::regex("[\\r\\n] [\\r\\n]"), "\n\n");      // remove space between newlines
-                str = std::regex_replace(str, std::regex("[\\r\\n]{3,}"), "\n");   // remove excess newlines
+                str = std::regex_replace(str, std::regex("[\\r\\n] +[\\r\\n]"), "\n\n"); // remove space between newlines
+                str = std::regex_replace(str, std::regex("[\\r\\n]{3,}"), "\n");        // remove excess newlines
 
                 for (const string &hashtag : watchwords)
                 {
@@ -162,7 +162,7 @@ std::vector<string> parse_website(const string &profile, const string &xml)
                 if ((str.size() + link.size()) > (std::uint16_t)(max_size - 15))
                 {
                     str.resize((max_size - link.size() - 15));
-                    str.resize(str.rfind(' '));
+                    str.resize(str.rfind(' ')); // Cut at word boundary
                     str += " […]";
                 }
                 str += "\n\n" + link + "\n\n#bot";
