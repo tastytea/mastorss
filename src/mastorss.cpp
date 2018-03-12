@@ -115,10 +115,12 @@ int main(int argc, char *argv[])
 
     // If the last entry is not in the current feed, set the oldest item as last entry
     // Could lead to spamming if an item gets deleted or changed.
-    if (!new_content)
-    {
-        config.put(profile + ".last_entry", entries.at(entries.size() - 1));
-    }
+    // Update: It DID couse spamming :-(
+    // TODO: Think of something better
+    // if (!new_content)
+    // {
+    //     config.put(profile + ".last_entry", entries.at(entries.size() - 1));
+    // }
     pt::write_json(filepath + "config-" + profile + ".json", config);
 
     return 0;
