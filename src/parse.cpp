@@ -122,6 +122,7 @@ std::vector<string> parse_website(const string &xml)
                 string desc = v.second.get_child("description").data();
                 string str = title + "\n\n" + desc;
 
+                bool skipthis = false;
                 try
                 {
                     // Skip entries beginning with this text
@@ -132,7 +133,8 @@ std::vector<string> parse_website(const string &xml)
                         {
                             if (title.compare(0, skip.length(), skip) == 0)
                             {
-                                continue;
+                                skipthis = true;
+                                break;
                             }
                         }
                     }
@@ -140,6 +142,10 @@ std::vector<string> parse_website(const string &xml)
                 catch (const std::exception &e)
                 {
                     // Node not found, no problem
+                }
+                if (skipthis)
+                {
+                    continue;
                 }
 
                 unescape_html(str);
