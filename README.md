@@ -1,7 +1,7 @@
 **mastorss** dumps RSS feeds into a mastodon account.
 Supports RSS 2.0 but not RSS 0.92. Does not support Atom at the moment.
 
-<item>s in feeds must have <link>, <title> and <description>.
+\<item\>s in feeds must have \<link\>, \<title\> and \<description\>.
 
 The documentation is far from complete, sorry.
 
