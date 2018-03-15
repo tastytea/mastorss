@@ -39,6 +39,8 @@ using std::string;
 // Initialize global variables
 std::uint16_t max_size = 500;
 const string filepath = string(getenv("HOME")) + "/.config/mastorss/";
+pt::ptree config;
+std::string profile;
 
 int main(int argc, char *argv[])
 {
@@ -53,29 +55,29 @@ int main(int argc, char *argv[])
         max_size = std::stoi(argv[2]);
     }
 
-    pt::ptree config;
     string instance = "";
     string access_token = "";
     string feedurl = "";
-    const string profile = argv[1];
+    profile = argv[1];
     std::uint16_t ret;
-
-    read_config(config, profile, instance, access_token, feedurl);
-    curlpp_init();
-
     string answer;
-    string last_entry = config.get(profile + ".last_entry", "");
     std::vector<string> entries;
+
+    read_config(instance, access_token, feedurl);
+    curlpp_init();
 
     ret = http_get(feedurl, answer, "mastorss/" + (string)global::version);
     if (ret != 0)
     {
         return ret;
     }
-    entries = parse_website(profile, answer);
+    entries = parse_website(answer);
 
+    string last_entry = config.get(profile + ".last_entry", "");
     if (last_entry.empty())
     {
+        // If no last_entry is stored in the config file,
+        // make last_entry the second-newest entry.
         last_entry = entries.at(1);
     }
     config.put(profile + ".last_entry", entries.front());
@@ -85,6 +87,8 @@ int main(int argc, char *argv[])
     {
         if (!new_content && (*rit).compare(last_entry) == 0)
         {
+            // If the last entry is found in entries,
+            // start tooting in the next loop.
             new_content = true;
             continue;
         }
@@ -113,14 +117,7 @@ int main(int argc, char *argv[])
         std::this_thread::sleep_for(std::chrono::seconds(2));
     }
 
-    // If the last entry is not in the current feed, set the oldest item as last entry
-    // Could lead to spamming if an item gets deleted or changed.
-    // Update: It DID couse spamming :-(
-    // TODO: Think of something better
-    // if (!new_content)
-    // {
-    //     config.put(profile + ".last_entry", entries.at(entries.size() - 1));
-    // }
+    // Write the new last_entry only if no error happened.
     pt::write_json(filepath + "config-" + profile + ".json", config);
 
     return 0;

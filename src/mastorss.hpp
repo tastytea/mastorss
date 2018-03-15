@@ -11,10 +11,12 @@ using std::string;
 
 extern std::uint16_t max_size;
 extern const string filepath;
+extern pt::ptree config;
+extern std::string profile;
 
-std::uint16_t read_config(pt::ptree &config, const string &profile, string &instance, string &access_token, string &feedurl);
+std::uint16_t read_config(string &instance, string &access_token, string &feedurl);
 
-std::vector<string> parse_website(const string &profile, const string &xml);
+std::vector<string> parse_website(const string &xml);
 void unescape_html(const string &str);
 void individual_fixes(string &str);
 

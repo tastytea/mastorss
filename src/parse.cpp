@@ -64,7 +64,7 @@ void unescape_html(string &str)
     str = std::regex_replace(str, reapos, "\'");
 }
 
-std::vector<string> parse_website(const string &profile, const string &xml)
+std::vector<string> parse_website(const string &xml)
 {
     pt::ptree json;
     std::vector<string> watchwords;
@@ -83,6 +83,7 @@ std::vector<string> parse_website(const string &profile, const string &xml)
 
     try
     {
+        // Read profile-specific hashtags or fail silently
         for (const pt::ptree::value_type &value : json.get_child(profile + ".tags"))
         {
             watchwords.push_back(value.second.data());
@@ -94,6 +95,7 @@ std::vector<string> parse_website(const string &profile, const string &xml)
     }
     try
     {
+        // Read global hashtags or fail silently
         for (const pt::ptree::value_type &value : json.get_child("global.tags"))
         {
             watchwords.push_back(value.second.data());
@@ -120,14 +122,29 @@ std::vector<string> parse_website(const string &profile, const string &xml)
                 string desc = v.second.get_child("description").data();
                 string str = title + "\n\n" + desc;
 
-                // ANF News puts this always on top, causing us to think it's new
-                if (title.compare(0, 35, "Newsticker zu den Angriffen auf Efr") == 0)
+                try
                 {
-                    continue;
+                    // Skip entries beginning with this text
+                    for (const pt::ptree::value_type &v : config.get_child(profile + ".skip"))
+                    {
+                        const string skip = v.second.data();
+                        if (!skip.empty())
+                        {
+                            if (title.compare(0, skip.length(), skip) == 0)
+                            {
+                                continue;
+                            }
+                        }
+                    }
+                }
+                catch (const std::exception &e)
+                {
+                    // Node not found, no problem
                 }
 
                 unescape_html(str);
 
+                // Try to turn the HTML into human-readable text
                 std::regex reparagraph("</p><p>");
                 std::regex recdata1("<!\\[CDATA\\[");
                 std::regex recdata2("\\]\\]>");
@@ -166,16 +183,19 @@ std::vector<string> parse_website(const string &profile, const string &xml)
     return ret;
 }
 
+// Read regular expressions from the config file and delete all matches.
 void individual_fixes(string &str)
 {
-    // de.indymedia.org articles sometimes have CSS in the description
-    std::regex reindyfuckup("\\/\\* Style Definitions \\*\\/[.[:space:]]*$");
-    // Direkte Action closing
-    std::regex redaclosing("Der Beitrag .* erschien zuerst auf Direkte Aktion.");
-    // GG/BO closing
-    std::regex reggboclosing("Die von den einzelnen AutorInnen .*$");
-
-    str = std::regex_replace(str, reindyfuckup, "");
-    str = std::regex_replace(str, redaclosing, "");
-    str = std::regex_replace(str, reggboclosing, "");
+    try
+    {
+         for (const pt::ptree::value_type &v : config.get_child(profile + ".fixes"))
+        {
+            std::regex refix(v.second.data());
+            str = std::regex_replace(str, refix, "");
+        }
+    }
+    catch (const std::exception &e)
+    {
+        // Node not found, no problem
+    }
 }

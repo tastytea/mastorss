@@ -31,7 +31,7 @@ using std::cerr;
 using std::cin;
 using std::string;
 
-std::uint16_t read_config(pt::ptree &config, const string &profile, string &instance, string &access_token, string &feedurl)
+std::uint16_t read_config(string &instance, string &access_token, string &feedurl)
 {
     bool config_changed = false;
 
@@ -63,8 +63,7 @@ std::uint16_t read_config(pt::ptree &config, const string &profile, string &inst
         cout << "No access token found.\n";
         string client_id, client_secret, url;
         Mastodon::API masto(instance, "");
-        std::uint16_t ret = masto.register_app1(instance,
-                                                "mastorss",
+        std::uint16_t ret = masto.register_app1("mastorss",
                                                 "urn:ietf:wg:oauth:2.0:oob",
                                                 "write",
                                                 "https://github.com/tastytea/mastorss",
@@ -78,8 +77,7 @@ std::uint16_t read_config(pt::ptree &config, const string &profile, string &inst
             cout << "Insert code: ";
             cin >> code;
 
-            masto.register_app2(instance,
-                                client_id,
+            masto.register_app2(client_id,
                                 client_secret,
                                 "urn:ietf:wg:oauth:2.0:oob",
                                 code,

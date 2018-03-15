@@ -1,7 +1,9 @@
 **mastorss** dumps RSS feeds into a mastodon account.
-It is hacked together and generally only extended/fixed when it fails.
-Do NOT assume it follows any standards.
-Use at your own risk.
+Supports RSS 2.0 but not RSS 0.92. Does not support Atom at the moment.
+
+<item>s in feeds must have <link>, <title> and <description>.
+
+The documentation is far from complete, sorry.
 
 # Install
 
@@ -13,7 +15,7 @@ Use at your own risk.
  * [boost](http://www.boost.org/) (tested: 1.63.0)
  * [libcurl](https://curl.haxx.se/) (tested: 7.58.0)
  * [curlpp](http://www.curlpp.org/) (tested: 0.8.1)
- * [mastodon-cpp](https://github.com/tastytea/mastodon-cpp) (at least: 0.2.13)
+ * [mastodon-cpp](https://github.com/tastytea/mastodon-cpp) (at least: 0.6.4)
 
 ## Get sourcecode
 
@@ -28,9 +30,7 @@ Use at your own risk.
     cmake ..
     make
 
-cmake options:
-
- * `-DCMAKE_BUILD_TYPE=Debug` for a debug build
+## Install
 
 Install with `make install`.
 
@@ -53,7 +53,16 @@ ${HOME}/.config/mastorss/config-example.json
             "feedurl": "https:\/\/example.com\/feed.rss",
             "access_token": "123abc",
             "max_size": "400",
-            "last_entry": "Example\n\nThis is an example.\n\nhttps:\/\/example.com\/12345.html\n\n#bot"
+            "skip":
+            [
+                "If the entry starts with this, skip it",
+                "Skip me too!"
+            ],
+            "fixes":
+            [
+                "delete this",
+                "[Rr]ead more(\.{3}|…)"
+            ]
         }
     }
 
