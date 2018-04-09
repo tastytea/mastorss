@@ -21,7 +21,7 @@
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/filesystem.hpp>
-#include <mastodon-cpp.hpp>
+#include <mastodon-cpp/mastodon-cpp.hpp>
 #include "mastorss.hpp"
 
 namespace pt = boost::property_tree;
