@@ -110,7 +110,7 @@ std::vector<string> parse_website(const string &xml)
                 string desc = v.second.get_child("description").data();
 
                 string str = title;
-                if (!config[profile]["titles_only"])
+                if (!config[profile]["titles_only"].asBool())
                 {
                     str += "\n\n" + desc;
                 }

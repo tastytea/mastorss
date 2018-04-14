@@ -113,7 +113,7 @@ std::uint16_t read_config(string &instance, string &access_token, string &feedur
         config[profile]["feedurl"] = feedurl;
         config_changed = true;
     }
-    if (!config[profile]["titles_only"].asBool())
+    if (config[profile]["titles_only"].isNull())
     {
         string titles_only;
         cout << "post only titles? [y/n]: ";
