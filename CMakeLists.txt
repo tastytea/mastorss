@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.7)
 project (mastorss
-         VERSION 0.4.2
+         VERSION 0.4.3
          LANGUAGES CXX
 )
 
@@ -10,6 +10,7 @@ include(FindBoost)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 include_directories(${PROJECT_SOURCE_DIR}/src)
 include_directories(${PROJECT_BINARY_DIR})
@@ -29,7 +30,7 @@ add_definitions(${Boost_DEFINITIONS})
 
 file(GLOB sources src/*.cpp)
 add_executable(mastorss ${sources})
-target_link_libraries(mastorss mastodon-cpp ${Boost_LIBRARIES} ssl crypto ${CURL_LIBRARIES} curlpp)
+target_link_libraries(mastorss mastodon-cpp ${Boost_LIBRARIES} stdc++fs curl curlpp jsoncpp)
 install(TARGETS mastorss DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 install(FILES watchwords.json

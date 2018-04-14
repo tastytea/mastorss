@@ -22,17 +22,16 @@
 #include <sstream>
 #include <locale>
 #include <codecvt>
+#include <fstream>
+#include <jsoncpp/json/json.h>
 #include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/xml_parser.hpp>
-#include <boost/filesystem.hpp>
 #include <mastodon-cpp/mastodon-cpp.hpp>
 #include "mastorss.hpp"
 
-namespace pt = boost::property_tree;
-
 using std::cerr;
 using std::string;
+namespace pt = boost::property_tree;
 
 // Translate &#0123; to chars, translate some named entities to chars
 void unescape_html(string &str)
@@ -66,44 +65,33 @@ void unescape_html(string &str)
 
 std::vector<string> parse_website(const string &xml)
 {
-    pt::ptree json;
+    Json::Value list;
     std::vector<string> watchwords;
 
-    try
+    std::ifstream file(filepath + "watchwords.json");
+    if (file.is_open())
     {
-        pt::read_json(filepath + "watchwords.json", json);
+        std::stringstream json;
+        json << file.rdbuf();
+        file.close();
+        json >> list;
     }
-    catch (std::exception &e)
+    else
     {
-        // most likely file not found
         cerr << "ERROR: " << filepath << "watchwords.json not found or not readable.\n";
-        cerr << e.what() << '\n';
         return {};
     }
 
-    try
+    // Read profile-specific hashtags or fail silently
+    for (const Json::Value &value : list[profile + ".tags"])
     {
-        // Read profile-specific hashtags or fail silently
-        for (const pt::ptree::value_type &value : json.get_child(profile + ".tags"))
-        {
-            watchwords.push_back(value.second.data());
-        }
+        watchwords.push_back(value.asString());
     }
-    catch (const std::exception &e)
+
+    // Read global hashtags or fail silently
+    for (const Json::Value &value : list["global.tags"])
     {
-        // Node not found, no problem
-    }
-    try
-    {
-        // Read global hashtags or fail silently
-        for (const pt::ptree::value_type &value : json.get_child("global.tags"))
-        {
-            watchwords.push_back(value.second.data());
-        }
-    }
-    catch (const std::exception &e)
-    {
-        // Node not found, no problem
+        watchwords.push_back(value.asString());
     }
 
     pt::ptree rss;
@@ -126,9 +114,9 @@ std::vector<string> parse_website(const string &xml)
                 try
                 {
                     // Skip entries beginning with this text
-                    for (const pt::ptree::value_type &v : config.get_child(profile + ".skip"))
+                    for (const Json::Value &v : config[profile + ".skip"])
                     {
-                        const string skip = v.second.data();
+                        const string skip = v.asString();
                         if (!skip.empty())
                         {
                             if (title.compare(0, skip.length(), skip) == 0)
@@ -192,16 +180,9 @@ std::vector<string> parse_website(const string &xml)
 // Read regular expressions from the config file and delete all matches.
 void individual_fixes(string &str)
 {
-    try
+    for (const Json::Value &v : config[profile + ".fixes"])
     {
-         for (const pt::ptree::value_type &v : config.get_child(profile + ".fixes"))
-        {
-            std::regex refix(v.second.data());
-            str = std::regex_replace(str, refix, "");
-        }
-    }
-    catch (const std::exception &e)
-    {
-        // Node not found, no problem
+        std::regex refix(v.asString());
+        str = std::regex_replace(str, refix, "");
     }
 }

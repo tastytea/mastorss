@@ -17,45 +17,48 @@
 #include <iostream>
 #include <string>
 #include <cstdint>
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
-#include <boost/property_tree/xml_parser.hpp>
-#include <boost/filesystem.hpp>
+#include <fstream>
+#include <sstream>
+#include <experimental/filesystem>
+#include <jsoncpp/json/json.h>
 #include <mastodon-cpp/mastodon-cpp.hpp>
 #include "mastorss.hpp"
-
-namespace pt = boost::property_tree;
 
 using std::cout;
 using std::cerr;
 using std::cin;
 using std::string;
+namespace fs = std::experimental::filesystem;
 
 std::uint16_t read_config(string &instance, string &access_token, string &feedurl)
 {
     bool config_changed = false;
 
     // Read config file, get access token
-    try {
-        pt::read_json(filepath + "config-" + profile + ".json", config);
-        instance = config.get(profile + ".instance", "");
-        access_token = config.get(profile + ".access_token", "");
-        feedurl = config.get(profile + ".feedurl", "");
-        max_size = config.get(profile + ".max_size", max_size);
-    }
-    catch (std::exception &e)
+    std::ifstream file(filepath + "config-" + profile + ".json");
+    if (file.is_open())
     {
-        // most likely no config file found
-        cout << "Config file not readable. Building new one.\n";
-        const boost::filesystem::path path(filepath);
-        boost::filesystem::create_directory(filepath);
+        std::stringstream json;
+        json << file.rdbuf();
+        file.close();
+        json >> config;
+
+        instance = config[profile + ".instance"].asString();
+        access_token = config[profile + ".access_token"].asString();
+        feedurl = config[profile + ".feedurl"].asString();
+        max_size = config.get(profile + ".max_size", max_size).asUInt();
+    }
+    else
+    {
+        cout << "Config file not found. Building new one.\n";
+        fs::create_directory(filepath);
     }
 
     if (instance.empty())
     {
         cout << "Instance: ";
         cin >> instance;
-        config.put(profile + ".instance", instance);
+        config[profile + ".instance"] = instance;
         config_changed = true;
     }
     if (access_token.empty())
@@ -77,14 +80,14 @@ std::uint16_t read_config(string &instance, string &access_token, string &feedur
             cout << "Insert code: ";
             cin >> code;
 
-            masto.register_app2(client_id,
-                                client_secret,
-                                "urn:ietf:wg:oauth:2.0:oob",
-                                code,
-                                access_token);
+            ret = masto.register_app2(client_id,
+                                      client_secret,
+                                      "urn:ietf:wg:oauth:2.0:oob",
+                                      code,
+                                      access_token);
             if (ret == 0)
             {
-                config.put(profile + ".access_token", access_token);
+                config[profile + ".access_token"] = access_token;
                 config_changed = true;
             }
             else
@@ -104,13 +107,29 @@ std::uint16_t read_config(string &instance, string &access_token, string &feedur
     {
         cout << "feedurl: ";
         cin >> feedurl;
-        config.put(profile + ".feedurl", feedurl);
+        config[profile + ".feedurl"] = feedurl;
         config_changed = true;
     }
     if (config_changed)
     {
-        pt::write_json(filepath + "config-" + profile + ".json", config);
+        write_config();
     }
 
     return 0;
+}
+
+
+const bool write_config()
+{
+    std::ofstream outfile(filepath + "config-" + profile + ".json");
+    if (outfile.is_open())
+    {
+        outfile.write(config.toStyledString().c_str(),
+                      config.toStyledString().length());
+        outfile.close();
+
+        return true;
+    }
+
+    return false;
 }

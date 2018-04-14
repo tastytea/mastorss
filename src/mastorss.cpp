@@ -21,15 +21,11 @@
 #include <cstdint>
 #include <thread>
 #include <chrono>
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
-#include <boost/property_tree/xml_parser.hpp>
-#include <boost/filesystem.hpp>
+#include <jsoncpp/json/json.h>
 #include <mastodon-cpp/mastodon-cpp.hpp>
 #include "version.hpp"
 #include "mastorss.hpp"
 
-namespace pt = boost::property_tree;
 using Mastodon::API;
 using std::cout;
 using std::cerr;
@@ -39,7 +35,7 @@ using std::string;
 // Initialize global variables
 std::uint16_t max_size = 500;
 const string filepath = string(getenv("HOME")) + "/.config/mastorss/";
-pt::ptree config;
+Json::Value config;
 std::string profile;
 
 int main(int argc, char *argv[])
@@ -73,14 +69,14 @@ int main(int argc, char *argv[])
     }
     entries = parse_website(answer);
 
-    string last_entry = config.get(profile + ".last_entry", "");
+    string last_entry = config[profile + ".last_entry"].asString();
     if (last_entry.empty())
     {
         // If no last_entry is stored in the config file,
         // make last_entry the second-newest entry.
         last_entry = entries.at(1);
     }
-    config.put(profile + ".last_entry", entries.front());
+    config[profile + ".last_entry"] = entries.front();
 
     bool new_content = false;
     for (auto rit = entries.rbegin(); rit != entries.rend(); ++rit)
@@ -118,7 +114,7 @@ int main(int argc, char *argv[])
     }
 
     // Write the new last_entry only if no error happened.
-    pt::write_json(filepath + "config-" + profile + ".json", config);
+    write_config();
 
     return 0;
 }
