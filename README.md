@@ -53,6 +53,7 @@ ${HOME}/.config/mastorss/config-example.json
             "feedurl": "https:\/\/example.com\/feed.rss",
             "access_token": "123abc",
             "max_size": "400",
+            "titles_only": false,
             "skip":
             [
                 "If the entry starts with this, skip it",
