@@ -83,7 +83,7 @@ std::vector<string> parse_website(const string &xml)
     }
 
     // Read profile-specific hashtags or fail silently
-    for (const Json::Value &value : list[profile + ".tags"])
+    for (const Json::Value &value : list[profile]["tags"])
     {
         watchwords.push_back(value.asString());
     }
@@ -108,13 +108,18 @@ std::vector<string> parse_website(const string &xml)
                 string title = v.second.get_child("title").data();
                 string link = v.second.get_child("link").data();
                 string desc = v.second.get_child("description").data();
-                string str = title + "\n\n" + desc;
+
+                string str = title;
+                if (!config[profile]["titles_only"])
+                {
+                    str += "\n\n" + desc;
+                }
 
                 bool skipthis = false;
                 try
                 {
                     // Skip entries beginning with this text
-                    for (const Json::Value &v : config[profile + ".skip"])
+                    for (const Json::Value &v : config[profile]["skip"])
                     {
                         const string skip = v.asString();
                         if (!skip.empty())
@@ -180,7 +185,7 @@ std::vector<string> parse_website(const string &xml)
 // Read regular expressions from the config file and delete all matches.
 void individual_fixes(string &str)
 {
-    for (const Json::Value &v : config[profile + ".fixes"])
+    for (const Json::Value &v : config[profile]["fixes"])
     {
         std::regex refix(v.asString());
         str = std::regex_replace(str, refix, "");

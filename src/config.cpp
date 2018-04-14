@@ -43,10 +43,13 @@ std::uint16_t read_config(string &instance, string &access_token, string &feedur
         file.close();
         json >> config;
 
-        instance = config[profile + ".instance"].asString();
-        access_token = config[profile + ".access_token"].asString();
-        feedurl = config[profile + ".feedurl"].asString();
-        max_size = config.get(profile + ".max_size", max_size).asUInt();
+        instance = config[profile]["instance"].asString();
+        access_token = config[profile]["access_token"].asString();
+        feedurl = config[profile]["feedurl"].asString();
+        if (!config[profile]["max_size"].isNull())
+        {
+            max_size = config[profile]["max_size"].asUInt();
+        }
     }
     else
     {
@@ -58,7 +61,7 @@ std::uint16_t read_config(string &instance, string &access_token, string &feedur
     {
         cout << "Instance: ";
         cin >> instance;
-        config[profile + ".instance"] = instance;
+        config[profile]["instance"] = instance;
         config_changed = true;
     }
     if (access_token.empty())
@@ -87,7 +90,7 @@ std::uint16_t read_config(string &instance, string &access_token, string &feedur
                                       access_token);
             if (ret == 0)
             {
-                config[profile + ".access_token"] = access_token;
+                config[profile]["access_token"] = access_token;
                 config_changed = true;
             }
             else
@@ -107,7 +110,22 @@ std::uint16_t read_config(string &instance, string &access_token, string &feedur
     {
         cout << "feedurl: ";
         cin >> feedurl;
-        config[profile + ".feedurl"] = feedurl;
+        config[profile]["feedurl"] = feedurl;
+        config_changed = true;
+    }
+    if (!config[profile]["titles_only"].asBool())
+    {
+        string titles_only;
+        cout << "post only titles? [y/n]: ";
+        cin >> titles_only;
+        if (titles_only[0] == 'y')
+        {
+            config[profile]["titles_only"] = true;
+        }
+        else
+        {
+            config[profile]["titles_only"] = false;
+        }
         config_changed = true;
     }
     if (config_changed)

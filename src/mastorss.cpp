@@ -69,14 +69,14 @@ int main(int argc, char *argv[])
     }
     entries = parse_website(answer);
 
-    string last_entry = config[profile + ".last_entry"].asString();
+    string last_entry = config[profile]["last_entry"].asString();
     if (last_entry.empty())
     {
         // If no last_entry is stored in the config file,
         // make last_entry the second-newest entry.
         last_entry = entries.at(1);
     }
-    config[profile + ".last_entry"] = entries.front();
+    config[profile]["last_entry"] = entries.front();
 
     bool new_content = false;
     for (auto rit = entries.rbegin(); rit != entries.rend(); ++rit)
