@@ -40,7 +40,7 @@ void unescape_html(string &str)
     str = "";
     // Used to convert int to utf-8 char
     std::wstring_convert<std::codecvt_utf8<char16_t>, char16_t> u8c;
-    std::regex reentity("&#(\\d{4});");
+    std::regex reentity("&#(\\d{2,4});");
     std::smatch match;
     
     while (std::regex_search(html, match, reentity))
