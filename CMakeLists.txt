@@ -31,3 +31,6 @@ file(GLOB sources src/*.cpp)
 add_executable(mastorss ${sources})
 target_link_libraries(mastorss mastodon-cpp ${Boost_LIBRARIES} ssl crypto ${CURL_LIBRARIES} curlpp)
 install(TARGETS mastorss DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+install(FILES watchwords.json
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/mastorss)
