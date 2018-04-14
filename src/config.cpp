@@ -50,6 +50,11 @@ std::uint16_t read_config(string &instance, string &access_token, string &feedur
         {
             max_size = config[profile]["max_size"].asUInt();
         }
+        else
+        {
+            config[profile]["max_size"] = max_size;
+            config_changed = true;
+        }
     }
     else
     {
