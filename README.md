@@ -52,7 +52,7 @@ ${HOME}/.config/mastorss/config-example.json
             "instance": "botsin.space",
             "feedurl": "https:\/\/example.com\/feed.rss",
             "access_token": "123abc",
-            "max_size": "400",
+            "max_size": 400,
             "titles_only": false,
             "skip":
             [
