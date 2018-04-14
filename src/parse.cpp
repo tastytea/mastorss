@@ -89,7 +89,7 @@ std::vector<string> parse_website(const string &xml)
     }
 
     // Read global hashtags or fail silently
-    for (const Json::Value &value : list["global.tags"])
+    for (const Json::Value &value : list["global"]["tags"])
     {
         watchwords.push_back(value.asString());
     }
