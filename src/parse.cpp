@@ -144,7 +144,7 @@ std::vector<string> parse_website(const string &xml)
                 unescape_html(str);
 
                 // Try to turn the HTML into human-readable text
-                std::regex reparagraph("</p><p>");
+                std::regex reparagraph("<p>");
                 std::regex recdata1("<!\\[CDATA\\[");
                 std::regex recdata2("\\]\\]>");
                 std::regex restrip("<[^>]*>");
