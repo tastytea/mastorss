@@ -173,6 +173,12 @@ std::vector<string> parse_website(const string &xml)
                     str.resize(str.rfind(' ')); // Cut at word boundary
                     str += " […]";
                 }
+                // Remove trailing newlines
+                while (str.back() == '\n' ||
+                       str.back() == '\r')
+                {
+                    str.resize(str.length() - 1);
+                }
                 str += "\n\n" + link + "\n\n#bot";
                 ret.push_back(str);
             }
