@@ -155,8 +155,9 @@ std::vector<string> parse_website(const string &xml)
                 str = std::regex_replace(str, recdata1, "");
                 str = std::regex_replace(str, recdata2, "");
                 str = std::regex_replace(str, restrip, "");
-                str = std::regex_replace(str, std::regex("[\\r\\n] +[\\r\\n]"), "\n\n"); // remove space between newlines
-                str = std::regex_replace(str, std::regex("[\\r\\n]{3,}"), "\n");        // remove excess newlines
+                str = std::regex_replace(str, std::regex("[\\r\\n] +[\\r\\n]"), "\n\n");    // remove space between newlines
+                str = std::regex_replace(str, std::regex("[\\r\\n]{3,}"), "\n");            // remove excess newlines
+                str = std::regex_replace(str, std::regex("^[ \t]*$"), "");                  // remove nothing
 
                 for (const string &hashtag : watchwords)
                 {
