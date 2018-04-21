@@ -158,7 +158,7 @@ std::vector<string> parse_website(const string &xml)
                 str = std::regex_replace(str, std::regex("\\r"), "");               // remove \r
                 str = std::regex_replace(str, std::regex("\\n +\\n"), "\n\n");      // remove space between newlines
                 str = std::regex_replace(str, std::regex("\\n{3,}"), "\n\n");       // remove excess newlines
-                str = std::regex_replace(str, std::regex("\\n[ \t]*\\n"), "");      // remove nothing
+                str = std::regex_replace(str, std::regex("\\n[ \t]+\\n"), "");      // remove nothing
 
                 for (const string &hashtag : watchwords)
                 {
@@ -169,7 +169,7 @@ std::vector<string> parse_website(const string &xml)
                 }
                 // Why is this necessary? Why does ##hashtag happen?
                 str = std::regex_replace(str, std::regex("##"), "#");
-                if ((str.size() + link.size()) > (std::uint16_t)(max_size - 15))
+                if ((str.size() + link.size()) > static_cast<std::uint16_t>(max_size - 15))
                 {
                     str.resize((max_size - link.size() - 15));
                     str.resize(str.rfind(' ')); // Cut at word boundary
