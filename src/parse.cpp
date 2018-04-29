@@ -39,13 +39,23 @@ void unescape_html(string &str)
     string html = str;
     str = "";
     // Used to convert int to utf-8 char
-    std::wstring_convert<std::codecvt_utf8<char16_t>, char16_t> u8c;
-    std::regex reentity("&#(\\d{2,4});");
+    std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> u8c;
+    std::regex re_entity("&#(x)?(\\d{1,8});");
     std::smatch match;
     
-    while (std::regex_search(html, match, reentity))
+    while (std::regex_search(html, match, re_entity))
     {
-        str += match.prefix().str() + u8c.to_bytes(std::stoi(match[1].str()));
+        char32_t codepoint = 0;
+        // 'x' in front of the number means it's hexadecimal, else decimal.
+        if (match[1].length() == 1)
+        {
+            codepoint = std::stoi(match[2].str(), nullptr, 16);
+        }
+        else
+        {
+            codepoint = std::stoi(match[2].str(), nullptr, 10);
+        }
+        str += match.prefix().str() + u8c.to_bytes(codepoint);
         html = match.suffix().str();
     }
     str += html;
