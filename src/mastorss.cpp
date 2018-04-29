@@ -65,6 +65,8 @@ int main(int argc, char *argv[])
     ret = http_get(feedurl, answer, "mastorss/" + (string)global::version);
     if (ret != 0)
     {
+        std::cerr << "Error code: " << ret << '\n';
+        std::cerr << answer << '\n';
         return ret;
     }
     entries = parse_website(answer);
