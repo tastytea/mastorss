@@ -166,7 +166,8 @@ std::vector<string> parse_website(const string &xml)
                 str = std::regex_replace(str, recdata2, "");
                 str = std::regex_replace(str, restrip, "");
                 str = std::regex_replace(str, std::regex("\\r"), "");           // remove \r
-                str = std::regex_replace(str, std::regex("\uc2a0"), " ");       // replace NO-BREAK SPACE with space
+                // replace NO-BREAK SPACE with space (UTF-8: 0xc2a0)
+                str = std::regex_replace(str, std::regex("\u00a0"), " ");
                 str = std::regex_replace(str, std::regex("\\n[ \t]+\\n"), "");  // remove whitespace between newlines
                 str = std::regex_replace(str, std::regex("\\n{3,}"), "\n\n");   // remove excess newlines
 
