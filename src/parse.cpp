@@ -123,6 +123,12 @@ std::vector<string> parse_website(const string &xml)
                 if (!config[profile]["titles_only"].asBool())
                 {
                     str += "\n\n" + desc;
+
+                    // Shrink overly long texts, to speed up replace operations
+                    if (str.length() > 2000)
+                    {
+                        str.resize(2000);
+                    }
                 }
 
                 bool skipthis = false;
