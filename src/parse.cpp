@@ -33,46 +33,6 @@ using std::cerr;
 using std::string;
 namespace pt = boost::property_tree;
 
-// Translate &#0123; to chars, translate some named entities to chars
-void unescape_html(string &str)
-{
-    string html = str;
-    str = "";
-    // Used to convert int to utf-8 char
-    std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> u8c;
-    std::regex re_entity("&#(x)?(\\d{1,8});");
-    std::smatch match;
-    
-    while (std::regex_search(html, match, re_entity))
-    {
-        char32_t codepoint = 0;
-        // 'x' in front of the number means it's hexadecimal, else decimal.
-        if (match[1].length() == 1)
-        {
-            codepoint = std::stoi(match[2].str(), nullptr, 16);
-        }
-        else
-        {
-            codepoint = std::stoi(match[2].str(), nullptr, 10);
-        }
-        str += match.prefix().str() + u8c.to_bytes(codepoint);
-        html = match.suffix().str();
-    }
-    str += html;
-
-    std::regex relt("&lt;");
-    std::regex regt("&gt;");
-    std::regex reamp("&amp;");
-    std::regex requot("&quot;");
-    std::regex reapos("&apos;");
-
-    str = std::regex_replace(str, relt, "<");
-    str = std::regex_replace(str, regt, ">");
-    str = std::regex_replace(str, reamp, "&");
-    str = std::regex_replace(str, requot, "\"");
-    str = std::regex_replace(str, reapos, "\'");
-}
-
 std::vector<string> parse_website(const string &xml)
 {
     Json::Value list;
@@ -157,7 +117,7 @@ std::vector<string> parse_website(const string &xml)
                     continue;
                 }
 
-                unescape_html(str);
+                Mastodon::API::unescape_html(str);
 
                 // Try to turn the HTML into human-readable text
                 std::regex reparagraph("<p>");
