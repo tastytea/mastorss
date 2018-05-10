@@ -117,7 +117,7 @@ std::vector<string> parse_website(const string &xml)
                     continue;
                 }
 
-                Mastodon::API::unescape_html(str);
+                str = Mastodon::API::unescape_html(str);
 
                 // Try to turn the HTML into human-readable text
                 std::regex reparagraph("<p>");
