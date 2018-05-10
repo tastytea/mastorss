@@ -63,7 +63,8 @@ ${HOME}/.config/mastorss/config-example.json
             [
                 "delete this",
                 "[Rr]ead more(\.{3}|…)"
-            ]
+            ],
+            "append": "#bot"
         }
     }
 

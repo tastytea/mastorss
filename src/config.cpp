@@ -133,6 +133,14 @@ std::uint16_t read_config(string &instance, string &access_token, string &feedur
         }
         config_changed = true;
     }
+    if (config[profile]["append"].isNull())
+    {
+        string append;
+        cout << "Append this string to each post []: ";
+        cin >> append;
+        config[profile]["append"] = append;
+        config_changed = true;
+    }
     if (config_changed)
     {
         write_config();

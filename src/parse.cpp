@@ -158,7 +158,13 @@ std::vector<string> parse_website(const string &xml)
                 {
                     str.resize(str.length() - 1);
                 }
-                str += "\n\n" + link + "\n\n#bot";
+
+                str += "\n\n" + link;
+
+                if (!config[profile]["append"].empty())
+                {
+                    str += "\n\n" + config[profile]["append"].asString();
+                }
                 ret.push_back(str);
             }
         }
