@@ -148,7 +148,9 @@ std::vector<string> parse_website(const string &xml)
                 str = std::regex_replace(str, std::regex("##"), "#");
                 if ((str.size() + link.size()) > static_cast<std::uint16_t>(max_size - 15))
                 {
-                    str.resize((max_size - link.size() - 15));
+                    str.resize((max_size - link.size() -
+                                config[profile]["append"].asString().length()
+                                - 4));
                     str.resize(str.rfind(' ')); // Cut at word boundary
                     str += " […]";
                 }
