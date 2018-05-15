@@ -100,8 +100,7 @@ int main(int argc, char *argv[])
 
         API::parametermap parameters =
         {
-            { "status", { *rit } },
-            { "visibility", { "public" } }
+            { "status", { *rit } }
         };
         ret = masto.post(API::v1::statuses, parameters, answer);
 
