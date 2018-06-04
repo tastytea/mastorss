@@ -14,14 +14,14 @@ The documentation is far from complete, sorry.
  * [cmake](https://cmake.org/) (tested: 3.9.6)
  * [boost](http://www.boost.org/) (tested: 1.63.0)
  * [curlpp](http://www.curlpp.org/) (tested: 0.8.1)
- * [mastodon-cpp](https://git.schlomp.space/tastytea/mastodon-cpp) (at least: 0.12.0)
+ * [mastodon-cpp](https://schlomp.space/tastytea/mastodon-cpp) (at least: 0.12.0)
  * [jsoncpp](https://github.com/open-source-parsers/jsoncpp) (tested: 1.8.4)
 
 ## Get sourcecode
 
 ### Development version
 
-    git clone https://git.schlomp.space/tastytea/mastorss.git
+    git clone https://schlomp.space/tastytea/mastorss.git
 
 ## Compile
 
@@ -71,7 +71,7 @@ ${HOME}/.config/mastorss/config-example.json
 
 ## Error codes
 
-Same as [mastodon-cpp](https://git.schlomp.space/tastytea/mastodon-cpp/src/branch/master/README.md#error-codes)
+Same as [mastodon-cpp](https://schlomp.space/tastytea/mastodon-cpp/src/branch/master/README.md#error-codes)
 
 # Copyright
 
