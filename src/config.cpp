@@ -77,7 +77,7 @@ std::uint16_t read_config(string &instance, string &access_token, string &feedur
         std::uint16_t ret = masto.register_app1("mastorss",
                                                 "urn:ietf:wg:oauth:2.0:oob",
                                                 "write",
-                                                "https://github.com/tastytea/mastorss",
+                                                "https://git.schlomp.space/tastytea/mastorss",
                                                 client_id,
                                                 client_secret,
                                                 url);
