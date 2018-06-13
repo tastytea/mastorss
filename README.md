@@ -10,12 +10,12 @@ The documentation is far from complete, sorry.
 ## Dependencies
 
  * Tested OS: Linux
- * C++ compiler (tested: gcc 6.4, clang 5.0)
- * [cmake](https://cmake.org/) (tested: 3.9.6)
- * [boost](http://www.boost.org/) (tested: 1.63.0)
- * [curlpp](http://www.curlpp.org/) (tested: 0.8.1)
+ * C++ compiler (tested: gcc 6.4, 7.3)
+ * [cmake](https://cmake.org/) (tested: 3.9)
+ * [boost](http://www.boost.org/) (tested: 1.65 / 1.62)
+ * [curlpp](http://www.curlpp.org/) (tested: 0.8 / 0.7)
  * [mastodon-cpp](https://schlomp.space/tastytea/mastodon-cpp) (at least: 0.12.0)
- * [jsoncpp](https://github.com/open-source-parsers/jsoncpp) (tested: 1.8.4)
+ * [jsoncpp](https://github.com/open-source-parsers/jsoncpp) (tested: 1.8 / 1.7)
 
 ## Get sourcecode
 
