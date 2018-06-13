@@ -1,0 +1,24 @@
+pipeline:
+  download:
+    image: plugins/download
+    source: https://schlomp.space/attachments/b3119713-4c05-4acc-9cb4-460b15e19279
+    destination: mastodon-cpp.deb
+  build:
+    image: debian:buster-slim
+    pull: true
+    commands:
+      - apt-get update -q
+      - apt-get install -qy build-essential cmake pkg-config
+      - apt-get install -qy libcurl4-openssl-dev libcurlpp-dev libjsoncpp-dev libboost-all-dev
+      - dpkg -i mastodon-cpp.deb
+      - mkdir -p build && cd build
+      - cmake ..
+      - make VERBOSE=1
+      - make install DESTDIR=install
+  notify:
+    image: drillster/drone-email
+    host: cryptoparty-celle.de
+    secrets: [ email_username, email_password ]
+    from: drone@tzend.de
+    when:
+      status: [ changed, failure ]
