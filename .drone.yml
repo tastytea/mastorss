@@ -1,6 +1,7 @@
 pipeline:
   download:
     image: plugins/download
+    pull: true
     source: https://schlomp.space/attachments/b3119713-4c05-4acc-9cb4-460b15e19279
     destination: mastodon-cpp.deb
   build:
@@ -17,6 +18,7 @@ pipeline:
       - make install DESTDIR=install
   notify:
     image: drillster/drone-email
+    pull: true
     host: cryptoparty-celle.de
     secrets: [ email_username, email_password ]
     from: drone@tzend.de
