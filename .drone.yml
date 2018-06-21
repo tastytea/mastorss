@@ -5,12 +5,15 @@ pipeline:
     source: https://schlomp.space/attachments/b3119713-4c05-4acc-9cb4-460b15e19279
     destination: mastodon-cpp.deb
   build:
-    image: debian:buster-slim
+    image: debian:stretch-slim
     pull: true
     commands:
+      - echo "deb http://deb.debian.org/debian buster main" >> /etc/apt/sources.list.d/buster.list
+      - echo "APT::Default-Release \"stretch\";" >> /etc/apt/apt.conf.d/00default_release
       - apt-get update -q
       - apt-get install -qy build-essential cmake pkg-config
-      - apt-get install -qy libcurl4-openssl-dev libcurlpp-dev libjsoncpp-dev libboost-all-dev
+      - apt-get install -qy libcurl4-openssl-dev libjsoncpp-dev libboost-all-dev
+      - apt-get install -qy -t buster libcurlpp-dev
       - dpkg -i mastodon-cpp.deb
       - mkdir -p build && cd build
       - cmake ..
