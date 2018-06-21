@@ -2,7 +2,7 @@ pipeline:
   download:
     image: plugins/download
     pull: true
-    source: https://schlomp.space/attachments/b3119713-4c05-4acc-9cb4-460b15e19279
+    source: https://schlomp.space/attachments/41e6e007-d8fb-483e-90e6-68b98e114562
     destination: mastodon-cpp.deb
   build:
     image: debian:stretch-slim
