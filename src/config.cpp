@@ -133,6 +133,21 @@ std::uint16_t read_config(string &instance, string &access_token, string &feedur
         }
         config_changed = true;
     }
+    if (config[profile]["titles_as_cw"].isNull())
+    {
+        string titles_as_cw;
+        cout << "Use titles as CW? [y/n]: ";
+        cin >> titles_as_cw;
+        if (titles_as_cw[0] == 'y')
+        {
+            config[profile]["titles_as_cw"] = true;
+        }
+        else
+        {
+            config[profile]["titles_as_cw"] = false;
+        }
+        config_changed = true;
+    }
     if (config[profile]["append"].isNull())
     {
         string append;
