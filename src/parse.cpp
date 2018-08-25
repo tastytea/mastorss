@@ -163,10 +163,12 @@ std::vector<Mastodon::Easy::Status> parse_website(const string &xml)
                 }
                 // Why is this necessary? Why does ##hashtag happen?
                 content = std::regex_replace(content, std::regex("##"), "#");
-                if ((content.size() + link.size()) > static_cast<std::uint16_t>(max_size - 15))
+
+                uint16_t appendix_size = config[profile]["append"].asString().length();
+                if ((content.size() + link.size() + appendix_size)
+                    > static_cast<std::uint16_t>(max_size - 4))
                 {
-                    content.resize((max_size - link.size() -
-                                    config[profile]["append"].asString().length() - 4));
+                    content.resize((max_size - link.size() - appendix_size - 4));
                     content.resize(content.rfind(' ')); // Cut at word boundary
                     content += " […]";
                 }
