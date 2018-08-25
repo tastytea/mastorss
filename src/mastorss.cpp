@@ -96,15 +96,15 @@ int main(int argc, char *argv[])
             continue;
         }
 
-        string answer;
+        Mastodon::Easy::Status answer;
         Mastodon::Easy masto(instance, access_token);
 
-        masto.send_post(*rit);
+        answer = masto.send_post(*rit, ret);
 
         if (ret != 0)
         {
             std::cerr << "Error code: " << ret << '\n';
-            std::cerr << answer << '\n';
+            std::cerr << answer.to_object().asString() << '\n';
             return ret;
         }
 
