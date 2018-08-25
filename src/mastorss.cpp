@@ -23,6 +23,7 @@
 #include <chrono>
 #include <jsoncpp/json/json.h>
 #include <mastodon-cpp/mastodon-cpp.hpp>
+#include <mastodon-cpp/easy/all.hpp>
 #include "version.hpp"
 #include "mastorss.hpp"
 
@@ -57,7 +58,7 @@ int main(int argc, char *argv[])
     profile = argv[1];
     std::uint16_t ret;
     string answer;
-    std::vector<string> entries;
+    std::vector<Mastodon::Easy::Status> entries;
 
     read_config(instance, access_token, feedurl);
     curlpp_init();
@@ -76,14 +77,14 @@ int main(int argc, char *argv[])
     {
         // If no last_entry is stored in the config file,
         // make last_entry the second-newest entry.
-        last_entry = entries.at(1);
+        last_entry = entries.at(1).content();
     }
-    config[profile]["last_entry"] = entries.front();
+    config[profile]["last_entry"] = entries.front().content();
 
     bool new_content = false;
     for (auto rit = entries.rbegin(); rit != entries.rend(); ++rit)
     {
-        if (!new_content && (*rit).compare(last_entry) == 0)
+        if (!new_content && (*rit).content().compare(last_entry) == 0)
         {
             // If the last entry is found in entries,
             // start tooting in the next loop.
@@ -96,13 +97,9 @@ int main(int argc, char *argv[])
         }
 
         string answer;
-        Mastodon::API masto(instance, access_token);
+        Mastodon::Easy masto(instance, access_token);
 
-        API::parametermap parameters =
-        {
-            { "status", { *rit } }
-        };
-        ret = masto.post(API::v1::statuses, parameters, answer);
+        masto.send_post(*rit);
 
         if (ret != 0)
         {
