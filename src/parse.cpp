@@ -27,13 +27,14 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include <mastodon-cpp/mastodon-cpp.hpp>
+#include <mastodon-cpp/easy/all.hpp>
 #include "mastorss.hpp"
 
 using std::cerr;
 using std::string;
 namespace pt = boost::property_tree;
 
-std::vector<string> parse_website(const string &xml)
+std::vector<Mastodon::Easy::Status> parse_website(const string &xml)
 {
     Json::Value list;
     std::vector<string> watchwords;
@@ -67,7 +68,7 @@ std::vector<string> parse_website(const string &xml)
     pt::ptree rss;
     std::istringstream iss(xml);
     pt::read_xml(iss, rss);
-    std::vector<string> ret;
+    std::vector<Mastodon::Easy::Status> ret;
 
     for (const pt::ptree::value_type &v : rss.get_child("rss.channel"))
     {
@@ -79,15 +80,28 @@ std::vector<string> parse_website(const string &xml)
                 string link = v.second.get_child("link").data();
                 string desc = v.second.get_child("description").data();
 
-                string str = title;
+                Mastodon::Easy::Status status;
+                string content = "";
+                if (config[profile]["titles_as_cw"].asBool())
+                {
+                    status.spoiler_text(title);
+                }
+                else
+                {
+                    content = title;
+                }
                 if (!config[profile]["titles_only"].asBool())
                 {
-                    str += "\n\n" + desc;
+                    if (!content.empty())
+                    {
+                        content += "\n\n";
+                    }
+                    content += desc;
 
                     // Shrink overly long texts, to speed up replace operations
-                    if (str.length() > 2000)
+                    if (content.length() > 2000)
                     {
-                        str.resize(2000);
+                        content.resize(2000);
                     }
                 }
 
@@ -117,7 +131,7 @@ std::vector<string> parse_website(const string &xml)
                     continue;
                 }
 
-                str = Mastodon::API::unescape_html(str);
+                content = Mastodon::API::unescape_html(content);
 
                 // Try to turn the HTML into human-readable text
                 std::regex reparagraph("<p>");
@@ -125,49 +139,52 @@ std::vector<string> parse_website(const string &xml)
                 std::regex recdata2("\\]\\]>");
                 std::regex restrip("<[^>]*>");
 
-                individual_fixes(str);
+                individual_fixes(content);
 
-                str = std::regex_replace(str, reparagraph, "\n\n");
-                str = std::regex_replace(str, recdata1, "");
-                str = std::regex_replace(str, recdata2, "");
-                str = std::regex_replace(str, restrip, "");
-                str = std::regex_replace(str, std::regex("\\r"), "");           // remove \r
+                content = std::regex_replace(content, reparagraph, "\n\n");
+                content = std::regex_replace(content, recdata1, "");
+                content = std::regex_replace(content, recdata2, "");
+                content = std::regex_replace(content, restrip, "");
+                // remove \r
+                content = std::regex_replace(content, std::regex("\\r"), "");
                 // replace NO-BREAK SPACE with space (UTF-8: 0xc2a0)
-                str = std::regex_replace(str, std::regex("\u00a0"), " ");
-                str = std::regex_replace(str, std::regex("\\n[ \t]+\\n"), "");  // remove whitespace between newlines
-                str = std::regex_replace(str, std::regex("\\n{3,}"), "\n\n");   // remove excess newlines
+                content = std::regex_replace(content, std::regex("\u00a0"), " ");
+                // remove whitespace between newlines
+                content = std::regex_replace(content, std::regex("\\n[ \t]+\\n"), "");
+                // remove excess newlines
+                content = std::regex_replace(content, std::regex("\\n{3,}"), "\n\n");
 
                 for (const string &hashtag : watchwords)
                 {
-                    std::regex rehashtag("([[:space:][:punct:]]|^)(" + hashtag + ")([[:space:][:punct:]]|$)",
-                                         std::regex_constants::icase);
-                    str = std::regex_replace(str, rehashtag, "$1#$2$3",
-                                             std::regex_constants::format_first_only);
+                    std::regex rehashtag("([[:space:][:punct:]]|^)(" + hashtag +
+                                         ")([[:space:][:punct:]]|$)", std::regex_constants::icase);
+                    content = std::regex_replace(content, rehashtag, "$1#$2$3",
+                                                 std::regex_constants::format_first_only);
                 }
                 // Why is this necessary? Why does ##hashtag happen?
-                str = std::regex_replace(str, std::regex("##"), "#");
-                if ((str.size() + link.size()) > static_cast<std::uint16_t>(max_size - 15))
+                content = std::regex_replace(content, std::regex("##"), "#");
+                if ((content.size() + link.size()) > static_cast<std::uint16_t>(max_size - 15))
                 {
-                    str.resize((max_size - link.size() -
-                                config[profile]["append"].asString().length()
-                                - 4));
-                    str.resize(str.rfind(' ')); // Cut at word boundary
-                    str += " […]";
+                    content.resize((max_size - link.size() -
+                                    config[profile]["append"].asString().length() - 4));
+                    content.resize(content.rfind(' ')); // Cut at word boundary
+                    content += " […]";
                 }
                 // Remove trailing newlines
-                while (str.back() == '\n' ||
-                       str.back() == '\r')
+                while (content.back() == '\n' ||
+                       content.back() == '\r')
                 {
-                    str.resize(str.length() - 1);
+                    content.resize(content.length() - 1);
                 }
 
-                str += "\n\n" + link;
+                content += "\n\n" + link;
 
                 if (!config[profile]["append"].empty())
                 {
-                    str += "\n\n" + config[profile]["append"].asString();
+                    content += "\n\n" + config[profile]["append"].asString();
                 }
-                ret.push_back(str);
+                status.content(content);
+                ret.push_back(status);
             }
         }
     }
