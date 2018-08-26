@@ -83,7 +83,7 @@ std::vector<Mastodon::Easy::Status> parse_website(const string &xml)
                 string content = "";
                 if (config[profile]["titles_as_cw"].asBool())
                 {
-                    status.spoiler_text(title);
+                    status.spoiler_text(Mastodon::API::unescape_html(title));
                 }
                 else
                 {
