@@ -49,8 +49,7 @@ std::vector<Mastodon::Easy::Status> parse_website(const string &xml)
     }
     else
     {
-        cerr << "ERROR: " << filepath << "watchwords.json not found or not readable.\n";
-        return {};
+        cerr << "WARNING: " << filepath << "watchwords.json not found or not readable.\n";
     }
 
     // Read profile-specific hashtags or fail silently
