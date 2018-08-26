@@ -4,19 +4,17 @@ pipeline:
     pull: true
     source: https://schlomp.space/attachments/67bbc1cd-03e1-4bd5-8e29-5c4e41e64366
     destination: mastodon-cpp.deb
-  gcc6:
-    image: gcc:6
+  gcc8:
+    image: gcc:8
     pull: true
     commands:
-      - echo "deb http://deb.debian.org/debian stretch main" >> /etc/apt/sources.list.d/stretch.list
       - echo "deb http://deb.debian.org/debian buster main" >> /etc/apt/sources.list.d/buster.list
-      - echo "APT::Default-Release \"jessie\";" >> /etc/apt/apt.conf.d/00default_release
+      - echo "APT::Default-Release \"stretch\";" >> /etc/apt/apt.conf.d/00default_release
       - apt-get update -q
-      - apt-get install -qy libcurl4-openssl-dev libboost-all-dev
-      - apt-get install -qy -t stretch cmake libjsoncpp-dev
+      - apt-get install -qy cmake libcurl4-openssl-dev libjsoncpp-dev libboost-all-dev
       - apt-get install -qy -t buster libcurlpp-dev
       - dpkg -i mastodon-cpp.deb
-      - mkdir -p build && cd build
+      - rm -rf build && mkdir -p build && cd build
       - cmake ..
       - make VERBOSE=1
       - make install DESTDIR=install
@@ -30,24 +28,42 @@ pipeline:
       - apt-get install -qy cmake libcurl4-openssl-dev libjsoncpp-dev libboost-all-dev
       - apt-get install -qy -t buster libcurlpp-dev
       - dpkg -i mastodon-cpp.deb
-      - mkdir -p build && cd build
+      - rm -rf build && mkdir -p build && cd build
       - cmake ..
       - make VERBOSE=1
       - make install DESTDIR=install
-  gcc8:
-    image: gcc:8
+  gcc6:
+    image: gcc:6
     pull: true
     commands:
+      - echo "deb http://deb.debian.org/debian jessie-backports main" >> /etc/apt/sources.list.d/backports.list
       - echo "deb http://deb.debian.org/debian buster main" >> /etc/apt/sources.list.d/buster.list
-      - echo "APT::Default-Release \"stretch\";" >> /etc/apt/apt.conf.d/00default_release
+      - echo "APT::Default-Release \"jessie\";" >> /etc/apt/apt.conf.d/00default_release
       - apt-get update -q
-      - apt-get install -qy cmake libcurl4-openssl-dev libjsoncpp-dev libboost-all-dev
+      - apt-get install -qy libcurl4-openssl-dev libboost-all-dev
+      - apt-get install -qy -t jessie-backports cmake libjsoncpp-dev
       - apt-get install -qy -t buster libcurlpp-dev
       - dpkg -i mastodon-cpp.deb
-      - mkdir -p build && cd build
+      - rm -rf build && mkdir -p build && cd build
       - cmake ..
       - make VERBOSE=1
       - make install DESTDIR=install
+  # gcc5:
+  #   image: gcc:5
+  #   pull: true
+  #   commands:
+  #     - echo "deb http://deb.debian.org/debian jessie-backports main" >> /etc/apt/sources.list.d/backports.list
+  #     - echo "deb http://deb.debian.org/debian buster main" >> /etc/apt/sources.list.d/buster.list
+  #     - echo "APT::Default-Release \"jessie\";" >> /etc/apt/apt.conf.d/00default_release
+  #     - apt-get update -q
+  #     - apt-get install -qy libcurl4-openssl-dev libboost-all-dev
+  #     - apt-get install -qy -t jessie-backports cmake libjsoncpp-dev
+  #     - apt-get install -qy -t buster libcurlpp-dev
+  #     - dpkg -i mastodon-cpp.deb
+  #     - rm -rf build && mkdir -p build && cd build
+  #     - cmake ..
+  #     - make VERBOSE=1
+  #     - make install DESTDIR=install
   notify:
     image: drillster/drone-email
     pull: true
