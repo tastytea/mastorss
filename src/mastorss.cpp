@@ -100,6 +100,12 @@ int main(int argc, char *argv[])
         Mastodon::Easy masto(instance, access_token);
 
         answer = masto.send_post(*rit, ret);
+        if (answer.to_object().isNull())
+        {
+            std::cerr << "Could not send post for unknown reasons.\n"
+            std::cerr << "Please file a bug at <https://schlomp.space/tastytea/mastorss/issues>.\n":
+            return 1;
+        }
 
         if (ret != 0)
         {

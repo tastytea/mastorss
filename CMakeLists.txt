@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.6)
 project (mastorss
-         VERSION 0.7.5
+         VERSION 0.7.6
          LANGUAGES CXX
 )
 
