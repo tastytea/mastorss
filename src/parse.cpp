@@ -155,8 +155,9 @@ std::vector<Mastodon::Easy::Status> parse_website(const string &xml)
 
                 for (const string &hashtag : watchwords)
                 {
-                    std::regex rehashtag("([[:space:][:punct:]]|^)(" + hashtag +
-                                         ")([[:space:][:punct:]]|$)", std::regex_constants::icase);
+                    std::regex rehashtag("([[:space:][:punct:]]|^)(" + hashtag
+                                         + ")([[:space:][:punct:]]|$)",
+                                         std::regex_constants::icase);
                     content = std::regex_replace(content, rehashtag, "$1#$2$3",
                                                  std::regex_constants::format_first_only);
                 }
@@ -167,7 +168,8 @@ std::vector<Mastodon::Easy::Status> parse_website(const string &xml)
                 if ((status.spoiler_text().size() + content.size() + link.size() + appendix_size)
                     > static_cast<std::uint16_t>(max_size - 4))
                 {
-                    content.resize((max_size - link.size() - appendix_size - 4));
+                    content.resize((max_size - status.spoiler_text().size()
+                                    - link.size() - appendix_size - 4));
                     content.resize(content.rfind(' ')); // Cut at word boundary
                     content += " […]";
                 }
