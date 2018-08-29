@@ -164,7 +164,7 @@ std::vector<Mastodon::Easy::Status> parse_website(const string &xml)
                 content = std::regex_replace(content, std::regex("##"), "#");
 
                 uint16_t appendix_size = config[profile]["append"].asString().length();
-                if ((content.size() + link.size() + appendix_size)
+                if ((status.spoiler_text().size() + content.size() + link.size() + appendix_size)
                     > static_cast<std::uint16_t>(max_size - 4))
                 {
                     content.resize((max_size - link.size() - appendix_size - 4));
