@@ -156,6 +156,18 @@ std::uint16_t read_config(string &instance, string &access_token, string &feedur
         config[profile]["append"] = append;
         config_changed = true;
     }
+    if (config[profile]["interval"].isNull())
+    {
+        string interval;
+        cout << "Interval between posts in seconds [60]: ";
+        cin >> interval;
+        if (interval.empty())
+        {
+            interval = "60";
+        }
+        config[profile]["interval"] = std::stoul(interval);
+        config_changed = true;
+    }
     if (config_changed)
     {
         write_config();

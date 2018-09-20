@@ -32,6 +32,8 @@ using std::cout;
 using std::cerr;
 using std::cin;
 using std::string;
+using std::this_thread::sleep_for;
+using std::chrono::seconds;
 
 // Initialize global variables
 std::uint16_t max_size = 500;
@@ -70,7 +72,7 @@ int main(int argc, char *argv[])
         std::cerr << answer << '\n';
         return ret;
     }
-    entries = parse_website(answer);
+    entries = parse_feed(answer);
 
     string last_entry = config[profile]["last_entry"].asString();
     if (last_entry.empty())
@@ -114,7 +116,7 @@ int main(int argc, char *argv[])
             return ret;
         }
 
-        std::this_thread::sleep_for(std::chrono::seconds(2));
+        sleep_for(seconds(config[profile]["interval"].asUInt64()));
     }
 
     // Write the new last_entry only if no error happened.

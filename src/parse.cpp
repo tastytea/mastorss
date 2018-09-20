@@ -34,7 +34,7 @@ using std::cerr;
 using std::string;
 namespace pt = boost::property_tree;
 
-std::vector<Mastodon::Easy::Status> parse_website(const string &xml)
+std::vector<Mastodon::Easy::Status> parse_feed(const string &xml)
 {
     Json::Value list;
     std::vector<string> watchwords;
