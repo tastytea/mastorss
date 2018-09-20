@@ -116,7 +116,10 @@ int main(int argc, char *argv[])
             return ret;
         }
 
-        sleep_for(seconds(config[profile]["interval"].asUInt64()));
+        if (rit != entries.rend())
+        {   // Only sleep if this is not the last entry
+            sleep_for(seconds(config[profile]["interval"].asUInt64()));
+        }
     }
 
     // Write the new last_entry only if no error happened.
