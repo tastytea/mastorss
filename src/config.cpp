@@ -65,7 +65,7 @@ std::uint16_t read_config(string &instance, string &access_token, string &feedur
     if (instance.empty())
     {
         cout << "Instance: ";
-        cin >> instance;
+        std::getline(cin, instance);
         config[profile]["instance"] = instance;
         config_changed = true;
     }
@@ -86,7 +86,7 @@ std::uint16_t read_config(string &instance, string &access_token, string &feedur
             string code;
             cout << "Visit " << url << " to authorize this application.\n";
             cout << "Insert code: ";
-            cin >> code;
+            std::getline(cin, code);
 
             ret = masto.register_app2(client_id,
                                       client_secret,
@@ -114,7 +114,7 @@ std::uint16_t read_config(string &instance, string &access_token, string &feedur
     if (feedurl.empty())
     {
         cout << "feedurl: ";
-        cin >> feedurl;
+        std::getline(cin, feedurl);
         config[profile]["feedurl"] = feedurl;
         config_changed = true;
     }
@@ -122,7 +122,7 @@ std::uint16_t read_config(string &instance, string &access_token, string &feedur
     {
         string titles_only;
         cout << "post only titles? [y/n]: ";
-        cin >> titles_only;
+        std::getline(cin, titles_only);
         if (titles_only[0] == 'y')
         {
             config[profile]["titles_only"] = true;
@@ -137,7 +137,7 @@ std::uint16_t read_config(string &instance, string &access_token, string &feedur
     {
         string titles_as_cw;
         cout << "Use titles as CW? [y/n]: ";
-        cin >> titles_as_cw;
+        std::getline(cin, titles_as_cw);
         if (titles_as_cw[0] == 'y')
         {
             config[profile]["titles_as_cw"] = true;
@@ -152,7 +152,7 @@ std::uint16_t read_config(string &instance, string &access_token, string &feedur
     {
         string append;
         cout << "Append this string to each post []: ";
-        cin >> append;
+        std::getline(cin, append);
         config[profile]["append"] = append;
         config_changed = true;
     }
@@ -160,7 +160,7 @@ std::uint16_t read_config(string &instance, string &access_token, string &feedur
     {
         string interval;
         cout << "Interval between posts in seconds [60]: ";
-        cin >> interval;
+        std::getline(cin, interval);
         if (interval.empty())
         {
             interval = "60";
