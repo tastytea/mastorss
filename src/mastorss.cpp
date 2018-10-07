@@ -105,7 +105,27 @@ int main(int argc, char *argv[])
 
         if (ret != 0)
         {
-            std::cerr << "Error code: " << ret << '\n';
+            switch (ret)
+            {
+                case 15:
+                    std::cerr << "Error " << ret << ": Network error\n";
+                    break;
+                case 16:
+                    std::cerr << "Error " << ret << ": Timeout\n";
+                    break;
+                case 403:
+                    std::cerr << "Error " << ret << ": Forbidden\n";
+                    break;
+                case 404:
+                    std::cerr << "Error " << ret << ": Not found\n";
+                    break;
+                case 503:
+                    std::cerr << "Error " << ret << ": Service Unavailable\n";
+                    break;
+                default:
+                    std::cerr << "Error " << ret << '\n';
+            }
+
             std::cerr << answer.to_object().asString() << '\n';
             return ret;
         }
