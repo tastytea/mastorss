@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
     string access_token = "";
     string feedurl = "";
     profile = argv[1];
-    std::uint16_t ret;
+    std::uint_fast16_t ret;
     string answer;
     std::vector<Mastodon::Easy::Status> entries;
 
