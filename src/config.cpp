@@ -165,7 +165,7 @@ std::uint16_t read_config(string &instance, string &access_token, string &feedur
         {
             interval = "60";
         }
-        config[profile]["interval"] = std::stoul(interval);
+        config[profile]["interval"] = Json::Value::UInt64(std::stoul(interval));
         config_changed = true;
     }
     if (config_changed)
