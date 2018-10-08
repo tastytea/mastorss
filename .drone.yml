@@ -4,34 +4,115 @@ pipeline:
     pull: true
     source: https://schlomp.space/attachments/713cd43b-8208-4e37-9fad-740daf7bdfa9
     destination: mastodon-cpp.deb
+
   gcc8:
-    image: gcc:8
+    image: debian:stretch-slim
     pull: true
+    environment:
+      - LANG=C.utf8
     commands:
-      - echo "deb http://deb.debian.org/debian sid main" >> /etc/apt/sources.list.d/sid.list
-      - echo "APT::Default-Release \"stretch\";" >> /etc/apt/apt.conf.d/00default_release
+      - rm /etc/apt/apt.conf.d/docker-clean
       - apt-get update -q
-      - apt-get install -qy cmake libcurl4-openssl-dev libjsoncpp-dev libboost-all-dev
+      - echo "APT::Default-Release \"stretch\";" >> /etc/apt/apt.conf.d/00default_release
+      - echo "deb http://deb.debian.org/debian sid main" >> /etc/apt/sources.list.d/sid.list
+      - echo "deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu bionic main" >> /etc/apt/sources.list.d/ubuntu-toolchain-r.list
+      - apt-get install -qy gnupg
+      - gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys 0x60c317803a41ba51845e371a1e9377a2ba9ef27f
+      - gpg --armor --export 0x60c317803a41ba51845e371a1e9377a2ba9ef27f | apt-key add -
+      - apt-get update -q
+      - apt-get install -qy build-essential cmake pkg-config
+      - apt-get install -qy -t bionic g++-8
+      - update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 100
+      - update-alternatives --set g++ /usr/bin/g++-8
+      - apt-get install -qy libcurl4-openssl-dev libjsoncpp-dev libboost-all-dev
       - apt-get install -qy -t sid libcurlpp-dev
       - dpkg -i mastodon-cpp.deb
       - rm -rf build && mkdir -p build && cd build
       - cmake ..
       - make VERBOSE=1
       - make install DESTDIR=install
+    volumes:
+      - /var/cache/debian-package-cache:/var/cache/apt/archives
+
   gcc7:
-    image: gcc:7
+    image: debian:stretch-slim
     pull: true
+    environment:
+      - LANG=C.utf8
     commands:
-      - echo "deb http://deb.debian.org/debian sid main" >> /etc/apt/sources.list.d/sid.list
-      - echo "APT::Default-Release \"stretch\";" >> /etc/apt/apt.conf.d/00default_release
+      - rm /etc/apt/apt.conf.d/docker-clean
       - apt-get update -q
-      - apt-get install -qy cmake libcurl4-openssl-dev libjsoncpp-dev libboost-all-dev
+      - echo "APT::Default-Release \"stretch\";" >> /etc/apt/apt.conf.d/00default_release
+      - echo "deb http://deb.debian.org/debian sid main" >> /etc/apt/sources.list.d/sid.list
+      - echo "deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu bionic main" >> /etc/apt/sources.list.d/ubuntu-toolchain-r.list
+      - apt-get install -qy gnupg
+      - gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys 0x60c317803a41ba51845e371a1e9377a2ba9ef27f
+      - gpg --armor --export 0x60c317803a41ba51845e371a1e9377a2ba9ef27f | apt-key add -
+      - apt-get update -q
+      - apt-get install -qy build-essential cmake pkg-config
+      - apt-get install -qy -t bionic g++-7
+      - update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 100
+      - update-alternatives --set g++ /usr/bin/g++-7
+      - apt-get install -qy libcurl4-openssl-dev libjsoncpp-dev libboost-all-dev
       - apt-get install -qy -t sid libcurlpp-dev
       - dpkg -i mastodon-cpp.deb
       - rm -rf build && mkdir -p build && cd build
       - cmake ..
       - make VERBOSE=1
       - make install DESTDIR=install
+    volumes:
+      - /var/cache/debian-package-cache:/var/cache/apt/archives
+
+  gcc5:
+    image: debian:stretch-slim
+    pull: true
+    environment:
+      - LANG=C.utf8
+    commands:
+      - rm /etc/apt/apt.conf.d/docker-clean
+      - apt-get update -q
+      - echo "APT::Default-Release \"stretch\";" >> /etc/apt/apt.conf.d/00default_release
+      - echo "deb http://deb.debian.org/debian sid main" >> /etc/apt/sources.list.d/sid.list
+      - echo "deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu bionic main" >> /etc/apt/sources.list.d/ubuntu-toolchain-r.list
+      - apt-get install -qy gnupg
+      - gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys 0x60c317803a41ba51845e371a1e9377a2ba9ef27f
+      - gpg --armor --export 0x60c317803a41ba51845e371a1e9377a2ba9ef27f | apt-key add -
+      - apt-get update -q
+      - apt-get install -qy build-essential cmake pkg-config
+      - apt-get install -qy -t bionic g++-5
+      - update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 100
+      - update-alternatives --set g++ /usr/bin/g++-5
+      - apt-get install -qy libcurl4-openssl-dev libjsoncpp-dev libboost-all-dev
+      - apt-get install -qy -t sid libcurlpp-dev
+      - dpkg -i mastodon-cpp.deb
+      - rm -rf build && mkdir -p build && cd build
+      - cmake ..
+      - make VERBOSE=1
+      - make install DESTDIR=install
+    volumes:
+      - /var/cache/debian-package-cache:/var/cache/apt/archives
+
+  gcc6:
+    image: debian:stretch-slim
+    pull: true
+    environment:
+      - LANG=C.utf8
+    commands:
+      - rm /etc/apt/apt.conf.d/docker-clean
+      - echo "APT::Default-Release \"stretch\";" >> /etc/apt/apt.conf.d/00default_release
+      - echo "deb http://deb.debian.org/debian sid main" >> /etc/apt/sources.list.d/sid.list
+      - apt-get update -q
+      - apt-get install -qy build-essential cmake pkg-config
+      - apt-get install -qy libcurl4-openssl-dev libjsoncpp-dev libboost-all-dev
+      - apt-get install -qy -t sid libcurlpp-dev
+      - dpkg -i mastodon-cpp.deb
+      - rm -rf build && mkdir -p build && cd build
+      - cmake ..
+      - make VERBOSE=1
+      - make install DESTDIR=install
+    volumes:
+      - /var/cache/debian-package-cache:/var/cache/apt/archives
+
   notify:
     image: drillster/drone-email
     pull: true
