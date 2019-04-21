@@ -109,7 +109,7 @@ std::uint16_t read_config(string &instance, string &access_token, string &feedur
             cerr << "Error code: " << ret << '\n';
             return ret;
         }
-        
+
     }
     if (feedurl.empty())
     {
@@ -177,7 +177,7 @@ std::uint16_t read_config(string &instance, string &access_token, string &feedur
 }
 
 
-const bool write_config()
+bool write_config()
 {
     std::ofstream outfile(filepath + "config-" + profile + ".json");
     if (outfile.is_open())

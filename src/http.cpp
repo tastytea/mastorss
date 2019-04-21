@@ -1,6 +1,6 @@
 /*  This file is part of mastorss.
- *  Copyright © 2018 tastytea <tastytea@tastytea.de>
- *                                                                   
+ *  Copyright © 2018, 2019 tastytea <tastytea@tastytea.de>
+ *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, version 3.
@@ -37,7 +37,8 @@ void curlpp_init()
     curlpp::initialize();
 }
 
-const std::uint16_t http_get(const string &feedurl, string &answer, const string &useragent)
+std::uint16_t http_get(const string &feedurl, string &answer,
+                       const string &useragent)
 {
     try
     {
@@ -51,7 +52,7 @@ const std::uint16_t http_get(const string &feedurl, string &answer, const string
         });
         request.setOpt<curlopts::FollowLocation>(true);
         request.setOpt<curlopts::WriteStream>(&oss);
-        
+
         request.perform();
         std::uint16_t ret = curlpp::infos::ResponseCode::get(request);
         if (ret == 200 || ret == 302 || ret == 307)
