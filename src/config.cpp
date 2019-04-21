@@ -1,5 +1,5 @@
 /*  This file is part of mastorss.
- *  Copyright © 2018 tastytea <tastytea@tastytea.de>
+ *  Copyright © 2018, 2019 tastytea <tastytea@tastytea.de>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -74,14 +74,15 @@ std::uint16_t read_config(string &instance, string &access_token, string &feedur
         cout << "No access token found.\n";
         string client_id, client_secret, url;
         Mastodon::API masto(instance, "");
-        std::uint16_t ret = masto.register_app1("mastorss",
-                                                "urn:ietf:wg:oauth:2.0:oob",
-                                                "write",
-                                                "https://schlomp.space/tastytea/mastorss",
-                                                client_id,
-                                                client_secret,
-                                                url);
-        if (ret == 0)
+        Mastodon::return_call ret
+            = masto.register_app1("mastorss",
+                                  "urn:ietf:wg:oauth:2.0:oob",
+                                  "write",
+                                  "https://schlomp.space/tastytea/mastorss",
+                                  client_id,
+                                  client_secret,
+                                  url);
+        if (!ret)
         {
             string code;
             cout << "Visit " << url << " to authorize this application.\n";
@@ -93,21 +94,21 @@ std::uint16_t read_config(string &instance, string &access_token, string &feedur
                                       "urn:ietf:wg:oauth:2.0:oob",
                                       code,
                                       access_token);
-            if (ret == 0)
+            if (!ret)
             {
                 config[profile]["access_token"] = access_token;
                 config_changed = true;
             }
             else
             {
-                cerr << "Error code: " << ret << '\n';
-                return ret;
+                cerr << "Error code: " << ret.error_code << '\n';
+                return ret.error_code;
             }
         }
         else
         {
-            cerr << "Error code: " << ret << '\n';
-            return ret;
+            cerr << "Error code: " << ret.error_code << '\n';
+            return ret.error_code;
         }
 
     }

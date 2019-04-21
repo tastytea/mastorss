@@ -1,5 +1,5 @@
 /*  This file is part of mastorss.
- *  Copyright © 2018 tastytea <tastytea@tastytea.de>
+ *  Copyright © 2018, 2019 tastytea <tastytea@tastytea.de>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,10 +27,12 @@
 #include "version.hpp"
 #include "mastorss.hpp"
 
-using Mastodon::API;
+using namespace Mastodon;
+
 using std::cout;
 using std::cerr;
 using std::cin;
+using std::endl;
 using std::string;
 using std::this_thread::sleep_for;
 using std::chrono::seconds;
@@ -98,42 +100,54 @@ int main(int argc, char *argv[])
             continue;
         }
 
-        Mastodon::Easy::Status answer;
-        Mastodon::Easy masto(instance, access_token);
+        Easy::return_entity<Easy::Status> ret_status;
+        Mastodon::Easy::API masto(instance, access_token);
 
-        answer = masto.send_post(*rit, ret);
+        ret_status = masto.send_post(*rit);
 
-        if (ret != 0)
+        if (!ret_status)
         {
-            switch (ret)
+            const uint8_t err = ret_status.error_code;
+            switch (err)
             {
-                case 15:
-                    std::cerr << "Error " << ret << ": Network error\n";
-                    break;
-                case 16:
-                    std::cerr << "Error " << ret << ": Timeout\n";
-                    break;
-                case 403:
-                    std::cerr << "Error " << ret << ": Forbidden\n";
-                    break;
-                case 404:
-                    std::cerr << "Error " << ret << ": Not found\n";
-                    break;
-                case 503:
-                    std::cerr << "Error " << ret << ": Service Unavailable\n";
-                    break;
-                default:
-                    std::cerr << "Error " << ret << '\n';
+            case 110:
+            {
+                cerr << "Error " << err << ": Timeout\n";
+                break;
+            }
+            case 111:
+            {
+                cerr << "Error " << err << ": Connection refused\n";
+                cerr << "HTTP Error " << ret_status.http_error_code << endl;
+                break;
+            }
+            case 113:
+            {
+                cerr << "Error " << err << ": Could not reach host.\n";
+                break;
+            }
+            case 192:
+            case 193:
+            {
+                cerr << "Error " << err << ": curlpp error\n";
+                break;
+            }
+            default:
+            {
+                cerr << "Error " << err << '\n';
+                cerr << "HTTP status " << ret_status.http_error_code << endl;
+            }
             }
 
-            std::cerr << answer.to_object().asString() << '\n';
+            cerr << ret_status.entity.to_string() << '\n';
             return ret;
         }
 
-        if (answer.to_object().isNull())
+        if (!ret_status.entity.valid())
         {
-            std::cerr << "Could not send post for unknown reasons.\n";
-            std::cerr << "Please file a bug at <https://schlomp.space/tastytea/mastorss/issues>.\n";
+            cerr << "Could not send post for unknown reasons.\n";
+            cerr << "Please file a bug at "
+                "<https://schlomp.space/tastytea/mastorss/issues>.\n";
             return 1;
         }
 

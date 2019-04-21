@@ -1,5 +1,5 @@
 /*  This file is part of mastorss.
- *  Copyright © 2018 tastytea <tastytea@tastytea.de>
+ *  Copyright © 2018, 2019 tastytea <tastytea@tastytea.de>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -83,7 +83,7 @@ std::vector<Mastodon::Easy::Status> parse_feed(const string &xml)
                 string content = "";
                 if (config[profile]["titles_as_cw"].asBool())
                 {
-                    status.spoiler_text(Mastodon::API::unescape_html(title));
+                    status.spoiler_text(Mastodon::unescape_html(title));
                 }
                 else
                 {
@@ -130,7 +130,7 @@ std::vector<Mastodon::Easy::Status> parse_feed(const string &xml)
                     continue;
                 }
 
-                content = Mastodon::API::unescape_html(content);
+                content = Mastodon::unescape_html(content);
 
                 // Try to turn the HTML into human-readable text
                 std::regex reparagraph("<p>");

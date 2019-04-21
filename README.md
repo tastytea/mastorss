@@ -14,7 +14,8 @@ The documentation is far from complete, sorry.
  * [cmake](https://cmake.org/) (tested: 3.9 / 3.12)
  * [boost](http://www.boost.org/) (tested: 1.65 / 1.62)
  * [curlpp](http://www.curlpp.org/) (tested: 0.8)
- * [mastodon-cpp](https://schlomp.space/tastytea/mastodon-cpp) (at least: 0.18.9)
+ * [mastodon-cpp](https://schlomp.space/tastytea/mastodon-cpp) (at least:
+   0.105.0)
  * [jsoncpp](https://github.com/open-source-parsers/jsoncpp) (tested: 1.8 / 1.7)
 
 ## Get sourcecode
@@ -36,10 +37,10 @@ Install with `make install`.
 
 # Usage
 
-Put `watchwords.json` into `~/.config/mastorss/`. Launch with profile name.
-The first occurence of every watchword in an RSS item will be turned into a hashtag.
-For profile-specific watchwords see the example in `watchwords.json`.
-In the first run only the newest entry is tooted.
+Put `watchwords.json` into `~/.config/mastorss/`. Launch with profile name.  The
+first occurence of every watchword in an RSS item will be turned into a hashtag.
+For profile-specific watchwords see the example in `watchwords.json`.  In the
+first run only the newest entry is tooted.
 
 The profile can't be named "global".
 
@@ -81,7 +82,9 @@ plus:
 
 # Copyright
 
-    Copyright © 2018 tastytea <tastytea@tastytea.de>.
-    License GPLv3: GNU GPL version 3 <https://www.gnu.org/licenses/gpl-3.0.html>.
-    This program comes with ABSOLUTELY NO WARRANTY. This is free software,
-    and you are welcome to redistribute it under certain conditions.
+``` text
+Copyright © 2018, 2019 tastytea <tastytea@tastytea.de>.
+License GPLv3: GNU GPL version 3 <https://www.gnu.org/licenses/gpl-3.0.html>.
+This program comes with ABSOLUTELY NO WARRANTY. This is free software,
+and you are welcome to redistribute it under certain conditions.
+```

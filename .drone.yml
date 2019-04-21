@@ -2,7 +2,7 @@ pipeline:
   download:
     image: plugins/download
     pull: true
-    source: https://schlomp.space/attachments/74cfa418-aecd-403d-9abe-ab3f5e3cce48
+    source: https://schlomp.space/attachments/e1c1e64b-1192-4037-aad4-95238ad648b0
     destination: mastodon-cpp.deb
 
   gcc8:
