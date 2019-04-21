@@ -23,6 +23,8 @@
 #include <locale>
 #include <codecvt>
 #include <fstream>
+#include <algorithm>
+#include <iterator>
 #include <jsoncpp/json/json.h>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
@@ -53,31 +55,33 @@ std::vector<Mastodon::Easy::Status> parse_feed(const string &xml)
     }
 
     // Read profile-specific hashtags or fail silently
-    for (const Json::Value &value : list[profile]["tags"])
-    {
-        watchwords.push_back(value.asString());
-    }
+    const Json::Value &tags_profile = list[profile]["tags"];
+    std::transform(tags_profile.begin(), tags_profile.end(),
+                   std::back_inserter(watchwords),
+                   [](const Json::Value &value)
+                   { return value.asString(); });
 
     // Read global hashtags or fail silently
-    for (const Json::Value &value : list["global"]["tags"])
-    {
-        watchwords.push_back(value.asString());
-    }
+    const Json::Value &tags_global = list["global"]["tags"];
+    std::transform(tags_global.begin(), tags_global.end(),
+                   std::back_inserter(watchwords),
+                   [](const Json::Value &value)
+                   { return value.asString(); });
 
     pt::ptree rss;
     std::istringstream iss(xml);
     pt::read_xml(iss, rss);
     std::vector<Mastodon::Easy::Status> ret;
 
-    for (const pt::ptree::value_type &v : rss.get_child("rss.channel"))
+    for (const pt::ptree::value_type &chanchild : rss.get_child("rss.channel"))
     {
-        if (v.second.size() > 0)
+        if (chanchild.second.size() > 0)
         {
-            if (string(v.first.data()).compare("item") == 0)
+            if (string(chanchild.first.data()).compare("item") == 0)
             {
-                string title = v.second.get_child("title").data();
-                string link = v.second.get_child("link").data();
-                string desc = v.second.get_child("description").data();
+                string title = chanchild.second.get_child("title").data();
+                string link = chanchild.second.get_child("link").data();
+                string desc = chanchild.second.get_child("description").data();
 
                 Mastodon::Easy::Status status;
                 string content = "";
