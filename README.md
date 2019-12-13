@@ -73,7 +73,7 @@ ${HOME}/.config/mastorss/config-example.json
 ## Error codes
 
 Same as
-[mastodon-cpp](https://schlomp.space/tastytea/mastodon-cpp/src/branch/master/README.md#error-codes),
+[mastodon-cpp](https://schlomp.space/tastytea/mastodon-cpp/src/branch/master/README.adoc#_error_codes),
 plus:
 
 |      Code | Explanation                             |
