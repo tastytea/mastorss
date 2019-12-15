@@ -1,0 +1,104 @@
+:uri-gcc: https://gcc.gnu.org/
+:uri-cmake: https://cmake.org/
+:uri-asciidoc: http://asciidoc.org/
+:uri-catch: https://github.com/catchorg/Catch2
+:uri-boost: https://www.boost.org/
+:uri-mastodon-cpp: https://schlomp.space/tastytea/mastodon-cpp
+:uri-jsoncpp: https://github.com/open-source-parsers/jsoncpp
+
+*mastorss* dumps RSS feeds into a mastodon account. Supports RSS 2.0 but not
+RSS 0.92. Does not support Atom at the moment.
+
+Each `<item>` in feeds must have `<link>`, `<title>` and `<description>`.
+
+== Install
+
+=== Dependencies
+
+* Tested OS: Linux
+* C++ compiler (tested: link:{uri-gcc}[gcc] 5 / 8)
+* link:{uri-cmake}[cmake] (tested: 3.14 / 3.9)
+* link:{uri-boost}[boost] (tested: 1.71 / 1.62)
+* link:{uri-mastodon-cpp}[mastodon-cpp] (at least: 0.111.2)
+* link:{uri-jsoncpp}[jsoncpp] (tested: 1.9 / 1.7)
+
+=== Get sourcecode
+
+==== Development version
+
+[source,shell]
+--------------------------------------------------------------------------------
+git clone https://schlomp.space/tastytea/mastorss.git
+--------------------------------------------------------------------------------
+
+=== Compile
+
+[source,shell]
+--------------------------------------------------------------------------------
+mkdir build
+cd build/
+cmake ..
+cmake --build .
+--------------------------------------------------------------------------------
+
+Install with `make install`.
+
+== Usage
+
+Put `watchwords.json` into `${XDG_CONFIG_HOME}/mastorss/`
+footnote:[`${XDG_CONFIG_HOME}` is usually `~/.config/`]. Launch with profile
+name.  The first occurence of every watchword in an RSS item will be turned into
+a hashtag.  For profile-specific watchwords see the example in
+`watchwords.json`.  In the first run only the newest entry is posted.
+
+The profile can't be named "global".
+
+=== Example session
+
+[source,shellsession]
+--------------------------------------------------------------------------------
+% mastorss example
+--------------------------------------------------------------------------------
+
+=== Example config file
+
+${HOME}/.config/mastorss/config-example.json
+
+[source,json]
+--------------------------------------------------------------------------------
+    {
+        "example": {
+            "access_token": "123abc",
+            "append": "#bot",
+            "feedurl": "https:\/\/example.com\/feed.rss",
+            "fixes":
+            [
+                "delete this",
+                "<p>[Rr]ead more(\.{3}|…)</p>"
+            ],
+            "instance": "botsin.space",
+            "interval" : 600,
+            "max_size": 400,
+            "skip":
+            [
+                "If the entry starts with this, skip it",
+                "Skip me too!"
+            ],
+            "titles_as_cw" : false,
+            "titles_only": false
+        }
+    }
+--------------------------------------------------------------------------------
+
+=== Error codes
+
+Same as
+link:{uri-mastodon-cpp}/src/branch/master/README.adoc#_error_codes[mastodon-cpp],
+plus:
+
+[%autowidth,cols=">,<"]
+|===========================================================
+| Code | Explanation
+
+|    1 | Could not send post for unknown reasons
+|===========================================================
