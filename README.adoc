@@ -1,3 +1,7 @@
+:toc: preamble
+
+:project: mastorss
+:uri-base: https://schlomp.space/tastytea/{project}
 :uri-gcc: https://gcc.gnu.org/
 :uri-cmake: https://cmake.org/
 :uri-asciidoc: http://asciidoc.org/
@@ -102,3 +106,5 @@ plus:
 
 |    1 | Could not send post for unknown reasons
 |===========================================================
+
+include::{uri-base}/raw/branch/main/CONTRIBUTING.adoc[]
