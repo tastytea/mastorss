@@ -1,73 +1,97 @@
-pipeline:
-  download:
-    image: plugins/download
-    pull: true
-    source: https://schlomp.space/attachments/e1c1e64b-1192-4037-aad4-95238ad648b0
+# -*- fill-column: 1000 -*-
+kind: pipeline
+name: build x86_64
+
+volumes:
+- name: debian-package-cache
+  host:
+    path: /var/cache/debian-package-cache
+
+trigger:
+  event:
+    exclude:
+    - tag
+
+steps:
+- name: download
+  image: plugins/download
+  settings:
+    source: https://schlomp.space/tastytea/mastodon-cpp/releases/download/0.111.2/libmastodon-cpp_0.111.2-0_amd64.deb
     destination: mastodon-cpp.deb
 
-  gcc8:
-    image: debian:stretch-slim
-    pull: true
-    environment:
-      - LANG=C.utf8
-    commands:
-      - rm /etc/apt/apt.conf.d/docker-clean
-      - apt-get update -q
-      - echo "APT::Default-Release \"stretch\";" >> /etc/apt/apt.conf.d/00default_release
-      - echo "deb http://deb.debian.org/debian sid main" >> /etc/apt/sources.list.d/sid.list
-      - echo "deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu xenial main" >> /etc/apt/sources.list.d/ubuntu-toolchain-r.list
-      - apt-get install -qy gnupg
-      - gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys 0x60c317803a41ba51845e371a1e9377a2ba9ef27f
-      - gpg --armor --export 0x60c317803a41ba51845e371a1e9377a2ba9ef27f | apt-key add -
-      - apt-get update -q
-      - apt-get install -qy build-essential cmake pkg-config
-      - apt-get install -qy -t xenial g++-8
-      - update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 100
-      - update-alternatives --set g++ /usr/bin/g++-8
-      - apt-get install -qy libcurl4-openssl-dev libjsoncpp-dev libboost-all-dev
-      - apt-get install -qy -t sid libcurlpp-dev
-      - dpkg -i mastodon-cpp.deb
-      - rm -rf build && mkdir -p build && cd build
-      - cmake ..
-      - make VERBOSE=1
-      - make install DESTDIR=install
-    volumes:
-      - /var/cache/debian-package-cache:/var/cache/apt/archives
+- name: gcc8
+  image: debian:stretch-slim
+  pull: always
+  environment:
+    CXX: g++-8
+    CXXFLAGS: -pipe -O2
+    LANG: C.utf8
+  commands:
+  - rm /etc/apt/apt.conf.d/docker-clean
+  - apt-get update -q
+  - echo "APT::Default-Release \"stretch\";" >> /etc/apt/apt.conf.d/00default_release
+  - echo "deb http://deb.debian.org/debian sid main" >> /etc/apt/sources.list.d/sid.list
+  - echo "deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu xenial main" >> /etc/apt/sources.list.d/ubuntu-toolchain-r.list
+  - apt-get install -qy gnupg
+  - gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys 0x60c317803a41ba51845e371a1e9377a2ba9ef27f
+  - gpg --armor --export 0x60c317803a41ba51845e371a1e9377a2ba9ef27f | apt-key add -
+  - apt-get update -q
+  - apt-get install -qy build-essential cmake pkg-config
+  - apt-get install -qy -t xenial g++-8
+  - update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 100
+  - update-alternatives --set g++ /usr/bin/g++-8
+  - apt-get install -qy libcurl4-openssl-dev libjsoncpp-dev libboost-all-dev
+  - apt-get install -qy -t sid libcurlpp-dev
+  - apt-get -qy install ./mastodon-cpp.deb
+  - rm -rf build && mkdir -p build && cd build
+  - cmake ..
+  - make VERBOSE=1
+  - make install DESTDIR=install
+  volumes:
+  - name: debian-package-cache
+    path: /var/cache/apt/archives
 
-  gcc5:
-    image: debian:stretch-slim
-    pull: true
-    environment:
-      - LANG=C.utf8
-    commands:
-      - rm /etc/apt/apt.conf.d/docker-clean
-      - apt-get update -q
-      - echo "APT::Default-Release \"stretch\";" >> /etc/apt/apt.conf.d/00default_release
-      - echo "deb http://deb.debian.org/debian sid main" >> /etc/apt/sources.list.d/sid.list
-      - echo "deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu xenial main" >> /etc/apt/sources.list.d/ubuntu-toolchain-r.list
-      - apt-get install -qy gnupg
-      - gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys 0x60c317803a41ba51845e371a1e9377a2ba9ef27f
-      - gpg --armor --export 0x60c317803a41ba51845e371a1e9377a2ba9ef27f | apt-key add -
-      - apt-get update -q
-      - apt-get install -qy build-essential cmake pkg-config
-      - apt-get install -qy -t xenial g++-5
-      - update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 100
-      - update-alternatives --set g++ /usr/bin/g++-5
-      - apt-get install -qy libcurl4-openssl-dev libjsoncpp-dev libboost-all-dev
-      - apt-get install -qy -t sid libcurlpp-dev
-      - dpkg -i mastodon-cpp.deb
-      - rm -rf build && mkdir -p build && cd build
-      - cmake ..
-      - make VERBOSE=1
-      - make install DESTDIR=install
-    volumes:
-      - /var/cache/debian-package-cache:/var/cache/apt/archives
+- name: gcc5
+  image: debian:stretch-slim
+  pull: always
+  environment:
+    CXX: g++-8
+    CXXFLAGS: -pipe -O2
+    LANG: C.utf8
+  commands:
+  - rm /etc/apt/apt.conf.d/docker-clean
+  - apt-get update -q
+  - echo "APT::Default-Release \"stretch\";" >> /etc/apt/apt.conf.d/00default_release
+  - echo "deb http://deb.debian.org/debian sid main" >> /etc/apt/sources.list.d/sid.list
+  - echo "deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu xenial main" >> /etc/apt/sources.list.d/ubuntu-toolchain-r.list
+  - apt-get install -qy gnupg
+  - gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys 0x60c317803a41ba51845e371a1e9377a2ba9ef27f
+  - gpg --armor --export 0x60c317803a41ba51845e371a1e9377a2ba9ef27f | apt-key add -
+  - apt-get update -q
+  - apt-get install -qy build-essential cmake pkg-config
+  - apt-get install -qy -t xenial g++-5
+  - update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 100
+  - update-alternatives --set g++ /usr/bin/g++-5
+  - apt-get install -qy libcurl4-openssl-dev libjsoncpp-dev libboost-all-dev
+  - apt-get install -qy -t sid libcurlpp-dev
+  - apt-get install -qy ./mastodon-cpp.deb
+  - rm -rf build && mkdir -p build && cd build
+  - cmake ..
+  - make VERBOSE=1
+  - make install DESTDIR=install
+  volumes:
+  - name: debian-package-cache
+    path: /var/cache/apt/archives
 
-  notify:
-    image: drillster/drone-email
-    pull: true
+- name: notify
+  image: drillster/drone-email
+  pull: always
+  settings:
     host: cryptoparty-celle.de
-    secrets: [ email_username, email_password ]
     from: drone@tzend.de
-    when:
-      status: [ changed, failure ]
+    username:
+      from_secret: email_username
+    password:
+      from_secret: email_password
+  when:
+    status: [ changed, failure ]
