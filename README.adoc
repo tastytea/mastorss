@@ -104,7 +104,7 @@ plus:
 |===========================================================
 | Code | Explanation
 
-|    1 | Could not send post for unknown reasons
+|    1 | Could not send post for unknown reasons.
 |===========================================================
 
 include::{uri-base}/raw/branch/main/CONTRIBUTING.adoc[]

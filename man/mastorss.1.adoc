@@ -1,0 +1,53 @@
+= mastorss(1)
+:doctype:       manpage
+:Author:        tastytea
+:Email:         tastytea@tastytea.de
+:Date:          2019-12-16
+:Revision:      0.0.0
+:man source:    mastorss
+:man manual:    General Commands Manual
+
+== NAME
+
+mastorss - Another RSS to Mastodon bot.
+
+== SYNOPSIS
+
+*mastorss* profile
+
+// == DESCRIPTION
+
+// == OPTIONS
+
+// == EXAMPLES
+
+// == PROTOCOL SUPPORT
+
+// Currently only HTTP and HTTPS are supported.
+
+// == PROXY SUPPORT
+
+== FILES
+
+* *Configuration file directory*: `${XDG_CONFIG_HOME}/mastorss/`
+
+`${XDG_CONFIG_HOME}` is usually `~/.config`.
+
+== ERROR CODES
+
+[cols=">,<"]
+|===========================================================
+| Code | Explanation
+
+|    1 | Could not send post for unknown reasons.
+|===========================================================
+
+== SEE ALSO
+
+*crontab*(1), *crontab*(5)
+
+== REPORTING BUGS
+
+Bugtracker: https://schlomp.space/tastytea/mastorss/issues
+
+E-mail: tastytea@tastytea.de
