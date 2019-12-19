@@ -23,7 +23,7 @@ Each `<item>` in feeds must have `<link>`, `<title>` and `<description>`.
 * C++ compiler (tested: link:{uri-gcc}[gcc] 5 / 8)
 * link:{uri-cmake}[cmake] (tested: 3.14 / 3.9)
 * link:{uri-boost}[boost] (tested: 1.71 / 1.62)
-* link:{uri-mastodon-cpp}[mastodon-cpp] (at least: 0.111.2)
+* link:{uri-mastodon-cpp}[mastodon-cpp] (at least: 0.111.3)
 * link:{uri-jsoncpp}[jsoncpp] (tested: 1.9 / 1.7)
 
 === Get sourcecode

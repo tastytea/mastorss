@@ -16,7 +16,7 @@ steps:
 - name: download
   image: plugins/download
   settings:
-    source: https://schlomp.space/tastytea/mastodon-cpp/releases/download/0.111.2/libmastodon-cpp_0.111.2-0_amd64.deb
+    source: https://schlomp.space/tastytea/mastodon-cpp/releases/download/0.111.3/libmastodon-cpp_0.111.3-0_amd64.deb
     destination: mastodon-cpp.deb
 
 - name: gcc8
