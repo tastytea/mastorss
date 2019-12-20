@@ -2,7 +2,7 @@
 :doctype:       manpage
 :Author:        tastytea
 :Email:         tastytea@tastytea.de
-:Date:          2019-12-16
+:Date:          2019-12-20
 :Revision:      0.0.0
 :man source:    mastorss
 :man manual:    General Commands Manual
@@ -13,19 +13,44 @@ mastorss - Another RSS to Mastodon bot.
 
 == SYNOPSIS
 
-*mastorss* profile
+*mastorss* [--help|--version] <profile>
 
 // == DESCRIPTION
 
-// == OPTIONS
+== OPTIONS
+
+*--help*::
+Show help message.
+
+*--version*::
+Show version, copyright and license.
 
 // == EXAMPLES
 
-// == PROTOCOL SUPPORT
+== PROTOCOL SUPPORT
 
-// Currently only HTTP and HTTPS are supported.
+Currently only HTTP and HTTPS are supported.
 
-// == PROXY SUPPORT
+// == PROXY SERVERS
+
+// Since mastorss is built on libcurl, it respects the same proxy environment
+// variables. See *curl*(1), section _ENVIRONMENT_.
+
+// .Tunnel connections through tor.
+// ================================================================================
+// [source,shell]
+// --------------------------------------------------------------------------------
+// ALL_PROXY="socks4a://[::1]:9050" mastorss example
+// --------------------------------------------------------------------------------
+// ================================================================================
+
+== PROXY SERVERS
+
+mastorss supports HTTP proxies set via the environment variable
+_http_proxy_. Accepted formats are: _\http://[user[:password]@]host[:port]/_ or
+_[user[:password]@]host[:port]_. No SOCKS proxy support yet, sorry.
+
+Example: `http_proxy="http://localhost:3128/" mastorss`
 
 == FILES
 
@@ -39,12 +64,13 @@ mastorss - Another RSS to Mastodon bot.
 |===========================================================
 | Code | Explanation
 
-|    1 | Could not send post for unknown reasons.
+|    1 | No profile specified.
+|    2 | Network error.
 |===========================================================
 
 == SEE ALSO
 
-*crontab*(1), *crontab*(5)
+*curl*(1), *crontab*(1), *crontab*(5)
 
 == REPORTING BUGS
 
