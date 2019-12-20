@@ -1,9 +1,13 @@
-#ifndef VERSION_HPP
-#define VERSION_HPP
+#ifndef MASTORSS_VERSION_HPP
+#define MASTORSS_VERSION_HPP
 
-namespace global
+#include <string_view>
+
+namespace mastorss
 {
-    static constexpr char version[] = "@PROJECT_VERSION@";
-}
+using std::string_view;
 
-#endif // VERSION_HPP
+static constexpr string_view version = "@PROJECT_VERSION@";
+} // namespace mastorss
+
+#endif // MASTORSS_VERSION_HPP
