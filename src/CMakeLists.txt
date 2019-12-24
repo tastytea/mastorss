@@ -1,7 +1,7 @@
 include(GNUInstallDirs)
 
 # The minimum versions should be in Debian oldstable, if possible.
-find_package(Boost 1.62 REQUIRED COMPONENTS system filesystem)
+find_package(Boost 1.62 REQUIRED COMPONENTS system filesystem log)
 find_package(jsoncpp 1.7 REQUIRED CONFIG)
 find_package(CURL 7.52 REQUIRED)
 find_package(Threads REQUIRED)
@@ -18,7 +18,12 @@ include_directories("${PROJECT_BINARY_DIR}")
 file(GLOB sources *.cpp)
 add_executable(mastorss ${sources})
 target_link_libraries(mastorss
-  mastodon-cpp::mastodon-cpp Boost::system Boost::filesystem restclient-cpp)
+  PRIVATE
+  jsoncpp restclient-cpp mastodon-cpp::mastodon-cpp
+  Boost::filesystem Boost::log)
+if(BUILD_SHARED_LIBS)
+  target_compile_definitions(mastorss PRIVATE "BOOST_ALL_DYN_LINK=1")
+endif()
 install(TARGETS mastorss DESTINATION "${CMAKE_INSTALL_BINDIR}")
 
 install(FILES watchwords.json

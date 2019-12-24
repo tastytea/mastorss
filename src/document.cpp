@@ -18,13 +18,15 @@
 #include "exceptions.hpp"
 #include "version.hpp"
 
+#include <boost/log/trivial.hpp>
 #include <restclient-cpp/connection.h>
 #include <restclient-cpp/restclient.h>
 
 #include <string>
 #include <utility>
 
-using namespace mastorss;
+namespace mastorss
+{
 using std::string;
 using std::move;
 
@@ -54,6 +56,7 @@ void Document::download()
     case 200:
     {
         _raw_doc = response.body;
+        BOOST_LOG_TRIVIAL(debug) << "Downloaded feed: " << _uri;
         break;
     }
     case 301:
@@ -73,3 +76,4 @@ void Document::download()
     }
     }
 }
+} // namespace mastorss

@@ -3,13 +3,21 @@
 #include "exceptions.hpp"
 #include "version.hpp"
 
+#include <boost/log/core.hpp>
+#include <boost/log/trivial.hpp>
+#include <boost/log/utility/setup/console.hpp>
+
+#include <cstdlib>
 #include <iostream>
+#include <stdexcept>
 #include <string_view>
 #include <vector>
 
 using namespace mastorss;
+using std::getenv;
 using std::cout;
 using std::cerr;
+using std::runtime_error;
 using std::string_view;
 using std::vector;
 
@@ -40,13 +48,24 @@ void print_version()
 
 void print_help(const string_view &command)
 {
-    cerr << "Usage: " << command << " [--version] <profile>\n";
+    cerr << "Usage: " << command << " [--version|--help] <profile>\n";
 }
 } // namespace mastorss
 
 int main(int argc, char *argv[])
 {
     const vector<string_view> args(argv, argv + argc);
+
+    if (getenv("MASTORSS_DEBUG") == nullptr)
+    {
+        boost::log::core::get()->set_filter
+            (boost::log::trivial::severity >= boost::log::trivial::info);
+    }
+    else
+    {
+        boost::log::core::get()->set_filter
+            (boost::log::trivial::severity >= boost::log::trivial::debug);
+    }
 
     if (args.size() == 1)
     {
