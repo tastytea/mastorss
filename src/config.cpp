@@ -56,6 +56,7 @@ std::ostream &operator <<(std::ostream &out, const ProfileData &data)
     out << "], "
         << "instance: \"" << data.instance << "\", "
         << "interval: " << data.interval << ", "
+        << "last_guid: \"" << data.last_guid << "\", "
         << "max_size: " << data.max_size << ", "
         << "skip: [";
     for (const auto &skip : data.skip)
@@ -226,6 +227,7 @@ void Config::parse()
         data.interval =
             static_cast<uint32_t>(_json[_profile]["interval"].asUInt64());
     }
+    data.last_guid = _json[_profile]["last_guid"].asString();
     if (!_json[_profile]["max_size"].isNull())
     {
         data.max_size =
