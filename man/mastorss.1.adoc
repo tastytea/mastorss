@@ -15,7 +15,10 @@ mastorss - Another RSS to Mastodon bot.
 
 *mastorss* [--help|--version] <profile>
 
-// == DESCRIPTION
+== DESCRIPTION
+
+*mastorss* reads RSS feeds and posts the items via the Mastodon API. Does not
+support Atom at the moment.
 
 == OPTIONS
 

@@ -10,8 +10,8 @@
 :uri-mastodon-cpp: https://schlomp.space/tastytea/mastodon-cpp
 :uri-jsoncpp: https://github.com/open-source-parsers/jsoncpp
 
-*mastorss* dumps RSS feeds into a mastodon account. Supports RSS 2.0 but not
-RSS 0.92. Does not support Atom at the moment.
+*mastorss* reads RSS feeds and posts the items via the Mastodon API. Does not
+support Atom at the moment.
 
 Each `<item>` in feeds must have `<link>`, `<title>` and `<description>`.
 
