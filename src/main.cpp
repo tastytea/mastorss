@@ -1,6 +1,7 @@
-#include "version.hpp"
+#include "config.hpp"
 #include "document.hpp"
 #include "exceptions.hpp"
+#include "version.hpp"
 
 #include <iostream>
 #include <string_view>
@@ -18,6 +19,9 @@ namespace error
 {
 constexpr int noprofile = 1;
 constexpr int network = 2;
+constexpr int file = 3;
+constexpr int mastodon = 4;
+constexpr int unknown = 9;
 } // namespace error
 
 void print_version();
@@ -62,9 +66,23 @@ int main(int argc, char *argv[])
         }
         else
         {
+            const string_view profile = args[1];
+            BOOST_LOG_TRIVIAL(debug) << "Using profile: " << profile;
+
             try
             {
-                Document doc("https://ip.tastytea.de/");
+                Config cfg(profile.data());
+                Document doc(cfg.data.feedurl);
+            }
+            catch (const FileException &e)
+            {
+                cerr << e.what() << '\n';
+                return error::file;
+            }
+            catch (const MastodonException &e)
+            {
+                cerr << e.what() << '\n';
+                return error::mastodon;
             }
             catch (const HTTPException &e)
             {
@@ -76,7 +94,11 @@ int main(int argc, char *argv[])
                 cerr << e.what() << '\n';
                 return error::network;
             }
-
+            catch (const runtime_error &e)
+            {
+                cerr << e.what() << '\n';
+                return error::unknown;
+            }
         }
     }
 

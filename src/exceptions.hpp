@@ -19,20 +19,23 @@
 
 #include <cstdint>
 #include <exception>
+#include <string>
 
 namespace mastorss
 {
 using std::uint16_t;
 using std::exception;
+using std::string;
 
 class HTTPException : public exception
 {
 public:
     const uint16_t error_code;
 
-    explicit HTTPException(const int error);
+    explicit HTTPException(int error);
 
-    virtual const char *what() const noexcept;
+    [[nodiscard]]
+    const char *what() const noexcept override;
 };
 
 class CURLException : public exception
@@ -40,9 +43,33 @@ class CURLException : public exception
 public:
     const uint16_t error_code;
 
-    explicit CURLException(const int error);
+    explicit CURLException(int error);
 
-    virtual const char *what() const noexcept;
+    [[nodiscard]]
+    const char *what() const noexcept override;
+};
+
+class MastodonException : public exception
+{
+public:
+    const uint16_t error_code;
+
+    explicit MastodonException(int error);
+
+    [[nodiscard]]
+    const char *what() const noexcept override;
+};
+
+class FileException : public exception
+{
+public:
+    explicit FileException(string message);
+
+    [[nodiscard]]
+    const char *what() const noexcept override;
+
+private:
+    const string _message;
 };
 } // namespace mastorss
 

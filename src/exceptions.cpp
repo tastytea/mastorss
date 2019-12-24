@@ -16,11 +16,11 @@
 
 #include "exceptions.hpp"
 
-#include <string>
+#include <utility>
 
 using namespace mastorss;
-using std::string;
 using std::to_string;
+using std::move;
 
 HTTPException::HTTPException(const int error)
     : error_code{static_cast<uint16_t>(error)}
@@ -40,4 +40,24 @@ const char *CURLException::what() const noexcept
 {
     static const string error_string{"libCURL error: " + to_string(error_code)};
     return error_string.c_str();
+}
+
+MastodonException::MastodonException(const int error)
+    : error_code{static_cast<uint16_t>(error)}
+{}
+
+const char *MastodonException::what() const noexcept
+{
+    static const string error_string{"Mastodon error: "
+                                     + to_string(error_code)};
+    return error_string.c_str();
+}
+
+FileException::FileException(string message)
+    : _message{move(message)}
+{}
+
+const char *FileException::what() const noexcept
+{
+    return _message.c_str();
 }

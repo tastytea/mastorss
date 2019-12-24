@@ -66,6 +66,9 @@ Example: `http_proxy="http://localhost:3128/" mastorss`
 
 |    1 | No profile specified.
 |    2 | Network error.
+|    3 | File error.
+|    4 | Mastodon error.
+|    9 | Unknown error.
 |===========================================================
 
 == SEE ALSO
