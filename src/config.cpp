@@ -235,7 +235,7 @@ void Config::parse()
     if (!_json[_profile]["max_size"].isNull())
     {
         data.max_size =
-        static_cast<uint32_t>(_json[_profile]["max_size"].asUInt64());
+            static_cast<uint32_t>(_json[_profile]["max_size"].asUInt64());
     }
     for (const auto &skip : _json[_profile]["skip"])
     {
