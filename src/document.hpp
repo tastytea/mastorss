@@ -17,27 +17,59 @@
 #ifndef MASTORSS_DOCUMENT_HPP
 #define MASTORSS_DOCUMENT_HPP
 
+#include "config.hpp"
+
+#include <boost/property_tree/ptree.hpp>
+
 #include <string>
+#include <vector>
 
 namespace mastorss
 {
+namespace pt = boost::property_tree;
 using std::string;
+using std::vector;
 
+/*!
+ *  @brief  An Item of a feed.
+ *
+ *  @since  0.10.0
+ */
+struct Item
+{
+    string description;
+    string guid;
+    string link;
+    string title;
+};
+
+/*!
+ *  @brief  A feed.
+ *
+ *  @since  0.10.0
+ */
 class Document
 {
 public:
-    explicit Document(string uri);
+    explicit Document(const ProfileData &data);
     ~Document();
     Document(const Document &other) = default;
     Document &operator=(const Document &other) = delete;
     Document(Document &&other) = default;
     Document &operator=(Document &&other) = delete;
 
+    vector<Item> new_items;
+
     void download();
+    void parse();
 
 private:
-    const string _uri;
+    const ProfileData &_data;
     string _raw_doc;
+
+    void parse_rss(const pt::ptree &tree);
+    [[nodiscard]]
+    string remove_html(string html) const;
 };
 } // namespace mastorss
 

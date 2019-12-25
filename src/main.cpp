@@ -85,13 +85,18 @@ int main(int argc, char *argv[])
         }
         else
         {
-            const string_view profile = args[1];
+            const string_view profile{args[1]};
             BOOST_LOG_TRIVIAL(debug) << "Using profile: " << profile;
 
             try
             {
-                Config cfg(profile.data());
-                Document doc(cfg.data.feedurl);
+                Config cfg{profile.data()};
+                Document doc{cfg.data};
+                doc.parse();
+                for (const auto &item : doc.new_items)
+                {
+                    cout << "--\n" << item.description.substr(0, 200) << "\n";
+                }
             }
             catch (const FileException &e)
             {
