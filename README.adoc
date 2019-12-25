@@ -11,6 +11,7 @@
 :uri-mastodon-cpp: https://schlomp.space/tastytea/mastodon-cpp
 :uri-jsoncpp: https://github.com/open-source-parsers/jsoncpp
 :uri-restclient-cpp: http://code.mrtazz.com/restclient-cpp/
+:uri-poco: https://pocoproject.org/
 
 *mastorss* reads RSS feeds and posts the items via the Mastodon API. Does not
 support Atom at the moment.
@@ -24,6 +25,7 @@ support Atom at the moment.
 * link:{uri-cmake}[cmake] (at least: 3.9)
 * link:{uri-boost}[boost] (at least: 1.62)
 * link:{uri-mastodon-cpp}[mastodon-cpp] (at least: 0.111.3)
+** link:{uri-poco}[POCO] (at least: 1.7)
 * link:{uri-jsoncpp}[jsoncpp] (at least: 1.7)
 * link:{uri-restclient-cpp}[restclient-cpp] (at least: 0.5.1)
 
