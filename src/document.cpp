@@ -94,6 +94,7 @@ void Document::parse()
 
     if (tree.front().first == "rss")
     {
+        BOOST_LOG_TRIVIAL(debug) << "RSS detected.";
         parse_rss(tree);
     }
 }
@@ -178,6 +179,8 @@ string Document::remove_html(string html) const
     html = regex_replace(html, regex{R"(\n{3,})"}, "\n\n");
     // Replace single newlines with spaces (?<= is lookbehind, ?= is lookahead).
     html = regex_replace(html, regex{R"((?<=[^\n])\n(?=[^\n]))"}, " ");
+
+    BOOST_LOG_TRIVIAL(debug) << "Converted HTML to text.";
 
     return html;
 }
