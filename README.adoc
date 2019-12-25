@@ -20,11 +20,11 @@ Each `<item>` in feeds must have `<link>`, `<title>` and `<description>`.
 === Dependencies
 
 * Tested OS: Linux
-* C++ compiler (tested: link:{uri-gcc}[gcc] 5 / 8)
-* link:{uri-cmake}[cmake] (tested: 3.14 / 3.9)
-* link:{uri-boost}[boost] (tested: 1.71 / 1.62)
+* C++ compiler (tested: link:{uri-gcc}[gcc] 9)
+* link:{uri-cmake}[cmake] (at least: 3.9)
+* link:{uri-boost}[boost] (at least: 1.62)
 * link:{uri-mastodon-cpp}[mastodon-cpp] (at least: 0.111.3)
-* link:{uri-jsoncpp}[jsoncpp] (tested: 1.9 / 1.7)
+* link:{uri-jsoncpp}[jsoncpp] (at least: 1.7)
 
 === Get sourcecode
 
@@ -51,9 +51,9 @@ Install with `make install`.
 
 Put `watchwords.json` into `${XDG_CONFIG_HOME}/mastorss/`
 footnote:[`${XDG_CONFIG_HOME}` is usually `~/.config/`]. Launch with profile
-name.  The first occurence of every watchword in an RSS item will be turned into
-a hashtag.  For profile-specific watchwords see the example in
-`watchwords.json`.  In the first run only the newest entry is posted.
+name. The first occurence of every watchword in an RSS item will be turned into
+a hashtag. For profile-specific watchwords see the example in
+`watchwords.json`. In the first run only the newest entry is posted.
 
 The profile can't be named "global".
 
