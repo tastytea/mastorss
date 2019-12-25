@@ -2,7 +2,7 @@
 :doctype:       manpage
 :Author:        tastytea
 :Email:         tastytea@tastytea.de
-:Date:          2019-12-24
+:Date:          2019-12-25
 :Revision:      0.0.0
 :man source:    mastorss
 :man manual:    General Commands Manual
@@ -70,7 +70,7 @@ Example: `http_proxy="http://localhost:3128/" mastorss`
 |    1 | No profile specified.
 |    2 | Network error.
 |    3 | File error.
-|    4 | Mastodon error.
+|    4 | Mastodon API error.
 |    9 | Unknown error.
 |===========================================================
 
