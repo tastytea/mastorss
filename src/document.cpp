@@ -133,7 +133,17 @@ void Document::parse_rss(const pt::ptree &tree)
             }
 
             Item item;
-            item.description = remove_html(rssitem.get<string>("description"));
+            item.description =
+                [&]
+                {
+                    string desc =
+                        remove_html(rssitem.get<string>("description"));
+                    for (const auto &fix : _data.fixes)
+                    {
+                        desc = regex_replace(desc, regex{fix}, "");
+                    }
+                    return desc;
+                }();
             item.guid = move(guid);
             item.link = rssitem.get<string>("link");
             item.title = move(title);
