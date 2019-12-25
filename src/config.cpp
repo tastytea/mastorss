@@ -29,6 +29,7 @@
 
 namespace mastorss
 {
+using std::stoul;
 using std::getenv;
 using std::ifstream;
 using std::ofstream;
@@ -86,13 +87,12 @@ Config::Config(string profile)
         stringstream rawjson;
         rawjson << file.rdbuf();
         rawjson >> _json;
+        parse();
     }
     else
     {
         generate();
     }
-
-    parse();
 }
 
 fs::path Config::get_filename() const
@@ -122,33 +122,43 @@ fs::path Config::get_filename() const
 
 void Config::generate()
 {
-    Json::Value newjson;
     string line;
 
     cout << "Instance (domain): ";
     getline(cin, line);
-    newjson[_profile]["instance"] = line;
+    data.instance = line;
 
-    newjson[_profile]["access_token"] = get_access_token(line);
+    data.access_token = get_access_token(line);
 
     cout << "URL of the feed: ";
     std::getline(cin, line);
-    newjson[_profile]["feedurl"] = line;
+    data.feedurl = line;
 
     cout << "Post only titles? [y/n]: ";
     std::getline(cin, line);
     if (line[0] == 'y')
     {
-        newjson[_profile]["titles_as_cw"] = true;
+        data.titles_only = true;
     }
     else
     {
-        newjson[_profile]["titles_as_cw"] = false;
+        data.titles_only = false;
+    }
+
+    cout << "Post titles as cw? [y/n]: ";
+    std::getline(cin, line);
+    if (line[0] == 'y')
+    {
+        data.titles_as_cw = true;
+    }
+    else
+    {
+        data.titles_as_cw = false;
     }
 
     cout << "Append this string to each post: ";
     std::getline(cin, line);
-    newjson[_profile]["append"] = line;
+    data.append = line;
 
     cout << "Interval between posts in seconds [30]: ";
     std::getline(cin, line);
@@ -156,7 +166,7 @@ void Config::generate()
     {
         line = "30";
     }
-    newjson[_profile]["interval"] = std::stoul(line);
+    data.interval = static_cast<uint32_t>(stoul(line));
 
     cout << "Maximum size of posts [500]: ";
     std::getline(cin, line);
@@ -164,9 +174,8 @@ void Config::generate()
     {
         line = "500";
     }
-    newjson[_profile]["max_size"] = std::stoul(line);
+    data.max_size = static_cast<uint32_t>(stoul(line));
 
-    _json = newjson;
     BOOST_LOG_TRIVIAL(debug) << "Generated configuration.";
     write();
 }
@@ -238,8 +247,20 @@ void Config::parse()
     BOOST_LOG_TRIVIAL(debug) << "Read config: " << data;
 }
 
-void Config::write() const
+void Config::write()
 {
+    _json[_profile]["access_token"] = data.access_token;
+    _json[_profile]["append"] = data.append;
+    _json[_profile]["feedurl"] = data.feedurl;
+    // Leave fixes.
+    _json[_profile]["instance"] = data.instance;
+    _json[_profile]["interval"] = data.interval;
+    _json[_profile]["last_guid"] = data.last_guid;
+    _json[_profile]["max_size"] = data.max_size;
+    // Leave skip.
+    _json[_profile]["titles_as_cw"] = data.titles_as_cw;
+    _json[_profile]["titles_as_cw"] = data.titles_only;
+
     ofstream file{get_filename()};
     if (file.good())
     {

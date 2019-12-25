@@ -68,7 +68,7 @@ public:
 
     ProfileData data;
 
-    void write() const;
+    void write();
 
 private:
     const string _profile;
