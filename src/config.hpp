@@ -68,6 +68,8 @@ public:
 
     ProfileData data;
 
+    void write() const;
+
 private:
     const string _profile;
     Json::Value _json;

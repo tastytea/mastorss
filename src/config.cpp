@@ -167,13 +167,8 @@ void Config::generate()
     newjson[_profile]["max_size"] = std::stoul(line);
 
     _json = newjson;
-    ofstream file{get_filename()};
-    if (file.good())
-    {
-        file << newjson.toStyledString();
-    }
-
-    BOOST_LOG_TRIVIAL(debug) << "Wrote config file.";
+    BOOST_LOG_TRIVIAL(debug) << "Generated configuration.";
+    write();
 }
 
 string Config::get_access_token(const string &instance) const
@@ -241,5 +236,16 @@ void Config::parse()
     data.titles_only = _json[_profile]["titles_only"].asBool();
 
     BOOST_LOG_TRIVIAL(debug) << "Read config: " << data;
+}
+
+void Config::write() const
+{
+    ofstream file{get_filename()};
+    if (file.good())
+    {
+        file << _json.toStyledString();
+    }
+
+    BOOST_LOG_TRIVIAL(debug) << "Wrote config file.";
 }
 } // namespace mastorss
