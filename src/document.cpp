@@ -86,14 +86,14 @@ void Document::download(const string &uri)
     case 303:
     case 307:
     {
-        string newuri{extract_location(response.headers)};
+        const string newuri{extract_location(response.headers)};
         if (newuri.empty())
         {
             throw HTTPException{response.code};
         }
 
         BOOST_LOG_TRIVIAL(debug) << "Feed redirect: " << _data.feedurl;
-        download(move(newuri));
+        download(newuri);
         break;
     }
     case -1:
