@@ -23,7 +23,6 @@
 #include <boost/regex.hpp>
 #include <mastodon-cpp/mastodon-cpp.hpp>
 #include <restclient-cpp/connection.h>
-#include <restclient-cpp/restclient.h>
 
 #include <list>
 #include <sstream>
@@ -53,11 +52,11 @@ Document::~Document()
     RestClient::disable();
 }
 
-void Document::download()
+void Document::download(const string &uri)
 {
-    RestClient::Connection connection(_data.feedurl);
+    RestClient::Connection connection{uri};
     connection.SetUserAgent(string("mastorss/").append(version));
-    connection.FollowRedirects(true, 10);
+    connection.FollowRedirects(false);
 
     RestClient::Response response{connection.get("")};
 
@@ -72,9 +71,30 @@ void Document::download()
     case 301:
     case 308:
     {
-        // TODO(tastytea): Handle permanent redirections.
-        throw std::runtime_error{"Permanent redirect, "
-                "no solution implemented yet."};
+        _data.feedurl = extract_location(response.headers);
+        if (_data.feedurl.empty())
+        {
+            throw HTTPException{response.code};
+        }
+
+        BOOST_LOG_TRIVIAL(debug) << "Feed has new location: " << _data.feedurl;
+        _cfg.write();
+        download();
+        break;
+    }
+    case 302:
+    case 303:
+    case 307:
+    {
+        string newuri{extract_location(response.headers)};
+        if (newuri.empty())
+        {
+            throw HTTPException{response.code};
+        }
+
+        BOOST_LOG_TRIVIAL(debug) << "Feed redirect: " << _data.feedurl;
+        download(move(newuri));
+        break;
     }
     case -1:
     {
@@ -85,6 +105,11 @@ void Document::download()
         throw HTTPException{response.code};
     }
     }
+}
+
+void Document::download()
+{
+    download(_data.feedurl);
 }
 
 void Document::parse()
@@ -184,5 +209,15 @@ string Document::remove_html(string html) const
     BOOST_LOG_TRIVIAL(debug) << "Converted HTML to text.";
 
     return html;
+}
+
+string Document::extract_location(const RestClient::HeaderFields &headers) const
+{
+    string location{headers.at("Location")};
+    if (location.empty())
+    {
+        location = headers.at("location");
+    }
+    return location;
 }
 } // namespace mastorss

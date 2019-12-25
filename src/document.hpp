@@ -20,6 +20,7 @@
 #include "config.hpp"
 
 #include <boost/property_tree/ptree.hpp>
+#include <restclient-cpp/restclient.h>
 
 #include <string>
 #include <vector>
@@ -61,6 +62,7 @@ public:
     vector<Item> new_items;
 
     void download();
+    void download(const string &uri);
     void parse();
 
 private:
@@ -71,6 +73,8 @@ private:
     void parse_rss(const pt::ptree &tree);
     [[nodiscard]]
     string remove_html(string html) const;
+    [[nodiscard]]
+    string extract_location(const RestClient::HeaderFields &headers) const;
 };
 } // namespace mastorss
 
