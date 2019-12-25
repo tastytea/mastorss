@@ -77,7 +77,8 @@ void Document::download(const string &uri)
             throw HTTPException{response.code};
         }
 
-        BOOST_LOG_TRIVIAL(debug) << "Feed has new location: " << _data.feedurl;
+        BOOST_LOG_TRIVIAL(debug) << "Feed has new location (permanent): "
+                                 << _data.feedurl;
         _cfg.write();
         download();
         break;
@@ -92,7 +93,8 @@ void Document::download(const string &uri)
             throw HTTPException{response.code};
         }
 
-        BOOST_LOG_TRIVIAL(debug) << "Feed redirect: " << _data.feedurl;
+        BOOST_LOG_TRIVIAL(debug) << "Feed has new location (temporary): "
+                                 << _data.feedurl;
         download(newuri);
         break;
     }
