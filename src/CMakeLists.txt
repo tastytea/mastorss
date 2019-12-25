@@ -1,8 +1,8 @@
 include(GNUInstallDirs)
 
 # The minimum versions should be in Debian oldstable, if possible.
-find_package(Boost 1.62 REQUIRED COMPONENTS system filesystem log)
-find_package(jsoncpp 1.7 REQUIRED CONFIG)
+find_package(Boost 1.62 REQUIRED COMPONENTS filesystem log)
+find_package(jsoncpp REQUIRED CONFIG) # 1.7.4 (Debian buster) has no version.
 find_package(CURL 7.52 REQUIRED)
 find_package(Threads REQUIRED)
 find_package(restclient-cpp 0.5 REQUIRED CONFIG)
