@@ -117,7 +117,13 @@ fs::path Config::get_filename() const
         }
     }
 
-    return (dir /= "mastorss") /= "config-" + _profile + ".json";
+    dir /= "mastorss";
+    if (fs::create_directories(dir))
+    {
+        BOOST_LOG_TRIVIAL(debug) << "Created config dir: " << dir;
+    }
+
+    return dir /= "config-" + _profile + ".json";
 }
 
 void Config::generate()
