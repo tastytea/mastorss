@@ -39,8 +39,9 @@ using std::istringstream;
 using std::string;
 using std::move;
 
-Document::Document(const ProfileData &data)
-    : _data{data}
+Document::Document(Config &cfg)
+    : _cfg{cfg}
+    , _data{cfg.data}
 {
     RestClient::init();
 

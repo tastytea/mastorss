@@ -91,8 +91,9 @@ int main(int argc, char *argv[])
             try
             {
                 Config cfg{profile.data()};
-                Document doc{cfg.data};
+                Document doc{cfg};
                 doc.parse();
+
                 for (const auto &item : doc.new_items)
                 {
                     cout << "--\n" << item.description.substr(0, 200) << "\n";

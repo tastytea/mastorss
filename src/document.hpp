@@ -51,7 +51,7 @@ struct Item
 class Document
 {
 public:
-    explicit Document(const ProfileData &data);
+    explicit Document(Config &cfg);
     ~Document();
     Document(const Document &other) = default;
     Document &operator=(const Document &other) = delete;
@@ -64,7 +64,8 @@ public:
     void parse();
 
 private:
-    const ProfileData &_data;
+    Config &_cfg;
+    ProfileData &_data;
     string _raw_doc;
 
     void parse_rss(const pt::ptree &tree);
