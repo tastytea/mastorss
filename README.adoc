@@ -14,8 +14,6 @@
 *mastorss* reads RSS feeds and posts the items via the Mastodon API. Does not
 support Atom at the moment.
 
-Each `<item>` in feeds must have `<link>`, `<title>` and `<description>`.
-
 == Install
 
 === Dependencies
