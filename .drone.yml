@@ -35,7 +35,7 @@ steps:
   - curl -L https://packagecloud.io/mrtazz/restclient-cpp/gpgkey | apt-key add -
   - apt-get update -q
   - apt-get install -qy build-essential cmake asciidoc
-  - apt-get install -qy libboost-filesystem-dev libboost-log-dev libjsoncpp-dev catch libcurl4-openssl-dev restclient-cpp libpoco-dev
+  - apt-get install -qy libboost-filesystem-dev libboost-log-dev libboost-regex-dev libjsoncpp-dev catch libcurl4-openssl-dev restclient-cpp libpoco-dev
   - apt-get -qy install ./mastodon-cpp.deb
   - rm -rf build && mkdir -p build && cd build
   - cmake ..
