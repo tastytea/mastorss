@@ -28,7 +28,93 @@ Show help message.
 *--version*::
 Show version, copyright and license.
 
-// == EXAMPLES
+== USAGE
+
+Put `watchwords.json` into `${XDG_CONFIG_HOME}/mastorss/`. Launch with profile
+name. The first occurence of every watchword in an RSS item will be turned into
+a hashtag. For profile-specific watchwords see the example in
+`watchwords.json`. In the first run only the newest entry is posted.
+
+The profile is the identifier for a feed and can't be named "global".
+
+.Launch mastorss with the profile “example”.
+================================================================================
+[source,shellsession]
+--------------------------------------------------------------------------------
+% mastorss example
+--------------------------------------------------------------------------------
+================================================================================
+
+=== Configuration
+
+If the profile does not exist yet, a configuration will be created interactively
+and then saved to `${XDG_CONFIG_HOME}/mastorss/config-<profile>.json`.
+
+*access_token*::
+The API token needed to communicate with the Mastodon API on the _instance_
+you're using to post.
+
+*append*::
+This string will be appended to every post.
+
+*feedurl*::
+The URI of the source feed.
+
+*fixes*::
+Array of regular expressions that should be deleted from the text. For
+information about the syntax see *perlre*(1).
+
+*instance*::
+Hostname of the instance you're using to post.
+
+*interval*::
+Time to wait between posts.
+
+*max_size*::
+Maximum number of characters a post can have.
+
+*skip*::
+Array of strings with titles of posts that should be skipped. Matched against
+the beginning of the title; this means: “Good Day” will match “Good Day in
+Happytown” but not “A Good Day in Happytown”.
+
+*titles_as_cw*::
+If true, the title will be used as the subject (also known as spoiler warning or
+content warning) of the post.
+
+*titles_only*::
+If true, only post titles, no descriptions.
+
+== EXAMPLES
+
+=== Configuration file
+
+[source,json]
+--------------------------------------------------------------------------------
+{
+    "example" :
+    {
+        "access_token" : "123abc",
+        "append" : "#bot",
+        "feedurl" : "https://example.com/feed.rss",
+        "fixes" :
+        [
+            "delete this",
+            "<p>[Rr]ead more(\.{3}|…)</p>"
+        ],
+        "instance" : "newsbots.eu",
+        "interval" : 600,
+        "max_size" : 500,
+        "skip" :
+        [
+            "If the title starts with this, skip it",
+            "Skip me too!"
+        ],
+        "titles_as_cw" : true,
+        "titles_only" : false
+    }
+}
+--------------------------------------------------------------------------------
 
 == PROTOCOL SUPPORT
 
@@ -50,14 +136,21 @@ Currently only HTTP and HTTPS are supported.
 == PROXY SERVERS
 
 mastorss supports HTTP proxies set via the environment variable
-_http_proxy_. Accepted formats are: _\http://[user[:password]@]host[:port]/_ or
-_[user[:password]@]host[:port]_. No SOCKS proxy support yet, sorry.
+_http_proxy_. Accepted format: _\http://[user[:password]@]host[:port]/_ No SOCKS
+proxy support yet, sorry.
 
-Example: `http_proxy="http://localhost:3128/" mastorss`
+.Use mastorss with a proxy server
+================================================================================
+[source,shellsession]
+--------------------------------------------------------------------------------
+% http_proxy="http://localhost:3128/" mastorss example
+--------------------------------------------------------------------------------
+================================================================================
 
 == FILES
 
-* *Configuration file directory*: `${XDG_CONFIG_HOME}/mastorss/`
+*Configuration file directory*::
+`${XDG_CONFIG_HOME}/mastorss/`
 
 `${XDG_CONFIG_HOME}` is usually `~/.config`.
 
@@ -86,12 +179,12 @@ MASTORSS_DEBUG=1 mastorss example
 --------------------------------------------------------------------------------
 ================================================================================
 
-== SEE ALSO
-
-*curl*(1), *crontab*(1), *crontab*(5)
-
 == REPORTING BUGS
 
 Bugtracker: https://schlomp.space/tastytea/mastorss/issues
 
 E-mail: tastytea@tastytea.de
+
+== SEE ALSO
+
+*perlre*(1), *crontab*(1), *crontab*(5)

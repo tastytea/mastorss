@@ -2,6 +2,7 @@
 
 :project: mastorss
 :uri-base: https://schlomp.space/tastytea/{project}
+:uri-branch-main: {uri-base}/src/branch/main
 :uri-gcc: https://gcc.gnu.org/
 :uri-cmake: https://cmake.org/
 :uri-asciidoc: http://asciidoc.org/
@@ -49,50 +50,7 @@ Install with `make install`.
 
 == Usage
 
-Put `watchwords.json` into `${XDG_CONFIG_HOME}/mastorss/`
-footnote:[`${XDG_CONFIG_HOME}` is usually `~/.config/`]. Launch with profile
-name. The first occurence of every watchword in an RSS item will be turned into
-a hashtag. For profile-specific watchwords see the example in
-`watchwords.json`. In the first run only the newest entry is posted.
-
-The profile can't be named "global".
-
-=== Example session
-
-[source,shellsession]
---------------------------------------------------------------------------------
-% mastorss example
---------------------------------------------------------------------------------
-
-=== Example config file
-
-${HOME}/.config/mastorss/config-example.json
-
-[source,json]
---------------------------------------------------------------------------------
-    {
-        "example": {
-            "access_token": "123abc",
-            "append": "#bot",
-            "feedurl": "https:\/\/example.com\/feed.rss",
-            "fixes":
-            [
-                "delete this",
-                "<p>[Rr]ead more(\.{3}|…)</p>"
-            ],
-            "instance": "botsin.space",
-            "interval" : 600,
-            "max_size": 400,
-            "skip":
-            [
-                "If the entry starts with this, skip it",
-                "Skip me too!"
-            ],
-            "titles_as_cw" : false,
-            "titles_only": false
-        }
-    }
---------------------------------------------------------------------------------
+See link:{uri-branch-main}/man/mastorss.1.adoc[manpage].
 
 === Error codes
 
