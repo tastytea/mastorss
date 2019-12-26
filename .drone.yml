@@ -13,30 +13,62 @@ trigger:
     - tag
 
 steps:
-- name: download mastodon-cpp
+# - name: download mastodon-cpp for buster
+#   image: plugins/download
+#   settings:
+#     source: https://schlomp.space/tastytea/mastodon-cpp/releases/download/0.111.5/libmastodon-cpp_0.111.5-0_buster_amd64.deb
+#     destination: mastodon-cpp_buster.deb
+
+- name: download mastodon-cpp for bionic
   image: plugins/download
   settings:
-    source: https://schlomp.space/tastytea/mastodon-cpp/releases/download/0.111.4/libmastodon-cpp_0.111.4-0_buster_amd64.deb
-    destination: mastodon-cpp.deb
+    source: https://schlomp.space/tastytea/mastodon-cpp/releases/download/0.111.5/libmastodon-cpp_0.111.5-0_bionic_amd64.deb
+    destination: mastodon-cpp_bionic.deb
 
-- name: gcc8
-  image: debian:buster-slim
+# - name: GCC 8 on Debian buster
+#   image: debian:buster-slim
+#   pull: always
+#   environment:
+#     CXX: g++-8
+#     CXXFLAGS: -pipe -O2
+#     LANG: C.utf8
+#   commands:
+#   - rm /etc/apt/apt.conf.d/docker-clean
+#   - alias apt-get='rm -f /var/cache/apt/archives/lock && apt-get'
+#   - apt-get update -q
+#   - echo "deb https://packagecloud.io/mrtazz/restclient-cpp/debian/ buster main" > /etc/apt/sources.list.d/restclient-cpp.list
+#   - apt-get install -qy debian-archive-keyring curl gnupg apt-transport-https
+#   - curl -L https://packagecloud.io/mrtazz/restclient-cpp/gpgkey | apt-key add -
+#   - apt-get update -q
+#   - apt-get install -qy build-essential cmake asciidoc
+#   - apt-get install -qy libboost-filesystem-dev libboost-log-dev libboost-regex-dev libjsoncpp-dev catch libcurl4-openssl-dev libcurl4 restclient-cpp libpoco-dev
+#   - apt-get -qy install ./mastodon-cpp_buster.deb
+#   - rm -rf build && mkdir -p build && cd build
+#   - cmake ..
+#   - make VERBOSE=1
+#   - make install DESTDIR=install
+#   volumes:
+#   - name: debian-package-cache
+#     path: /var/cache/apt/archives
+
+- name: GCC 7 on Ubuntu bionic
+  image: ubuntu:bionic
   pull: always
   environment:
-    CXX: g++-8
+    CXX: g++-7
     CXXFLAGS: -pipe -O2
     LANG: C.utf8
   commands:
   - rm /etc/apt/apt.conf.d/docker-clean
   - alias apt-get='rm -f /var/cache/apt/archives/lock && apt-get'
   - apt-get update -q
-  - echo "deb https://packagecloud.io/mrtazz/restclient-cpp/debian/ buster main" > /etc/apt/sources.list.d/restclient-cpp.list
-  - apt-get install -qy debian-archive-keyring curl gnupg apt-transport-https
+  - echo "deb https://packagecloud.io/mrtazz/restclient-cpp/ubuntu/ bionic main" > /etc/apt/sources.list.d/restclient-cpp.list
+  - apt-get install -qy curl gnupg apt-transport-https
   - curl -L https://packagecloud.io/mrtazz/restclient-cpp/gpgkey | apt-key add -
   - apt-get update -q
   - apt-get install -qy build-essential cmake asciidoc
-  - apt-get install -qy libboost-filesystem-dev libboost-log-dev libboost-regex-dev libjsoncpp-dev catch libcurl4-openssl-dev libcurl4 restclient-cpp libpoco-dev
-  - apt-get -qy install ./mastodon-cpp.deb
+  - apt-get install -qy libboost-filesystem-dev libboost-log-dev libboost-regex-dev libjsoncpp-dev catch restclient-cpp libpoco-dev
+  - apt-get -qy install ./mastodon-cpp_bionic.deb
   - rm -rf build && mkdir -p build && cd build
   - cmake ..
   - make VERBOSE=1
