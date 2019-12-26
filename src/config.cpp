@@ -81,7 +81,7 @@ Config::Config(string profile)
     const fs::path filename = get_filename();
     BOOST_LOG_TRIVIAL(debug) << "Config filename is: " << filename;
 
-    ifstream file{filename};
+    ifstream file{filename.c_str()};
     if (file.good())
     {
         stringstream rawjson;
@@ -267,7 +267,7 @@ void Config::write()
     _json[_profile]["titles_as_cw"] = data.titles_as_cw;
     _json[_profile]["titles_as_cw"] = data.titles_only;
 
-    ofstream file{get_filename()};
+    ofstream file{get_filename().c_str()};
     if (file.good())
     {
         file << _json.toStyledString();
