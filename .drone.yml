@@ -69,7 +69,7 @@ steps:
   - curl -L https://packagecloud.io/mrtazz/restclient-cpp/gpgkey | apt-key add -
   - apt-get update -q
   - apt-get install -qq build-essential cmake asciidoc
-  - apt-get install -qq libboost-filesystem-dev libboost-log-dev libboost-regex-dev libjsoncpp-dev catch libcurl4-openssl-dev restclient-cpp libpoco-dev
+  - apt-get install -qq libboost-filesystem-dev libboost-log-dev libboost-regex-dev libjsoncpp-dev catch libcurl4-openssl-dev libcurl3 restclient-cpp libpoco-dev
   - apt-get -qq install ./mastodon-cpp_bionic.deb
   - rm -rf build && mkdir -p build && cd build
   - cmake ..
