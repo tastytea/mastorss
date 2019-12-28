@@ -178,6 +178,11 @@ void Document::parse_rss(const pt::ptree &tree)
             new_items.push_front(item);
 
             BOOST_LOG_TRIVIAL(debug) << "Found GUID: " << item.guid;
+
+            if (_data.last_guid.empty())
+            {
+                break;
+            }
         }
     }
 }
