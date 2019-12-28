@@ -21,9 +21,12 @@
 #include <boost/log/trivial.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/regex.hpp>
+#include <json/json.h>
 #include <mastodon-cpp/mastodon-cpp.hpp>
 #include <restclient-cpp/connection.h>
 
+#include <algorithm>
+#include <fstream>
 #include <list>
 #include <sstream>
 #include <string>
@@ -33,8 +36,11 @@ namespace mastorss
 {
 using boost::regex;
 using boost::regex_replace;
+using std::transform;
+using std::ifstream;
 using std::list;
 using std::istringstream;
+using std::stringstream;
 using std::string;
 using std::move;
 
@@ -175,7 +181,7 @@ void Document::parse_rss(const pt::ptree &tree)
                 {
                     desc = regex_replace(desc, regex{fix}, "");
                 }
-                return desc;
+                return add_hashtags(desc);
             }();
             item.guid = move(guid);
             item.link = rssitem.get<string>("link");
@@ -232,4 +238,43 @@ string Document::extract_location(const RestClient::HeaderFields &headers) const
     }
     return location;
 }
+
+string Document::add_hashtags(const string &text)
+{
+    Json::Value json;
+    ifstream file{_cfg.get_config_dir() /= "watchwords.json"};
+    if (file.good())
+    {
+        stringstream rawjson;
+        rawjson << file.rdbuf();
+        rawjson >> json;
+    }
+    else
+    {
+        throw FileException{"File Not found:"
+                + (_cfg.get_config_dir() /= "watchwords.json").string()};
+    }
+
+    list<string> watchwords;
+    const auto &tags_profile = json[_cfg.profile]["tags"];
+    const auto &tags_global = json["global"]["tags"];
+    transform(tags_profile.begin(), tags_profile.end(),
+              std::back_inserter(watchwords),
+              [](const Json::Value &value) { return value.asString(); });
+    transform(tags_global.begin(), tags_global.end(),
+              std::back_inserter(watchwords),
+              [](const Json::Value &value) { return value.asString(); });
+
+    string out{text};
+    for (const auto &tag : watchwords)
+    {
+        regex re_tag("([[:space:][:punct:]]|^)("
+            + tag + ")([[:space:][:punct:]]|$)", regex::icase);
+        out = regex_replace(out, re_tag, "$1#$2$3", boost::format_first_only);
+    }
+
+    return out;
+}
+
+
 } // namespace mastorss

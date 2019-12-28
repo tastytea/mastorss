@@ -77,6 +77,7 @@ private:
     string remove_html(string html) const;
     [[nodiscard]]
     string extract_location(const RestClient::HeaderFields &headers) const;
+    string add_hashtags(const string &text);
 };
 } // namespace mastorss
 
