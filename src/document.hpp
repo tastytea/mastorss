@@ -42,6 +42,8 @@ struct Item
     string guid;
     string link;
     string title;
+
+    friend bool operator !=(const Item &a, const Item &b);
 };
 
 /*!

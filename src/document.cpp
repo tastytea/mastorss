@@ -38,6 +38,11 @@ using std::istringstream;
 using std::string;
 using std::move;
 
+bool operator !=(const Item &a, const Item &b)
+{
+    return a.guid != b.guid;
+}
+
 Document::Document(Config &cfg)
     : _cfg{cfg}
     , _profile{cfg.data}
