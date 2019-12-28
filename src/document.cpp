@@ -153,6 +153,8 @@ void Document::parse_rss(const pt::ptree &tree)
             }
             if (guid == _profiledata.last_guid)
             {
+                BOOST_LOG_TRIVIAL(debug)
+                    << "Found already posted GUID, stopped parsing.";
                 break;
             }
 
