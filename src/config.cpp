@@ -36,7 +36,6 @@ using std::ofstream;
 using std::cin;
 using std::cout;
 using std::stringstream;
-using std::runtime_error;
 using std::getline;
 using std::move;
 
@@ -193,13 +192,10 @@ string Config::get_access_token(const string &instance) const
     string url;
     Mastodon::API masto(instance, "");
 
-    Mastodon::return_call ret
-        {
-            masto.register_app1("mastorss", "urn:ietf:wg:oauth:2.0:oob",
-                                "write",
-                                "https://schlomp.space/tastytea/mastorss",
-                                client_id, client_secret, url)
-        };
+    auto ret = masto.register_app1("mastorss", "urn:ietf:wg:oauth:2.0:oob",
+                                   "write",
+                                   "https://schlomp.space/tastytea/mastorss",
+                                   client_id, client_secret, url);
 
     if (ret)
     {
