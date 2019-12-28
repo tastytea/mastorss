@@ -90,25 +90,25 @@ int main(int argc, char *argv[])
         }
         else
         {
-            const string_view profile{args[1]};
-            BOOST_LOG_TRIVIAL(debug) << "Using profile: " << profile;
+            const string_view profilename{args[1]};
+            BOOST_LOG_TRIVIAL(debug) << "Using profile: " << profilename;
 
             try
             {
-                Config cfg{profile.data()};
+                Config cfg{profilename.data()};
                 Document doc{cfg};
                 doc.parse();
 
-                MastoAPI masto{cfg.data};
+                MastoAPI masto{cfg.profiledata};
                 if (!doc.new_items.empty())
                 {
                     for (const auto &item : doc.new_items)
                     {
                         masto.post_item(item);
-                        cfg.data.last_guid = item.guid;
+                        cfg.profiledata.last_guid = item.guid;
                         if (item != *doc.new_items.rbegin())
                         {       // Don't sleep if this is the last item.
-                            sleep_for(seconds(cfg.data.interval));
+                            sleep_for(seconds(cfg.profiledata.interval));
                         }
                     }
                     cfg.write();

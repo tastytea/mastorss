@@ -45,7 +45,7 @@ bool operator !=(const Item &a, const Item &b)
 
 Document::Document(Config &cfg)
     : _cfg{cfg}
-    , profiledata{cfg.data}
+    , _profiledata{_cfg.profiledata}
 {
     RestClient::init();
 
@@ -70,20 +70,20 @@ void Document::download(const string &uri)
     case 200:
     {
         _raw_doc = response.body;
-        BOOST_LOG_TRIVIAL(debug) << "Downloaded feed: " << profiledata.feedurl;
+        BOOST_LOG_TRIVIAL(debug) << "Downloaded feed: " << _profiledata.feedurl;
         break;
     }
     case 301:
     case 308:
     {
-        profiledata.feedurl = extract_location(response.headers);
-        if (profiledata.feedurl.empty())
+        _profiledata.feedurl = extract_location(response.headers);
+        if (_profiledata.feedurl.empty())
         {
             throw HTTPException{response.code};
         }
 
         BOOST_LOG_TRIVIAL(debug) << "Feed has new location (permanent): "
-                                 << profiledata.feedurl;
+                                 << _profiledata.feedurl;
         _cfg.write();
         download();
         break;
@@ -99,7 +99,7 @@ void Document::download(const string &uri)
         }
 
         BOOST_LOG_TRIVIAL(debug) << "Feed has new location (temporary): "
-                                 << profiledata.feedurl;
+                                 << _profiledata.feedurl;
         download(newuri);
         break;
     }
@@ -116,7 +116,7 @@ void Document::download(const string &uri)
 
 void Document::download()
 {
-    download(profiledata.feedurl);
+    download(_profiledata.feedurl);
 }
 
 void Document::parse()
@@ -145,14 +145,14 @@ void Document::parse_rss(const pt::ptree &tree)
             {
                 guid = rssitem.get<string>("link");
             }
-            if (guid == profiledata.last_guid)
+            if (guid == _profiledata.last_guid)
             {
                 break;
             }
 
             bool skipthis{false};
             string title{rssitem.get<string>("title")};
-            for (const auto &skip : profiledata.skip)
+            for (const auto &skip : _profiledata.skip)
             {
                 if (title.substr(0, skip.length()) == skip)
                 {
@@ -171,7 +171,7 @@ void Document::parse_rss(const pt::ptree &tree)
             {
                 string desc
                     {remove_html(rssitem.get<string>("description"))};
-                for (const auto &fix : profiledata.fixes)
+                for (const auto &fix : _profiledata.fixes)
                 {
                     desc = regex_replace(desc, regex{fix}, "");
                 }
@@ -184,7 +184,7 @@ void Document::parse_rss(const pt::ptree &tree)
 
             BOOST_LOG_TRIVIAL(debug) << "Found GUID: " << item.guid;
 
-            if (profiledata.last_guid.empty())
+            if (_profiledata.last_guid.empty())
             {
                 BOOST_LOG_TRIVIAL(debug) << "This is the first run.";
                 break;
