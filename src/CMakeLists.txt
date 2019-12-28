@@ -38,6 +38,3 @@ if(BUILD_SHARED_LIBS)
   target_compile_definitions(mastorss PRIVATE "BOOST_ALL_DYN_LINK=1")
 endif()
 install(TARGETS mastorss DESTINATION "${CMAKE_INSTALL_BINDIR}")
-
-install(FILES watchwords.json
-  DESTINATION "${CMAKE_INSTALL_DATADIR}/mastorss")

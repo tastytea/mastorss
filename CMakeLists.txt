@@ -26,10 +26,15 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 include(debug_flags)
 
+include(GNUInstallDirs)
+
 add_subdirectory(src)
 
 if(WITH_MAN)
   add_subdirectory(man)
 endif()
+
+install(FILES watchwords.json
+  DESTINATION "${CMAKE_INSTALL_DATADIR}/mastorss")
 
 # include(cmake/packages.cmake)
