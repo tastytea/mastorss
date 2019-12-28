@@ -91,10 +91,7 @@ void MastoAPI::post_item(const Item &item)
         {
             throw HTTPException{ret.http_error_code};
         }
-        else
-        {
-            throw MastodonException{ret.error_code};
-        }
+        throw MastodonException{ret.error_code};
     }
     BOOST_LOG_TRIVIAL(debug) << "Posted status with GUID: " << item.guid;
 }
