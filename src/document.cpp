@@ -242,12 +242,14 @@ string Document::extract_location(const RestClient::HeaderFields &headers) const
 string Document::add_hashtags(const string &text)
 {
     Json::Value json;
-    ifstream file{_cfg.get_config_dir() /= "watchwords.json"};
+    const auto filepath = _cfg.get_config_dir() /= "watchwords.json";
+    ifstream file{filepath};
     if (file.good())
     {
         stringstream rawjson;
         rawjson << file.rdbuf();
         rawjson >> json;
+        BOOST_LOG_TRIVIAL(debug) << "Read " << filepath;
     }
     else
     {
