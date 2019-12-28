@@ -71,6 +71,7 @@ private:
     Config &_cfg;
     ProfileData &_profiledata;
     string _raw_doc;
+    list<string> _watchwords;
 
     void parse_rss(const pt::ptree &tree);
     [[nodiscard]]
@@ -78,6 +79,7 @@ private:
     [[nodiscard]]
     string extract_location(const RestClient::HeaderFields &headers) const;
     string add_hashtags(const string &text);
+    void parse_watchwords();
 };
 } // namespace mastorss
 

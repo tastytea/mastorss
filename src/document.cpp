@@ -27,7 +27,6 @@
 
 #include <algorithm>
 #include <fstream>
-#include <list>
 #include <sstream>
 #include <string>
 #include <utility>
@@ -38,7 +37,6 @@ using boost::regex;
 using boost::regex_replace;
 using std::transform;
 using std::ifstream;
-using std::list;
 using std::istringstream;
 using std::stringstream;
 using std::string;
@@ -127,6 +125,7 @@ void Document::download()
 
 void Document::parse()
 {
+    parse_watchwords();
     pt::ptree tree;
     istringstream iss{_raw_doc};
     pt::read_xml(iss, tree);
@@ -243,6 +242,19 @@ string Document::extract_location(const RestClient::HeaderFields &headers) const
 
 string Document::add_hashtags(const string &text)
 {
+    string out{text};
+    for (const auto &tag : _watchwords)
+    {
+        regex re_tag("([[:space:][:punct:]]|^)("
+            + tag + ")([[:space:][:punct:]]|$)", regex::icase);
+        out = regex_replace(out, re_tag, "$1#$2$3", boost::format_first_only);
+    }
+
+    return out;
+}
+
+void Document::parse_watchwords()
+{
     Json::Value json;
     const auto filepath = _cfg.get_config_dir() /= "watchwords.json";
     ifstream file{filepath};
@@ -259,25 +271,14 @@ string Document::add_hashtags(const string &text)
                 + (_cfg.get_config_dir() /= "watchwords.json").string()};
     }
 
-    list<string> watchwords;
     const auto &tags_profile = json[_cfg.profile]["tags"];
     const auto &tags_global = json["global"]["tags"];
     transform(tags_profile.begin(), tags_profile.end(),
-              std::back_inserter(watchwords),
+              std::back_inserter(_watchwords),
               [](const Json::Value &value) { return value.asString(); });
     transform(tags_global.begin(), tags_global.end(),
-              std::back_inserter(watchwords),
+              std::back_inserter(_watchwords),
               [](const Json::Value &value) { return value.asString(); });
-
-    string out{text};
-    for (const auto &tag : watchwords)
-    {
-        regex re_tag("([[:space:][:punct:]]|^)("
-            + tag + ")([[:space:][:punct:]]|$)", regex::icase);
-        out = regex_replace(out, re_tag, "$1#$2$3", boost::format_first_only);
-    }
-
-    return out;
 }
 
 
