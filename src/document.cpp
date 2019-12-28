@@ -21,9 +21,12 @@
 #include <boost/log/trivial.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/regex.hpp>
+#include <json/json.h>
 #include <mastodon-cpp/mastodon-cpp.hpp>
 #include <restclient-cpp/connection.h>
 
+#include <algorithm>
+#include <fstream>
 #include <list>
 #include <sstream>
 #include <string>
@@ -33,8 +36,11 @@ namespace mastorss
 {
 using boost::regex;
 using boost::regex_replace;
+using std::transform;
+using std::ifstream;
 using std::list;
 using std::istringstream;
+using std::stringstream;
 using std::string;
 using std::move;
 
@@ -45,7 +51,7 @@ bool operator !=(const Item &a, const Item &b)
 
 Document::Document(Config &cfg)
     : _cfg{cfg}
-    , _profile{cfg.data}
+    , _profiledata{_cfg.profiledata}
 {
     RestClient::init();
 
@@ -70,20 +76,20 @@ void Document::download(const string &uri)
     case 200:
     {
         _raw_doc = response.body;
-        BOOST_LOG_TRIVIAL(debug) << "Downloaded feed: " << _profile.feedurl;
+        BOOST_LOG_TRIVIAL(debug) << "Downloaded feed: " << _profiledata.feedurl;
         break;
     }
     case 301:
     case 308:
     {
-        _profile.feedurl = extract_location(response.headers);
-        if (_profile.feedurl.empty())
+        _profiledata.feedurl = extract_location(response.headers);
+        if (_profiledata.feedurl.empty())
         {
             throw HTTPException{response.code};
         }
 
         BOOST_LOG_TRIVIAL(debug) << "Feed has new location (permanent): "
-                                 << _profile.feedurl;
+                                 << _profiledata.feedurl;
         _cfg.write();
         download();
         break;
@@ -99,7 +105,7 @@ void Document::download(const string &uri)
         }
 
         BOOST_LOG_TRIVIAL(debug) << "Feed has new location (temporary): "
-                                 << _profile.feedurl;
+                                 << _profiledata.feedurl;
         download(newuri);
         break;
     }
@@ -116,7 +122,7 @@ void Document::download(const string &uri)
 
 void Document::download()
 {
-    download(_profile.feedurl);
+    download(_profiledata.feedurl);
 }
 
 void Document::parse()
@@ -145,14 +151,14 @@ void Document::parse_rss(const pt::ptree &tree)
             {
                 guid = rssitem.get<string>("link");
             }
-            if (guid == _profile.last_guid)
+            if (guid == _profiledata.last_guid)
             {
                 break;
             }
 
             bool skipthis{false};
             string title{rssitem.get<string>("title")};
-            for (const auto &skip : _profile.skip)
+            for (const auto &skip : _profiledata.skip)
             {
                 if (title.substr(0, skip.length()) == skip)
                 {
@@ -171,11 +177,11 @@ void Document::parse_rss(const pt::ptree &tree)
             {
                 string desc
                     {remove_html(rssitem.get<string>("description"))};
-                for (const auto &fix : _profile.fixes)
+                for (const auto &fix : _profiledata.fixes)
                 {
                     desc = regex_replace(desc, regex{fix}, "");
                 }
-                return desc;
+                return add_hashtags(desc);
             }();
             item.guid = move(guid);
             item.link = rssitem.get<string>("link");
@@ -184,7 +190,7 @@ void Document::parse_rss(const pt::ptree &tree)
 
             BOOST_LOG_TRIVIAL(debug) << "Found GUID: " << item.guid;
 
-            if (_profile.last_guid.empty())
+            if (_profiledata.last_guid.empty())
             {
                 BOOST_LOG_TRIVIAL(debug) << "This is the first run.";
                 break;
@@ -232,4 +238,45 @@ string Document::extract_location(const RestClient::HeaderFields &headers) const
     }
     return location;
 }
+
+string Document::add_hashtags(const string &text)
+{
+    Json::Value json;
+    const auto filepath = _cfg.get_config_dir() /= "watchwords.json";
+    ifstream file{filepath};
+    if (file.good())
+    {
+        stringstream rawjson;
+        rawjson << file.rdbuf();
+        rawjson >> json;
+        BOOST_LOG_TRIVIAL(debug) << "Read " << filepath;
+    }
+    else
+    {
+        throw FileException{"File Not found:"
+                + (_cfg.get_config_dir() /= "watchwords.json").string()};
+    }
+
+    list<string> watchwords;
+    const auto &tags_profile = json[_cfg.profile]["tags"];
+    const auto &tags_global = json["global"]["tags"];
+    transform(tags_profile.begin(), tags_profile.end(),
+              std::back_inserter(watchwords),
+              [](const Json::Value &value) { return value.asString(); });
+    transform(tags_global.begin(), tags_global.end(),
+              std::back_inserter(watchwords),
+              [](const Json::Value &value) { return value.asString(); });
+
+    string out{text};
+    for (const auto &tag : watchwords)
+    {
+        regex re_tag("([[:space:][:punct:]]|^)("
+            + tag + ")([[:space:][:punct:]]|$)", regex::icase);
+        out = regex_replace(out, re_tag, "$1#$2$3", boost::format_first_only);
+    }
+
+    return out;
+}
+
+
 } // namespace mastorss

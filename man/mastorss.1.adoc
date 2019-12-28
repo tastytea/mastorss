@@ -2,7 +2,7 @@
 :doctype:       manpage
 :Author:        tastytea
 :Email:         tastytea@tastytea.de
-:Date:          2019-12-25
+:Date:          2019-12-28
 :Revision:      0.0.0
 :man source:    mastorss
 :man manual:    General Commands Manual
@@ -157,15 +157,16 @@ proxy support yet, sorry.
 == ERROR CODES
 
 [cols=">,<"]
-|===========================================================
+|===============================================================================
 | Code | Explanation
 
 |    1 | No profile specified.
 |    2 | Network error.
 |    3 | File error.
 |    4 | Mastodon API error.
+|    5 | JSON error, most likely the file is wrongly formatted.
 |    9 | Unknown error.
-|===========================================================
+|===============================================================================
 
 == DEBUGGING
 

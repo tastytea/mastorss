@@ -18,7 +18,7 @@
 #define MASTORSS_CONFIG_HPP
 
 #include <boost/filesystem.hpp>
-#include <jsoncpp/json/json.h>
+#include <json/json.h>
 
 #include <cstdint>
 #include <string>
@@ -64,14 +64,16 @@ struct ProfileData
 class Config
 {
 public:
-    explicit Config(string profile);
+    explicit Config(string profile_name);
 
-    ProfileData data;
+    const string profile;
+    ProfileData profiledata;
 
     void write();
+    [[nodiscard]]
+    fs::path get_config_dir() const;
 
 private:
-    const string _profile;
     Json::Value _json;
 
     [[nodiscard]]

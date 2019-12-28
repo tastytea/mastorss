@@ -69,7 +69,7 @@ public:
 
 private:
     Config &_cfg;
-    ProfileData &_profile;
+    ProfileData &_profiledata;
     string _raw_doc;
 
     void parse_rss(const pt::ptree &tree);
@@ -77,6 +77,7 @@ private:
     string remove_html(string html) const;
     [[nodiscard]]
     string extract_location(const RestClient::HeaderFields &headers) const;
+    string add_hashtags(const string &text);
 };
 } // namespace mastorss
 
