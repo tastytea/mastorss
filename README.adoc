@@ -1,0 +1,70 @@
+:toc: preamble
+
+:project: mastorss
+:uri-base: https://schlomp.space/tastytea/{project}
+:uri-branch-main: {uri-base}/src/branch/main
+:uri-gcc: https://gcc.gnu.org/
+:uri-cmake: https://cmake.org/
+:uri-asciidoc: http://asciidoc.org/
+:uri-catch: https://github.com/catchorg/Catch2
+:uri-boost: https://www.boost.org/
+:uri-mastodon-cpp: https://schlomp.space/tastytea/mastodon-cpp
+:uri-jsoncpp: https://github.com/open-source-parsers/jsoncpp
+:uri-restclient-cpp: http://code.mrtazz.com/restclient-cpp/
+:uri-poco: https://pocoproject.org/
+
+*mastorss* reads RSS feeds and posts the items via the Mastodon API. Does not
+support Atom at the moment.
+
+== Install
+
+=== Dependencies
+
+* Tested OS: Linux
+* C++ compiler (tested: link:{uri-gcc}[gcc] 7/8/9)
+* link:{uri-cmake}[cmake] (at least: 3.9)
+* link:{uri-boost}[boost] (at least: 1.62)
+* link:{uri-mastodon-cpp}[mastodon-cpp] (at least: 0.111.3)
+** link:{uri-poco}[POCO] (at least: 1.7)
+* link:{uri-jsoncpp}[jsoncpp] (at least: 1.7)
+* link:{uri-restclient-cpp}[restclient-cpp] (at least: 0.5.1)
+
+=== Get sourcecode
+
+==== Development version
+
+[source,shell]
+--------------------------------------------------------------------------------
+git clone https://schlomp.space/tastytea/mastorss.git
+--------------------------------------------------------------------------------
+
+=== Compile
+
+[source,shell]
+--------------------------------------------------------------------------------
+mkdir build
+cd build/
+cmake ..
+cmake --build .
+--------------------------------------------------------------------------------
+
+Install with `make install`.
+
+== Usage
+
+See link:{uri-branch-main}/man/mastorss.1.adoc[manpage].
+
+=== Error codes
+
+Same as
+link:{uri-mastodon-cpp}/src/branch/master/README.adoc#_error_codes[mastodon-cpp],
+plus:
+
+[%autowidth,cols=">,<"]
+|===========================================================
+| Code | Explanation
+
+|    1 | Could not send post for unknown reasons.
+|===========================================================
+
+include::{uri-base}/raw/branch/main/CONTRIBUTING.adoc[]
