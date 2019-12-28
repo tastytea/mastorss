@@ -257,7 +257,8 @@ void Config::write()
     _json[_profile]["instance"] = data.instance;
     _json[_profile]["interval"] = data.interval;
     _json[_profile]["last_guid"] = data.last_guid;
-    _json[_profile]["max_size"] = data.max_size;
+    _json[_profile]["max_size"]
+        = static_cast<Json::Value::UInt64>(data.max_size);
     // Leave skip.
     _json[_profile]["titles_as_cw"] = data.titles_as_cw;
     _json[_profile]["titles_only"] = data.titles_only;

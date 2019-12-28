@@ -21,7 +21,7 @@ support Atom at the moment.
 === Dependencies
 
 * Tested OS: Linux
-* C++ compiler (tested: link:{uri-gcc}[gcc] 7/9)
+* C++ compiler (tested: link:{uri-gcc}[gcc] 7/8/9)
 * link:{uri-cmake}[cmake] (at least: 3.9)
 * link:{uri-boost}[boost] (at least: 1.62)
 * link:{uri-mastodon-cpp}[mastodon-cpp] (at least: 0.111.3)
