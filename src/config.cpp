@@ -75,7 +75,7 @@ std::ostream &operator <<(std::ostream &out, const ProfileData &data)
 }
 
 Config::Config(string profile_name)
-    : profile{move(profile)}
+    : profile{move(profile_name)}
 {
     const fs::path filename = get_filename();
     BOOST_LOG_TRIVIAL(debug) << "Config filename is: " << filename;
@@ -127,7 +127,7 @@ fs::path Config::get_config_dir() const
 
 fs::path Config::get_filename() const
 {
-    return get_config_dir() /= "config-" + profile+ ".json";
+    return get_config_dir() /= "config-" + profile + ".json";
 }
 
 void Config::generate()
