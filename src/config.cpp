@@ -94,7 +94,7 @@ Config::Config(string profile)
     }
 }
 
-fs::path Config::get_filename() const
+fs::path Config::get_config_dir() const
 {
     char *envdir = getenv("XDG_CONFIG_HOME");
     fs::path dir;
@@ -122,7 +122,12 @@ fs::path Config::get_filename() const
         BOOST_LOG_TRIVIAL(debug) << "Created config dir: " << dir;
     }
 
-    return dir /= "config-" + _profile + ".json";
+    return dir;
+}
+
+fs::path Config::get_filename() const
+{
+    return get_config_dir() /= "config-" + _profile + ".json";
 }
 
 void Config::generate()

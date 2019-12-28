@@ -69,6 +69,8 @@ public:
     ProfileData data;
 
     void write();
+    [[nodiscard]]
+    fs::path get_config_dir() const;
 
 private:
     const string _profile;
