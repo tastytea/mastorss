@@ -186,6 +186,7 @@ void Document::parse_rss(const pt::ptree &tree)
 
             if (_profile.last_guid.empty())
             {
+                BOOST_LOG_TRIVIAL(debug) << "This is the first run.";
                 break;
             }
         }
