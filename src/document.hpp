@@ -23,13 +23,13 @@
 #include <restclient-cpp/restclient.h>
 
 #include <string>
-#include <vector>
+#include <list>
 
 namespace mastorss
 {
 namespace pt = boost::property_tree;
 using std::string;
-using std::vector;
+using std::list;
 
 /*!
  *  @brief  An Item of a feed.
@@ -59,7 +59,7 @@ public:
     Document(Document &&other) = default;
     Document &operator=(Document &&other) = delete;
 
-    vector<Item> new_items;
+    list<Item> new_items;
 
     void download();
     void download(const string &uri);

@@ -175,7 +175,7 @@ void Document::parse_rss(const pt::ptree &tree)
             item.guid = move(guid);
             item.link = rssitem.get<string>("link");
             item.title = move(title);
-            new_items.push_back(item);
+            new_items.push_front(item);
 
             BOOST_LOG_TRIVIAL(debug) << "Found GUID: " << item.guid;
         }
