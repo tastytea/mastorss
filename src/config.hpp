@@ -18,7 +18,7 @@
 #define MASTORSS_CONFIG_HPP
 
 #include <boost/filesystem.hpp>
-#include <jsoncpp/json/json.h>
+#include <json/json.h>
 
 #include <cstdint>
 #include <string>
