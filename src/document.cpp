@@ -146,7 +146,7 @@ void Document::parse_rss(const pt::ptree &tree)
         {
             const auto &rssitem = child.second;
 
-            string guid{rssitem.get<string>("guid")};
+            string guid{rssitem.get<string>("guid", "")};
             if (guid.empty())   // We hope either <guid> or <link> are present.
             {
                 guid = rssitem.get<string>("link");
