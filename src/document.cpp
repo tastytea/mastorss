@@ -108,7 +108,7 @@ void Document::download(const string &uri, const bool temp_redirect)
         }
 
         BOOST_LOG_TRIVIAL(debug) << "Feed has new location (temporary): "
-                                 << _profiledata.feedurl;
+                                 << newuri;
         download(newuri, true);
         break;
     }
