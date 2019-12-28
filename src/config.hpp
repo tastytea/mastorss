@@ -64,8 +64,9 @@ struct ProfileData
 class Config
 {
 public:
-    explicit Config(string profile);
+    explicit Config(string profile_name);
 
+    const string profile;
     ProfileData profiledata;
 
     void write();
@@ -73,7 +74,6 @@ public:
     fs::path get_config_dir() const;
 
 private:
-    const string _profile;
     Json::Value _json;
 
     [[nodiscard]]

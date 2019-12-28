@@ -74,8 +74,8 @@ std::ostream &operator <<(std::ostream &out, const ProfileData &data)
     return out;
 }
 
-Config::Config(string profile)
-    :_profile{move(profile)}
+Config::Config(string profile_name)
+    : profile{move(profile)}
 {
     const fs::path filename = get_filename();
     BOOST_LOG_TRIVIAL(debug) << "Config filename is: " << filename;
@@ -127,7 +127,7 @@ fs::path Config::get_config_dir() const
 
 fs::path Config::get_filename() const
 {
-    return get_config_dir() /= "config-" + _profile + ".json";
+    return get_config_dir() /= "config-" + profile+ ".json";
 }
 
 void Config::generate()
@@ -225,48 +225,48 @@ string Config::get_access_token(const string &instance) const
 
 void Config::parse()
 {
-    profiledata.access_token = _json[_profile]["access_token"].asString();
-    profiledata.append = _json[_profile]["append"].asString();
-    profiledata.feedurl = _json[_profile]["feedurl"].asString();
-    for (const auto &fix : _json[_profile]["fixes"])
+    profiledata.access_token = _json[profile]["access_token"].asString();
+    profiledata.append = _json[profile]["append"].asString();
+    profiledata.feedurl = _json[profile]["feedurl"].asString();
+    for (const auto &fix : _json[profile]["fixes"])
     {
         profiledata.fixes.push_back(fix.asString());
     }
-    profiledata.instance = _json[_profile]["instance"].asString();
-    if (!_json[_profile]["interval"].isNull())
+    profiledata.instance = _json[profile]["instance"].asString();
+    if (!_json[profile]["interval"].isNull())
     {
         profiledata.interval =
-            static_cast<uint32_t>(_json[_profile]["interval"].asUInt64());
+            static_cast<uint32_t>(_json[profile]["interval"].asUInt64());
     }
-    profiledata.last_guid = _json[_profile]["last_guid"].asString();
-    if (!_json[_profile]["max_size"].isNull())
+    profiledata.last_guid = _json[profile]["last_guid"].asString();
+    if (!_json[profile]["max_size"].isNull())
     {
-        profiledata.max_size = _json[_profile]["max_size"].asUInt64();
+        profiledata.max_size = _json[profile]["max_size"].asUInt64();
     }
-    for (const auto &skip : _json[_profile]["skip"])
+    for (const auto &skip : _json[profile]["skip"])
     {
         profiledata.skip.push_back(skip.asString());
     }
-    profiledata.titles_as_cw = _json[_profile]["titles_as_cw"].asBool();
-    profiledata.titles_only = _json[_profile]["titles_only"].asBool();
+    profiledata.titles_as_cw = _json[profile]["titles_as_cw"].asBool();
+    profiledata.titles_only = _json[profile]["titles_only"].asBool();
 
     BOOST_LOG_TRIVIAL(debug) << "Read config: " << profiledata;
 }
 
 void Config::write()
 {
-    _json[_profile]["access_token"] = profiledata.access_token;
-    _json[_profile]["append"] = profiledata.append;
-    _json[_profile]["feedurl"] = profiledata.feedurl;
+    _json[profile]["access_token"] = profiledata.access_token;
+    _json[profile]["append"] = profiledata.append;
+    _json[profile]["feedurl"] = profiledata.feedurl;
     // Leave fixes.
-    _json[_profile]["instance"] = profiledata.instance;
-    _json[_profile]["interval"] = profiledata.interval;
-    _json[_profile]["last_guid"] = profiledata.last_guid;
-    _json[_profile]["max_size"]
+    _json[profile]["instance"] = profiledata.instance;
+    _json[profile]["interval"] = profiledata.interval;
+    _json[profile]["last_guid"] = profiledata.last_guid;
+    _json[profile]["max_size"]
         = static_cast<Json::Value::UInt64>(profiledata.max_size);
     // Leave skip.
-    _json[_profile]["titles_as_cw"] = profiledata.titles_as_cw;
-    _json[_profile]["titles_only"] = profiledata.titles_only;
+    _json[profile]["titles_as_cw"] = profiledata.titles_as_cw;
+    _json[profile]["titles_only"] = profiledata.titles_only;
 
     ofstream file{get_filename().c_str()};
     if (file.good())
