@@ -70,6 +70,14 @@ void MastoAPI::post_item(const Item &item)
     if ((len + len_append) > len_max)
     {
         status.resize(len_max - len_append - omission.size());
+
+        // Don't cut in the middle of a word.
+        const auto pos = status.rfind(' ');
+        if (pos != string::npos)
+        {
+            status.resize(status.size() - pos);
+        }
+
         status.append(omission);
     }
 
