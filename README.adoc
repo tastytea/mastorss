@@ -58,17 +58,4 @@ Install with `make install`.
 
 See link:{uri-branch-main}/man/mastorss.1.adoc[manpage].
 
-=== Error codes
-
-Same as
-link:{uri-mastodon-cpp}/src/branch/master/README.adoc#_error_codes[mastodon-cpp],
-plus:
-
-[%autowidth,cols=">,<"]
-|===========================================================
-| Code | Explanation
-
-|    1 | Could not send post for unknown reasons.
-|===========================================================
-
 include::{uri-base}/raw/branch/main/CONTRIBUTING.adoc[]
