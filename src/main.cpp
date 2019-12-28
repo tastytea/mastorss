@@ -1,25 +1,30 @@
 #include "config.hpp"
 #include "document.hpp"
 #include "exceptions.hpp"
+#include "mastoapi.hpp"
 #include "version.hpp"
 
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/utility/setup/console.hpp>
 
+#include <chrono>
 #include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 #include <string_view>
+#include <thread>
 #include <vector>
 
 using namespace mastorss;
+using std::chrono::seconds;
 using std::getenv;
 using std::cout;
 using std::cerr;
 using std::runtime_error;
 using std::string_view;
 using std::vector;
+using std::this_thread::sleep_for;
 
 namespace mastorss
 {
@@ -94,9 +99,19 @@ int main(int argc, char *argv[])
                 Document doc{cfg};
                 doc.parse();
 
-                for (const auto &item : doc.new_items)
+                MastoAPI masto{cfg.data};
+                if (!doc.new_items.empty())
                 {
-                    cout << "--\n" << item.description.substr(0, 200) << "\n";
+                    for (const auto &item : doc.new_items)
+                    {
+                        masto.post_item(item);
+                        cfg.data.last_guid = item.guid;
+                        if (item != *doc.new_items.rbegin())
+                        {       // Don't sleep if this is the last item.
+                            sleep_for(seconds(cfg.data.interval));
+                        }
+                    }
+                    cfg.write();
                 }
             }
             catch (const FileException &e)
