@@ -19,11 +19,11 @@ steps:
     source: https://schlomp.space/tastytea/mastodon-cpp/releases/download/0.111.5/libmastodon-cpp_0.111.5-0_buster_amd64.deb
     destination: mastodon-cpp_buster.deb
 
-- name: download mastodon-cpp for bionic
-  image: plugins/download
-  settings:
-    source: https://schlomp.space/tastytea/mastodon-cpp/releases/download/0.111.5/libmastodon-cpp_0.111.5-0_bionic_amd64.deb
-    destination: mastodon-cpp_bionic.deb
+# - name: download mastodon-cpp for bionic
+#   image: plugins/download
+#   settings:
+#     source: https://schlomp.space/tastytea/mastodon-cpp/releases/download/0.111.5/libmastodon-cpp_0.111.5-0_bionic_amd64.deb
+#     destination: mastodon-cpp_bionic.deb
 
 # Workaround until the debian packages are fixed.
 - name: download restclient-cpp source
@@ -65,38 +65,32 @@ steps:
   - name: debian-package-cache
     path: /var/cache/apt/archives
 
-- name: GCC 7 on Ubuntu bionic
-  image: ubuntu:bionic
-  pull: always
-  environment:
-    CXX: g++-7
-    CXXFLAGS: -pipe -O2
-    DEBIAN_FRONTEND: noninteractive
-    LANG: C.utf8
-  commands:
-  - rm /etc/apt/apt.conf.d/docker-clean
-  - alias apt-get='rm -f /var/cache/apt/archives/lock && apt-get'
-  - apt-get update -q
-  - echo "deb https://packagecloud.io/mrtazz/restclient-cpp/ubuntu/ bionic main" > /etc/apt/sources.list.d/restclient-cpp.list
-  - apt-get install -qq curl gnupg apt-transport-https
-  - curl -L https://packagecloud.io/mrtazz/restclient-cpp/gpgkey | apt-key add -
-  - apt-get update -q
-  - apt-get install -qq build-essential cmake asciidoc
-  - apt-get install -qq libboost-filesystem-dev libboost-log-dev libboost-regex-dev libjsoncpp-dev catch libcurl4-openssl-dev restclient-cpp libpoco-dev
-  - apt-get -qq install ./mastodon-cpp_bionic.deb
-  - tar -xf restclient-cpp.tar.gz
-  - cd restclient-cpp-*
-  - cmake -DCMAKE_INSTALL_PREFIX=/usr .
-  - cmake --build .
-  - make install
-  - cd --
-  - rm -rf build && mkdir -p build && cd build
-  - cmake ..
-  - make VERBOSE=1
-  - make install DESTDIR=install
-  volumes:
-  - name: debian-package-cache
-    path: /var/cache/apt/archives
+# - name: GCC 7 on Ubuntu bionic
+#   image: ubuntu:bionic
+#   pull: always
+#   environment:
+#     CXX: g++-7
+#     CXXFLAGS: -pipe -O2
+#     DEBIAN_FRONTEND: noninteractive
+#     LANG: C.utf8
+#   commands:
+#   - rm /etc/apt/apt.conf.d/docker-clean
+#   - alias apt-get='rm -f /var/cache/apt/archives/lock && apt-get'
+#   - apt-get update -q
+#   - echo "deb https://packagecloud.io/mrtazz/restclient-cpp/ubuntu/ bionic main" > /etc/apt/sources.list.d/restclient-cpp.list
+#   - apt-get install -qq curl gnupg apt-transport-https
+#   - curl -L https://packagecloud.io/mrtazz/restclient-cpp/gpgkey | apt-key add -
+#   - apt-get update -q
+#   - apt-get install -qq build-essential cmake asciidoc
+#   - apt-get install -qq libboost-filesystem-dev libboost-log-dev libboost-regex-dev libjsoncpp-dev catch libcurl4-openssl-dev restclient-cpp libpoco-dev
+#   - apt-get -qq install ./mastodon-cpp_bionic.deb
+#   - rm -rf build && mkdir -p build && cd build
+#   - cmake ..
+#   - make VERBOSE=1
+#   - make install DESTDIR=install
+#   volumes:
+#   - name: debian-package-cache
+#     path: /var/cache/apt/archives
 
 - name: notify
   image: drillster/drone-email
