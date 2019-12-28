@@ -146,7 +146,7 @@ void Document::parse_rss(const pt::ptree &tree)
             }
 
             bool skipthis{false};
-            string title = rssitem.get<string>("title");
+            string title{rssitem.get<string>("title")};
             for (const auto &skip : _data.skip)
             {
                 if (title.substr(0, skip.length()) == skip)
@@ -162,17 +162,16 @@ void Document::parse_rss(const pt::ptree &tree)
             }
 
             Item item;
-            item.description =
-                [&]
+            item.description = [&]
+            {
+                string desc
+                    {remove_html(rssitem.get<string>("description"))};
+                for (const auto &fix : _data.fixes)
                 {
-                    string desc =
-                        remove_html(rssitem.get<string>("description"));
-                    for (const auto &fix : _data.fixes)
-                    {
-                        desc = regex_replace(desc, regex{fix}, "");
-                    }
-                    return desc;
-                }();
+                    desc = regex_replace(desc, regex{fix}, "");
+                }
+                return desc;
+            }();
             item.guid = move(guid);
             item.link = rssitem.get<string>("link");
             item.title = move(title);
