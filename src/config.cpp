@@ -180,7 +180,7 @@ void Config::generate()
     {
         line = "500";
     }
-    data.max_size = static_cast<uint32_t>(stoul(line));
+    data.max_size = stoul(line);
 
     BOOST_LOG_TRIVIAL(debug) << "Generated configuration.";
     write();
@@ -240,8 +240,7 @@ void Config::parse()
     data.last_guid = _json[_profile]["last_guid"].asString();
     if (!_json[_profile]["max_size"].isNull())
     {
-        data.max_size =
-            static_cast<uint32_t>(_json[_profile]["max_size"].asUInt64());
+        data.max_size = _json[_profile]["max_size"].asUInt64();
     }
     for (const auto &skip : _json[_profile]["skip"])
     {

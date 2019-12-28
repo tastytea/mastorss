@@ -47,7 +47,7 @@ struct ProfileData
     string instance;
     uint32_t interval{30};
     string last_guid;
-    uint32_t max_size{500};
+    size_t max_size{500};
     vector<string> skip;
     bool titles_as_cw{false};
     bool titles_only{false};
