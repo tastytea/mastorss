@@ -61,7 +61,7 @@ Document::~Document()
     RestClient::disable();
 }
 
-void Document::download(const string &uri)
+void Document::download(const string &uri, const bool temp_redirect)
 {
     RestClient::Connection connection{uri};
     connection.SetUserAgent(string("mastorss/").append(version));
@@ -80,6 +80,10 @@ void Document::download(const string &uri)
     case 301:
     case 308:
     {
+        if (temp_redirect)
+        {
+            goto temporary_redirect;
+        }
         _profiledata.feedurl = extract_location(response.headers);
         if (_profiledata.feedurl.empty())
         {
@@ -96,6 +100,7 @@ void Document::download(const string &uri)
     case 303:
     case 307:
     {
+    temporary_redirect:
         const string newuri{extract_location(response.headers)};
         if (newuri.empty())
         {
@@ -104,7 +109,7 @@ void Document::download(const string &uri)
 
         BOOST_LOG_TRIVIAL(debug) << "Feed has new location (temporary): "
                                  << _profiledata.feedurl;
-        download(newuri);
+        download(newuri, true);
         break;
     }
     case -1:

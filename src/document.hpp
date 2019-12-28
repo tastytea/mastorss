@@ -63,8 +63,6 @@ public:
 
     list<Item> new_items;
 
-    void download();
-    void download(const string &uri);
     void parse();
 
 private:
@@ -73,6 +71,19 @@ private:
     string _raw_doc;
     list<string> _watchwords;
 
+    void download();
+    /*!
+     *  @brief  Download document.
+     *
+     *  @param  uri           The URI to download.
+     *  @param  temp_redirect `true` if this is an temporary redirect.
+     *
+     *  The argument `temp_redirect` is there for cases where the original URI
+     *  is redirected temporarily, and the new URI is redirected permanently.
+     *
+     *  @since  0.10.0
+     */
+    void download(const string &uri, const bool temp_redirect = false);
     void parse_rss(const pt::ptree &tree);
     [[nodiscard]]
     string remove_html(string html) const;
