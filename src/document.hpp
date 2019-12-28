@@ -69,7 +69,7 @@ public:
 
 private:
     Config &_cfg;
-    ProfileData &_profile;
+    ProfileData &_profiledata;
     string _raw_doc;
 
     void parse_rss(const pt::ptree &tree);

@@ -66,7 +66,7 @@ class Config
 public:
     explicit Config(string profile);
 
-    ProfileData data;
+    ProfileData profiledata;
 
     void write();
     [[nodiscard]]

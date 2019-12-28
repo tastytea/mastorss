@@ -136,39 +136,39 @@ void Config::generate()
 
     cout << "Instance (domain): ";
     getline(cin, line);
-    data.instance = line;
+    profiledata.instance = line;
 
-    data.access_token = get_access_token(line);
+    profiledata.access_token = get_access_token(line);
 
     cout << "URL of the feed: ";
     std::getline(cin, line);
-    data.feedurl = line;
+    profiledata.feedurl = line;
 
     cout << "Post only titles? [y/n]: ";
     std::getline(cin, line);
     if (line[0] == 'y')
     {
-        data.titles_only = true;
+        profiledata.titles_only = true;
     }
     else
     {
-        data.titles_only = false;
+        profiledata.titles_only = false;
     }
 
     cout << "Post titles as cw? [y/n]: ";
     std::getline(cin, line);
     if (line[0] == 'y')
     {
-        data.titles_as_cw = true;
+        profiledata.titles_as_cw = true;
     }
     else
     {
-        data.titles_as_cw = false;
+        profiledata.titles_as_cw = false;
     }
 
     cout << "Append this string to each post: ";
     std::getline(cin, line);
-    data.append = line;
+    profiledata.append = line;
 
     cout << "Interval between posts in seconds [30]: ";
     std::getline(cin, line);
@@ -176,7 +176,7 @@ void Config::generate()
     {
         line = "30";
     }
-    data.interval = static_cast<uint32_t>(stoul(line));
+    profiledata.interval = static_cast<uint32_t>(stoul(line));
 
     cout << "Maximum size of posts [500]: ";
     std::getline(cin, line);
@@ -184,7 +184,7 @@ void Config::generate()
     {
         line = "500";
     }
-    data.max_size = stoul(line);
+    profiledata.max_size = stoul(line);
 
     BOOST_LOG_TRIVIAL(debug) << "Generated configuration.";
     write();
@@ -225,48 +225,48 @@ string Config::get_access_token(const string &instance) const
 
 void Config::parse()
 {
-    data.access_token = _json[_profile]["access_token"].asString();
-    data.append = _json[_profile]["append"].asString();
-    data.feedurl = _json[_profile]["feedurl"].asString();
+    profiledata.access_token = _json[_profile]["access_token"].asString();
+    profiledata.append = _json[_profile]["append"].asString();
+    profiledata.feedurl = _json[_profile]["feedurl"].asString();
     for (const auto &fix : _json[_profile]["fixes"])
     {
-        data.fixes.push_back(fix.asString());
+        profiledata.fixes.push_back(fix.asString());
     }
-    data.instance = _json[_profile]["instance"].asString();
+    profiledata.instance = _json[_profile]["instance"].asString();
     if (!_json[_profile]["interval"].isNull())
     {
-        data.interval =
+        profiledata.interval =
             static_cast<uint32_t>(_json[_profile]["interval"].asUInt64());
     }
-    data.last_guid = _json[_profile]["last_guid"].asString();
+    profiledata.last_guid = _json[_profile]["last_guid"].asString();
     if (!_json[_profile]["max_size"].isNull())
     {
-        data.max_size = _json[_profile]["max_size"].asUInt64();
+        profiledata.max_size = _json[_profile]["max_size"].asUInt64();
     }
     for (const auto &skip : _json[_profile]["skip"])
     {
-        data.skip.push_back(skip.asString());
+        profiledata.skip.push_back(skip.asString());
     }
-    data.titles_as_cw = _json[_profile]["titles_as_cw"].asBool();
-    data.titles_only = _json[_profile]["titles_only"].asBool();
+    profiledata.titles_as_cw = _json[_profile]["titles_as_cw"].asBool();
+    profiledata.titles_only = _json[_profile]["titles_only"].asBool();
 
-    BOOST_LOG_TRIVIAL(debug) << "Read config: " << data;
+    BOOST_LOG_TRIVIAL(debug) << "Read config: " << profiledata;
 }
 
 void Config::write()
 {
-    _json[_profile]["access_token"] = data.access_token;
-    _json[_profile]["append"] = data.append;
-    _json[_profile]["feedurl"] = data.feedurl;
+    _json[_profile]["access_token"] = profiledata.access_token;
+    _json[_profile]["append"] = profiledata.append;
+    _json[_profile]["feedurl"] = profiledata.feedurl;
     // Leave fixes.
-    _json[_profile]["instance"] = data.instance;
-    _json[_profile]["interval"] = data.interval;
-    _json[_profile]["last_guid"] = data.last_guid;
+    _json[_profile]["instance"] = profiledata.instance;
+    _json[_profile]["interval"] = profiledata.interval;
+    _json[_profile]["last_guid"] = profiledata.last_guid;
     _json[_profile]["max_size"]
-        = static_cast<Json::Value::UInt64>(data.max_size);
+        = static_cast<Json::Value::UInt64>(profiledata.max_size);
     // Leave skip.
-    _json[_profile]["titles_as_cw"] = data.titles_as_cw;
-    _json[_profile]["titles_only"] = data.titles_only;
+    _json[_profile]["titles_as_cw"] = profiledata.titles_as_cw;
+    _json[_profile]["titles_only"] = profiledata.titles_only;
 
     ofstream file{get_filename().c_str()};
     if (file.good())
