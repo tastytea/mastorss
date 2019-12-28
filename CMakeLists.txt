@@ -19,7 +19,6 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 # Project build options.
 option(WITH_MAN "Compile and install manpage." YES)
-option(WITH_TESTS "Compile tests." NO)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -32,9 +31,5 @@ add_subdirectory(src)
 if(WITH_MAN)
   add_subdirectory(man)
 endif()
-
-# if(WITH_TESTS)
-#   add_subdirectory(tests)
-# endif()
 
 # include(cmake/packages.cmake)
