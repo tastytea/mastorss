@@ -175,12 +175,12 @@ void Document::parse_rss(const pt::ptree &tree)
             Item item;
             item.description = [&]
             {
-                string desc
-                    {remove_html(rssitem.get<string>("description"))};
+                string desc{rssitem.get<string>("description")};
                 for (const auto &fix : _profiledata.fixes)
                 {
                     desc = regex_replace(desc, regex{fix}, "");
                 }
+                desc = remove_html(desc);
                 return add_hashtags(desc);
             }();
             item.guid = move(guid);
