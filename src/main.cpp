@@ -34,6 +34,7 @@ constexpr int noprofile = 1;
 constexpr int network = 2;
 constexpr int file = 3;
 constexpr int mastodon = 4;
+constexpr int json = 5;
 constexpr int unknown = 9;
 } // namespace error
 
@@ -133,6 +134,11 @@ int main(int argc, char *argv[])
             {
                 cerr << e.what() << '\n';
                 return error::network;
+            }
+            catch (const Json::RuntimeError &e)
+            {
+                cerr << "JSON error:\n" << e.what() << '\n';
+                return error::json;
             }
             catch (const runtime_error &e)
             {
