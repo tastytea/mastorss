@@ -20,10 +20,12 @@
 #include <boost/log/trivial.hpp>
 
 #include <string>
+#include <string_view>
 
 namespace mastorss
 {
 using std::string;
+using std::string_view;
 
 MastoAPI::MastoAPI(const ProfileData &data)
     : _profile{data}
@@ -53,16 +55,26 @@ void MastoAPI::post_item(const Item &item)
     }()};
     status.append("\n\n" + item.link);
 
+    const size_t len{status.size()};
+    const size_t len_append{[&]
+    {
+        if (_profile.append.empty())
+        {
+            return size_t{};
+        }
+        return _profile.append.size() + 2;
+    }()};
+    const size_t len_max{_profile.max_size};
+    constexpr string_view omission = " […]";
+
+    if ((len + len_append) > len_max)
+    {
+        status.resize(len_max - len_append - omission.size());
+        status.append(omission);
+    }
+
     if (!_profile.append.empty())
     {
-        const size_t len{status.size()};
-        const size_t len_append{_profile.append.size() + 2};
-        const size_t len_max{_profile.max_size};
-
-        if ((len + len_append) > len_max)
-        {
-            status.resize(len_max - len_append);
-        }
         status.append("\n\n" + _profile.append);
     }
 
