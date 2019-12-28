@@ -260,7 +260,7 @@ void Config::write()
     _json[_profile]["max_size"] = data.max_size;
     // Leave skip.
     _json[_profile]["titles_as_cw"] = data.titles_as_cw;
-    _json[_profile]["titles_as_cw"] = data.titles_only;
+    _json[_profile]["titles_only"] = data.titles_only;
 
     ofstream file{get_filename().c_str()};
     if (file.good())
