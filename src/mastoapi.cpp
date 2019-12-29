@@ -83,7 +83,7 @@ void MastoAPI::post_item(const Item &item)
         const auto pos = status.rfind(' ');
         if (pos != string::npos)
         {
-            status.resize(status.size() - pos);
+            status.resize(pos);
         }
 
         status.append(omission);
