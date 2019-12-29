@@ -1,3 +1,4 @@
+= mastorss
 :toc: preamble
 
 :project: mastorss
