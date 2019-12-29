@@ -74,10 +74,10 @@ void MastoAPI::post_item(const Item &item)
     }()};
     BOOST_LOG_TRIVIAL(debug) << "Maximum status length: " << status.size();
 
-    constexpr string_view omission = " […]";
 
     if ((len_status + len_append) > len_max)
     {
+        constexpr string_view omission = " […]";
         status.resize(len_max - len_append - omission.size());
 
         // Don't cut in the middle of a word.
@@ -89,7 +89,6 @@ void MastoAPI::post_item(const Item &item)
 
         status.append(omission);
         BOOST_LOG_TRIVIAL(debug) << "Status resized to: " << status.size();
-        BOOST_LOG_TRIVIAL(debug) << "Status: \"" << status << '"';
     }
 
     status.append("\n\n" + item.link);
@@ -99,6 +98,7 @@ void MastoAPI::post_item(const Item &item)
         status.append("\n\n" + _profile.append);
     }
     BOOST_LOG_TRIVIAL(debug) << "Status length: " << status.size();
+    BOOST_LOG_TRIVIAL(debug) << "Status: \"" << status << '"';
 
     Mastodon::parameters params{{"status", {status}}};
     if (_profile.titles_as_cw)
