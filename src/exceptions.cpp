@@ -18,9 +18,11 @@
 
 #include <utility>
 
-using namespace mastorss;
 using std::to_string;
 using std::move;
+
+namespace mastorss
+{
 
 HTTPException::HTTPException(const int error)
     : error_code{static_cast<uint16_t>(error)}
@@ -61,3 +63,4 @@ const char *FileException::what() const noexcept
 {
     return _message.c_str();
 }
+} // namespace mastorss
