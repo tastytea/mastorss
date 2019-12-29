@@ -35,6 +35,10 @@ before 2019-12-28, please update your git settings accordingly.
 
 === Get sourcecode
 
+==== Release
+
+Download the current release at link:{uri-base}/releases[schlomp.space].
+
 ==== Development version
 
 [source,shell]
