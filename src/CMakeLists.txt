@@ -22,9 +22,8 @@ if(NOT ${restclient-cpp_FOUND})
 endif()
 
 # Write version in header.
-configure_file (
-  "${PROJECT_SOURCE_DIR}/src/version.hpp.in"
-  "${PROJECT_BINARY_DIR}/version.hpp")
+configure_file ("${PROJECT_SOURCE_DIR}/src/version.hpp.in"
+  "${PROJECT_BINARY_DIR}/version.hpp" @ONLY)
 
 include_directories("${PROJECT_BINARY_DIR}")
 
