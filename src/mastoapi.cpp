@@ -59,7 +59,7 @@ void MastoAPI::post_item(const Item &item)
     {
         if (_profile.append.empty())
         {
-            return size_t{};
+            return size_t{0};
         }
         return _profile.append.size() + 2;
     }()};
