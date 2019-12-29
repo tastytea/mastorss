@@ -72,6 +72,8 @@ void MastoAPI::post_item(const Item &item)
         }
         return _profile.max_size;
     }()};
+    BOOST_LOG_TRIVIAL(debug) << "Maximum status length: " << status.size();
+
     constexpr string_view omission = " […]";
 
     if ((len_status + len_append) > len_max)
