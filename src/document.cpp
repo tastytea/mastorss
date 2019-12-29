@@ -244,8 +244,8 @@ string Document::add_hashtags(const string &text)
     string out{text};
     for (const auto &tag : _watchwords)
     {
-        regex re_tag("([[:space:][:punct:]-\u200b]|^)("
-            + tag + ")([[:space:][:punct:]-\u200b]|$)", regex::icase);
+        regex re_tag("([[:space:]\u200b]|^)("
+            + tag + ")([[:space:]\u200b[:punct:]]|$)", regex::icase);
         out = regex_replace(out, re_tag, "$1#$2$3", boost::format_first_only);
     }
 
