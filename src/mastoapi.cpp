@@ -53,9 +53,8 @@ void MastoAPI::post_item(const Item &item)
         }
         return s;
     }()};
-    status.append("\n\n" + item.link);
 
-    const size_t len_status{status.size()};
+    const size_t len_status{status.size() + item.link.size() + 2};
     const size_t len_append{[&]
     {
         if (_profile.append.empty())
@@ -78,7 +77,6 @@ void MastoAPI::post_item(const Item &item)
     if ((len_status + len_append) > len_max)
     {
         status.resize(len_max - len_append - omission.size());
-        BOOST_LOG_TRIVIAL(debug) << "Status resized to: " << status.size();
 
         // Don't cut in the middle of a word.
         const auto pos = status.rfind(' ');
@@ -90,6 +88,8 @@ void MastoAPI::post_item(const Item &item)
         status.append(omission);
         BOOST_LOG_TRIVIAL(debug) << "Status resized to: " << status.size();
     }
+
+    status.append("\n\n" + item.link);
 
     if (!_profile.append.empty())
     {
