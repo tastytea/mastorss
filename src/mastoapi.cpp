@@ -89,6 +89,7 @@ void MastoAPI::post_item(const Item &item)
 
         status.append(omission);
         BOOST_LOG_TRIVIAL(debug) << "Status resized to: " << status.size();
+        BOOST_LOG_TRIVIAL(debug) << "Status: \"" << status << '"';
     }
 
     status.append("\n\n" + item.link);
