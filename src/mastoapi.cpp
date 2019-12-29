@@ -55,7 +55,15 @@ void MastoAPI::post_item(const Item &item)
     }()};
     status.append("\n\n" + item.link);
 
-    const size_t len{status.size()};
+    const size_t len_status{[&]
+    {
+        if (_profile.titles_as_cw)
+        {
+            // Subjects (CWs) count into the post length.
+            return status.size() + item.title.size();
+        }
+        return status.size();
+    }()};
     const size_t len_append{[&]
     {
         if (_profile.append.empty())
@@ -67,7 +75,7 @@ void MastoAPI::post_item(const Item &item)
     const size_t len_max{_profile.max_size};
     constexpr string_view omission = " […]";
 
-    if ((len + len_append) > len_max)
+    if ((len_status + len_append) > len_max)
     {
         status.resize(len_max - len_append - omission.size());
 
@@ -85,6 +93,7 @@ void MastoAPI::post_item(const Item &item)
     {
         status.append("\n\n" + _profile.append);
     }
+    BOOST_LOG_TRIVIAL(debug) << "Status length: " << status.size();
 
     Mastodon::parameters params{{"status", {status}}};
     if (_profile.titles_as_cw)
