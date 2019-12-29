@@ -37,4 +37,10 @@ endif()
 install(FILES watchwords.json
   DESTINATION "${CMAKE_INSTALL_DATADIR}/mastorss")
 
+# Needed for AppImage.
+configure_file("de.tastytea.${PROJECT_NAME}.desktop.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/de.tastytea.${PROJECT_NAME}.desktop" @ONLY)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/de.tastytea.${PROJECT_NAME}.desktop"
+  DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications")
+
 # include(cmake/packages.cmake)
