@@ -55,15 +55,7 @@ void MastoAPI::post_item(const Item &item)
     }()};
     status.append("\n\n" + item.link);
 
-    const size_t len_status{[&]
-    {
-        if (_profile.titles_as_cw)
-        {
-            // Subjects (CWs) count into the post length.
-            return status.size() + item.title.size();
-        }
-        return status.size();
-    }()};
+    const size_t len_status{status.size()};
     const size_t len_append{[&]
     {
         if (_profile.append.empty())
@@ -72,12 +64,21 @@ void MastoAPI::post_item(const Item &item)
         }
         return _profile.append.size() + 2;
     }()};
-    const size_t len_max{_profile.max_size};
+    const size_t len_max{[&]
+    {
+        if (_profile.titles_as_cw)
+        {
+            // Subjects (CWs) count into the post length.
+            return _profile.max_size - item.title.size();
+        }
+        return _profile.max_size;
+    }()};
     constexpr string_view omission = " […]";
 
     if ((len_status + len_append) > len_max)
     {
         status.resize(len_max - len_append - omission.size());
+        BOOST_LOG_TRIVIAL(debug) << "Status resized to: " << status.size();
 
         // Don't cut in the middle of a word.
         const auto pos = status.rfind(' ');
@@ -87,6 +88,7 @@ void MastoAPI::post_item(const Item &item)
         }
 
         status.append(omission);
+        BOOST_LOG_TRIVIAL(debug) << "Status resized to: " << status.size();
     }
 
     if (!_profile.append.empty())
