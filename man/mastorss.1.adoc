@@ -170,8 +170,7 @@ proxy support yet, sorry.
 
 == DEBUGGING
 
-Define the variable `MASTORSS_DEBUG` to enable debug output. The output will
-contain the access token, so be careful if you share it.
+Define the variable `MASTORSS_DEBUG` to enable debug output.
 
 .Debug mastorss while using the profile “example”.
 ================================================================================

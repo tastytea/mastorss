@@ -41,8 +41,7 @@ using std::move;
 
 std::ostream &operator <<(std::ostream &out, const ProfileData &data)
 {
-    out << "access_token: \"" << data.access_token << "\", "
-        << "append: \"" << data.append << "\", "
+    out << "append: \"" << data.append << "\", "
         << "feedurl: \"" << data.feedurl << "\", "
         << "fixes: [";
     for (const auto &fix : data.fixes)
