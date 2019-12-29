@@ -16,18 +16,11 @@
 #include <thread>
 #include <vector>
 
-using namespace mastorss;
-using std::chrono::seconds;
-using std::getenv;
-using std::cout;
-using std::cerr;
-using std::runtime_error;
-using std::string_view;
-using std::vector;
-using std::this_thread::sleep_for;
-
 namespace mastorss
 {
+using std::cout;
+using std::cerr;
+
 namespace error
 {
 constexpr int noprofile = 1;
@@ -60,6 +53,15 @@ void print_help(const string_view &command)
 
 int main(int argc, char *argv[])
 {
+    using namespace mastorss;
+    using std::chrono::seconds;
+    using std::getenv;
+    using std::cerr;
+    using std::runtime_error;
+    using std::string_view;
+    using std::vector;
+    using std::this_thread::sleep_for;
+
     const vector<string_view> args(argv, argv + argc);
 
     if (getenv("MASTORSS_DEBUG") == nullptr)
