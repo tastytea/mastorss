@@ -54,7 +54,6 @@ void MastoAPI::post_item(const Item &item)
         return s;
     }()};
 
-    const size_t len_status{status.size() + item.link.size() + 2};
     const size_t len_append{[&]
     {
         if (_profile.append.empty())
@@ -63,6 +62,7 @@ void MastoAPI::post_item(const Item &item)
         }
         return _profile.append.size() + 2;
     }()};
+    const size_t len_status{status.size()};
     const size_t len_max{[&]
     {
         if (_profile.titles_as_cw)
@@ -71,13 +71,14 @@ void MastoAPI::post_item(const Item &item)
             return _profile.max_size - item.title.size();
         }
         return _profile.max_size;
-    }()};
-    BOOST_LOG_TRIVIAL(debug) << "Maximum status length: " << len_max;;
+    }() - item.link.size() - 2 - len_append};
+    BOOST_LOG_TRIVIAL(debug)
+        << "Maximum text (without link and appendix) length: " << len_max;
 
-    if ((len_status + len_append) > len_max)
+    if (len_status > len_max)
     {
         constexpr string_view omission = " […]";
-        status.resize(len_max - len_append - omission.size());
+        status.resize(len_max - omission.size());
 
         // Don't cut in the middle of a word.
         const auto pos = status.rfind(' ');
