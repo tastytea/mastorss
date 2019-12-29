@@ -83,7 +83,7 @@ void Document::download(const string &uri, const bool temp_redirect)
     {
         if (temp_redirect)
         {
-            goto temporary_redirect;
+            goto temporary_redirect; // NOLINT(cppcoreguidelines-avoid-goto)
         }
         _profiledata.feedurl = extract_location(response.headers);
         if (_profiledata.feedurl.empty())
