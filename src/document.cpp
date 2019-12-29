@@ -35,6 +35,7 @@ namespace mastorss
 {
 using boost::regex;
 using boost::regex_replace;
+using std::any_of;
 using std::transform;
 using std::ifstream;
 using std::istringstream;
@@ -162,17 +163,10 @@ void Document::parse_rss(const pt::ptree &tree)
                 break;
             }
 
-            bool skipthis{false};
             string title{rssitem.get<string>("title")};
-            for (const auto &skip : _profiledata.skip)
-            {
-                if (title.substr(0, skip.length()) == skip)
-                {
-                    skipthis = true;
-                    break;
-                }
-            }
-            if (skipthis)
+            if (any_of(_profiledata.skip.begin(), _profiledata.skip.end(),
+                       [&title](const string &skip)
+                       { return title.substr(0, skip.size()) == skip; }))
             {
                 BOOST_LOG_TRIVIAL(debug) << "Skipped GUID: " << guid;
                 continue;
