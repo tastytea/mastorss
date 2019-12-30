@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Version=1.1
+Name=@PROJECT_NAME@
+NoDisplay=true
+Comment=@PROJECT_DESCRIPTION@
+Exec=@PROJECT_NAME@
+Terminal=true
+Categories=Network;
+Keywords=RSS;Mastodon;
+StartupNotify=false
