@@ -55,6 +55,10 @@ cmake ..
 cmake --build .
 --------------------------------------------------------------------------------
 
+.CMake options:
+* `-DWITH_MAN=NO` to not compile the manpage (default is `YES`).
+* `-DWITH_DESKTOP=YES` to build the .desktop file (default is `NO`).
+
 Install with `make install`.
 
 == Usage

@@ -19,6 +19,7 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 # Project build options.
 option(WITH_MAN "Compile and install manpage." YES)
+option(WITH_DESKTOP "Build and install a .desktop file." NO)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -37,10 +38,12 @@ endif()
 install(FILES watchwords.json
   DESTINATION "${CMAKE_INSTALL_DATADIR}/mastorss")
 
-# Needed for AppImage.
-configure_file("de.tastytea.${PROJECT_NAME}.desktop.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/de.tastytea.${PROJECT_NAME}.desktop" @ONLY)
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/de.tastytea.${PROJECT_NAME}.desktop"
-  DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications")
+if(WITH_DESKTOP)
+  # Needed for AppImage.
+  configure_file("de.tastytea.${PROJECT_NAME}.desktop.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/de.tastytea.${PROJECT_NAME}.desktop" @ONLY)
+  install(FILES "${CMAKE_CURRENT_BINARY_DIR}/de.tastytea.${PROJECT_NAME}.desktop"
+    DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications")
+endif()
 
 # include(cmake/packages.cmake)
