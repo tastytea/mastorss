@@ -28,6 +28,7 @@ constexpr int network = 2;
 constexpr int file = 3;
 constexpr int mastodon = 4;
 constexpr int json = 5;
+constexpr int parse = 6;
 constexpr int unknown = 9;
 } // namespace error
 
@@ -141,6 +142,11 @@ int main(int argc, char *argv[])
             {
                 cerr << "JSON error:\n" << e.what() << '\n';
                 return error::json;
+            }
+            catch (const ParseException &e)
+            {
+                cerr << e.what() << '\n';
+                return error::parse;
             }
             catch (const runtime_error &e)
             {

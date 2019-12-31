@@ -165,6 +165,7 @@ SOCKS proxy support yet, sorry.
 |    3 | File error.
 |    4 | Mastodon API error.
 |    5 | JSON error, most likely the file is wrongly formatted.
+|    6 | Feed parse error. Usually the type of feed could not be detected.
 |    9 | Unknown error.
 |===============================================================================
 

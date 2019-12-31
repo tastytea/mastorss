@@ -71,6 +71,18 @@ public:
 private:
     const string _message;
 };
+
+class ParseException : public exception
+{
+public:
+    explicit ParseException(string message);
+
+    [[nodiscard]]
+    const char *what() const noexcept override;
+
+private:
+    const string _message;
+};
 } // namespace mastorss
 
 #endif  // MASTORSS_EXCEPTIONS_HPP

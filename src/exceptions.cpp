@@ -63,4 +63,13 @@ const char *FileException::what() const noexcept
 {
     return _message.c_str();
 }
+
+ParseException::ParseException(string message)
+    : _message{move(message)}
+{}
+
+const char *ParseException::what() const noexcept
+{
+    return _message.c_str();
+}
 } // namespace mastorss
