@@ -145,25 +145,11 @@ void Config::generate()
 
     cout << "Post only titles? [y/n]: ";
     std::getline(cin, line);
-    if (line[0] == 'y')
-    {
-        profiledata.titles_only = true;
-    }
-    else
-    {
-        profiledata.titles_only = false;
-    }
+    profiledata.titles_only = (line[0] == 'y');
 
     cout << "Post titles as cw? [y/n]: ";
     std::getline(cin, line);
-    if (line[0] == 'y')
-    {
-        profiledata.titles_as_cw = true;
-    }
-    else
-    {
-        profiledata.titles_as_cw = false;
-    }
+    profiledata.titles_as_cw = (line[0] == 'y');
 
     cout << "Append this string to each post: ";
     std::getline(cin, line);
