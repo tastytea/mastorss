@@ -104,3 +104,92 @@ steps:
       from_secret: email_password
   when:
     status: [ changed, failure ]
+
+---
+kind: pipeline
+name: packages x86_64
+
+trigger:
+  event:
+    - tag
+
+volumes:
+- name: debian-package-cache
+  host:
+    path: /var/cache/debian-package-cache
+
+steps:
+- name: download mastodon-cpp for buster
+  image: plugins/download
+  settings:
+    source: https://schlomp.space/tastytea/mastodon-cpp/releases/download/0.111.5/libmastodon-cpp_0.111.5-0_buster_amd64.deb
+    destination: mastodon-cpp_buster.deb
+
+- name: download linuxdeploy
+  image: plugins/download
+  settings:
+    source: https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+    destination: linuxdeploy
+
+- name: AppImage
+  image: debian:buster-slim
+  pull: always
+  environment:
+    CXX: g++-8
+    CXXFLAGS: -pipe -O2
+    DEBIAN_FRONTEND: noninteractive
+    LANG: C.utf8
+  commands:
+  - rm /etc/apt/apt.conf.d/docker-clean
+  - alias apt-get='rm -f /var/cache/apt/archives/lock && apt-get'
+  - apt-get update -q
+  - echo "deb https://packagecloud.io/mrtazz/restclient-cpp/debian/ buster main" > /etc/apt/sources.list.d/restclient-cpp.list
+  - apt-get install -qq debian-archive-keyring curl gnupg apt-transport-https
+  - curl -L https://packagecloud.io/mrtazz/restclient-cpp/gpgkey | apt-key add -
+  - apt-get update -q
+  - apt-get install -qq build-essential cmake asciidoc
+  - apt-get install -qq libboost-filesystem-dev libboost-log-dev libboost-regex-dev libjsoncpp-dev catch libcurl4-openssl-dev restclient-cpp libpoco-dev
+  - apt-get -qq install ./mastodon-cpp_buster.deb
+  - tar -xf restclient-cpp.tar.gz
+  - cd restclient-cpp-*
+  - cmake -DCMAKE_INSTALL_PREFIX=/usr .
+  - cmake --build .
+  - make install
+  - cd ..
+  - chmod +x linuxdeploy
+  - rm -rf build && mkdir -p build && cd build
+  - cmake -DWITH_DESKTOP -DCMAKE_INSTALL_PREFIX=/usr ..
+  - cmake --build .
+  - make install DESTDIR=AppDir
+  - cd ..
+  - VERSION="${DRONE_TAG}" ./linuxdeploy --appdir build/AppDir --output appimage
+  volumes:
+  - name: debian-package-cache
+    path: /var/cache/apt/archives
+
+- name: release
+  image: plugins/gitea-release
+  pull: always
+  settings:
+    base_url: https://schlomp.space
+    api_key:
+      from_secret: gitea_token
+    title: ${DRONE_TAG}
+    prerelease: true
+    files:
+      - mastorss-x86_64.AppImage
+    checksum:
+      - sha512
+
+- name: notify
+  image: drillster/drone-email
+  pull: always
+  settings:
+    host: cryptoparty-celle.de
+    from: drone@tzend.de
+    username:
+      from_secret: email_username
+    password:
+      from_secret: email_password
+  when:
+    status: [ changed, failure ]
