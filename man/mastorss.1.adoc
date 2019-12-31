@@ -2,7 +2,7 @@
 :doctype:       manpage
 :Author:        tastytea
 :Email:         tastytea@tastytea.de
-:Date:          2019-12-29
+:Date:          2019-12-31
 :Revision:      0.0.0
 :man source:    mastorss
 :man manual:    General Commands Manual
@@ -136,8 +136,8 @@ Currently only HTTP and HTTPS are supported.
 == PROXY SERVERS
 
 mastorss supports HTTP proxies set via the environment variable
-_http_proxy_. Accepted format: _\http://[user[:password]@]host[:port]/_ No SOCKS
-proxy support yet, sorry.
+_http_proxy_. Accepted format: _+++http://[user[:password]@]host[:port]/+++_. No
+SOCKS proxy support yet, sorry.
 
 .Use mastorss with a proxy server
 ================================================================================
@@ -174,9 +174,9 @@ Define the variable `MASTORSS_DEBUG` to enable debug output.
 
 .Debug mastorss while using the profile “example”.
 ================================================================================
-[source,shell]
+[source,shellsession]
 --------------------------------------------------------------------------------
-MASTORSS_DEBUG=1 mastorss example
+% MASTORSS_DEBUG=1 mastorss example
 --------------------------------------------------------------------------------
 ================================================================================
 
