@@ -27,13 +27,14 @@ namespace mastorss
 class MastoAPI
 {
 public:
-    explicit MastoAPI(const ProfileData &data);
+    explicit MastoAPI(ProfileData &data);
 
     void post_item(const Item &item);
 
 private:
-    const ProfileData &_profile;
+    ProfileData &_profile;
     Mastodon::API _masto;
+    constexpr static size_t _max_guids{100};
 };
 } // namespace mastorss
 

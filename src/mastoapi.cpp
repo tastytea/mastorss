@@ -27,7 +27,7 @@ namespace mastorss
 using std::string;
 using std::string_view;
 
-MastoAPI::MastoAPI(const ProfileData &data)
+MastoAPI::MastoAPI(ProfileData &data)
     : _profile{data}
     , _masto{_profile.instance, _profile.access_token}
 {
@@ -116,5 +116,11 @@ void MastoAPI::post_item(const Item &item)
         throw MastodonException{ret.error_code};
     }
     BOOST_LOG_TRIVIAL(debug) << "Posted status with GUID: " << item.guid;
+
+    _profile.guids.push_back(item.guid);
+    if (_profile.guids.size() > _max_guids)
+    {
+        _profile.guids.pop_front();
+    }
 }
 } // namespace mastorss
