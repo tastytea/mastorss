@@ -165,8 +165,13 @@ void Document::parse_rss(const pt::ptree &tree)
                        [&](const auto &old_guid)
                        { return guid == old_guid; }))
             {
-                BOOST_LOG_TRIVIAL(debug)
-                    << "Found already posted GUID, stopped parsing.";
+                BOOST_LOG_TRIVIAL(debug) << "Found already posted GUID.";
+                if (_profiledata.keep_looking)
+                {
+                    continue;
+                }
+
+                BOOST_LOG_TRIVIAL(debug) << "Stopped parsing.";
                 break;
             }
 

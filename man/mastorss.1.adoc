@@ -2,7 +2,7 @@
 :doctype:       manpage
 :Author:        tastytea
 :Email:         tastytea@tastytea.de
-:Date:          2019-12-31
+:Date:          2020-01-01
 :Revision:      0.0.0
 :man source:    mastorss
 :man manual:    General Commands Manual
@@ -67,6 +67,11 @@ information about the syntax see *perlre*(1).
 *instance*::
 Hostname of the instance you're using to post.
 
+*keep_looking*::
+If true, keep looking for new items after encountering the first that was
+already posted. If you set this in the beginning, the whole feed will get
+posted, since all items are new.
+
 *interval*::
 Time to wait between posts.
 
@@ -104,6 +109,7 @@ If true, only post titles, no descriptions.
         ],
         "instance" : "newsbots.eu",
         "interval" : 600,
+        "keep_looking" : false,
         "max_size" : 500,
         "skip" :
         [

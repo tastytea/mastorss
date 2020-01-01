@@ -46,6 +46,7 @@ struct ProfileData
     list<string> fixes;
     list<string> guids;
     string instance;
+    bool keep_looking{false};
     uint32_t interval{30};
     string last_guid;
     size_t max_size{500};

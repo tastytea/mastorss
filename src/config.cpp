@@ -64,6 +64,7 @@ std::ostream &operator <<(std::ostream &out, const ProfileData &data)
     out << "], "
         << "instance: \"" << data.instance << "\", "
         << "interval: " << data.interval << ", "
+        << "keep_looking: " << data.keep_looking << ", "
         << "last_guid: \"" << data.last_guid << "\", "
         << "max_size: " << data.max_size << ", "
         << "skip: [";
@@ -230,6 +231,7 @@ void Config::parse()
         profiledata.interval =
             static_cast<uint32_t>(_json[profile]["interval"].asUInt64());
     }
+    profiledata.keep_looking = _json[profile]["keep_looking"].asBool();
     profiledata.last_guid = _json[profile]["last_guid"].asString();
     if (!_json[profile]["max_size"].isNull())
     {
@@ -251,6 +253,7 @@ void Config::write()
     _json[profile]["fixes"] = stringlist_to_jsonarray(profiledata.fixes);
     _json[profile]["instance"] = profiledata.instance;
     _json[profile]["interval"] = profiledata.interval;
+    _json[profile]["keep_looking"] = profiledata.keep_looking;
     _json[profile]["last_guid"] = profiledata.last_guid;
     _json[profile]["max_size"]
         = static_cast<Json::Value::UInt64>(profiledata.max_size);
