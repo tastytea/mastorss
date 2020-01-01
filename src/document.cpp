@@ -165,7 +165,8 @@ void Document::parse_rss(const pt::ptree &tree)
                        [&](const auto &old_guid)
                        { return guid == old_guid; }))
             {
-                BOOST_LOG_TRIVIAL(debug) << "Found already posted GUID.";
+                BOOST_LOG_TRIVIAL(debug) << "Found already posted GUID: "
+                                         << guid;
                 if (_profiledata.keep_looking)
                 {
                     continue;
