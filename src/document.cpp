@@ -161,7 +161,9 @@ void Document::parse_rss(const pt::ptree &tree)
             {
                 guid = rssitem.get<string>("link");
             }
-            if (guid == _profiledata.last_guid)
+            if (any_of(_profiledata.guids.begin(), _profiledata.guids.end(),
+                       [&](const auto &old_guid)
+                       { return guid == old_guid; }))
             {
                 BOOST_LOG_TRIVIAL(debug)
                     << "Found already posted GUID, stopped parsing.";
@@ -195,7 +197,7 @@ void Document::parse_rss(const pt::ptree &tree)
 
             BOOST_LOG_TRIVIAL(debug) << "Found GUID: " << item.guid;
 
-            if (_profiledata.last_guid.empty())
+            if (_profiledata.guids.empty())
             {
                 BOOST_LOG_TRIVIAL(debug) << "This is the first run.";
                 break;
