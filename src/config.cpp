@@ -284,7 +284,7 @@ Json::Value Config::stringlist_to_jsonarray(const list<string> &stringlist)
     for (const auto &element : stringlist)
     {
         static Json::ArrayIndex index{0};
-        jsonarray.insert(index, element);
+        jsonarray[index] = element;
         ++index;
     }
     return jsonarray;
