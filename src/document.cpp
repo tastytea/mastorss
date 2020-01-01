@@ -141,8 +141,11 @@ void Document::parse()
         BOOST_LOG_TRIVIAL(debug) << "RSS detected.";
         parse_rss(tree);
     }
+    else
+    {
+        throw ParseException{"Could not detect type of feed."};
 
-    ParseException{"Could not detect type of feed."};
+    }
 }
 
 void Document::parse_rss(const pt::ptree &tree)
