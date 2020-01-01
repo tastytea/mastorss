@@ -213,10 +213,7 @@ void Config::parse()
     profiledata.access_token = _json[profile]["access_token"].asString();
     profiledata.append = _json[profile]["append"].asString();
     profiledata.feedurl = _json[profile]["feedurl"].asString();
-    for (const auto &fix : _json[profile]["fixes"])
-    {
-        profiledata.fixes.push_back(fix.asString());
-    }
+    profiledata.fixes = jsonarray_to_stringlist(_json[profile]["fixes"]);
     profiledata.instance = _json[profile]["instance"].asString();
     if (!_json[profile]["interval"].isNull())
     {
@@ -228,10 +225,7 @@ void Config::parse()
     {
         profiledata.max_size = _json[profile]["max_size"].asUInt64();
     }
-    for (const auto &skip : _json[profile]["skip"])
-    {
-        profiledata.skip.push_back(skip.asString());
-    }
+    profiledata.skip = jsonarray_to_stringlist(_json[profile]["skip"]);
     profiledata.titles_as_cw = _json[profile]["titles_as_cw"].asBool();
     profiledata.titles_only = _json[profile]["titles_only"].asBool();
 
@@ -243,13 +237,13 @@ void Config::write()
     _json[profile]["access_token"] = profiledata.access_token;
     _json[profile]["append"] = profiledata.append;
     _json[profile]["feedurl"] = profiledata.feedurl;
-    // Leave fixes.
+    _json[profile]["fixes"] = stringlist_to_jsonarray(profiledata.fixes);
     _json[profile]["instance"] = profiledata.instance;
     _json[profile]["interval"] = profiledata.interval;
     _json[profile]["last_guid"] = profiledata.last_guid;
     _json[profile]["max_size"]
         = static_cast<Json::Value::UInt64>(profiledata.max_size);
-    // Leave skip.
+    _json[profile]["skip"] = stringlist_to_jsonarray(profiledata.skip);
     _json[profile]["titles_as_cw"] = profiledata.titles_as_cw;
     _json[profile]["titles_only"] = profiledata.titles_only;
 
@@ -260,5 +254,28 @@ void Config::write()
     }
 
     BOOST_LOG_TRIVIAL(debug) << "Wrote config file.";
+}
+
+list<string> Config::jsonarray_to_stringlist(const Json::Value &jsonarray) const
+{
+    list<string> stringlist;
+    for (const auto &element : jsonarray)
+    {
+        stringlist.push_back(element.asString());
+    }
+    return stringlist;
+}
+
+Json::Value Config::stringlist_to_jsonarray(const list<string> &stringlist)
+    const
+{
+    Json::Value jsonarray;
+    for (const auto &element : stringlist)
+    {
+        static Json::ArrayIndex index{0};
+        jsonarray.insert(index, element);
+        ++index;
+    }
+    return jsonarray;
 }
 } // namespace mastorss

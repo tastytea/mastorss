@@ -21,17 +21,17 @@
 #include <json/json.h>
 
 #include <cstdint>
+#include <list>
 #include <string>
 #include <string_view>
-#include <vector>
 
 namespace mastorss
 {
 namespace fs = boost::filesystem;
 using std::uint32_t;
+using std::list;
 using std::string;
 using std::string_view;
-using std::vector;
 
 /*!
  *  @brief  The configuration for a profile as data structure.
@@ -43,12 +43,12 @@ struct ProfileData
     string access_token;
     string append;
     string feedurl;
-    vector<string> fixes;
+    list<string> fixes;
     string instance;
     uint32_t interval{30};
     string last_guid;
     size_t max_size{500};
-    vector<string> skip;
+    list<string> skip;
     bool titles_as_cw{false};
     bool titles_only{false};
 
@@ -82,6 +82,8 @@ private:
     [[nodiscard]]
     string get_access_token(const string &instance) const;
     void parse();
+    list<string> jsonarray_to_stringlist(const Json::Value &jsonarray) const;
+    Json::Value stringlist_to_jsonarray(const list<string> &stringlist) const;
 };
 } // namespace mastorss
 
