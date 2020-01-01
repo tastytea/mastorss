@@ -44,6 +44,7 @@ struct ProfileData
     string append;
     string feedurl;
     list<string> fixes;
+    list<string> guids;
     string instance;
     uint32_t interval{30};
     string last_guid;

@@ -52,6 +52,15 @@ std::ostream &operator <<(std::ostream &out, const ProfileData &data)
             out << ", ";
         }
     }
+    out << "guids: [";
+    for (const auto &guid : data.guids)
+    {
+        out << '"' << guid << '"';
+        if (guid != *data.fixes.rbegin())
+        {
+            out << ", ";
+        }
+    }
     out << "], "
         << "instance: \"" << data.instance << "\", "
         << "interval: " << data.interval << ", "
@@ -214,6 +223,7 @@ void Config::parse()
     profiledata.append = _json[profile]["append"].asString();
     profiledata.feedurl = _json[profile]["feedurl"].asString();
     profiledata.fixes = jsonarray_to_stringlist(_json[profile]["fixes"]);
+    profiledata.guids = jsonarray_to_stringlist(_json[profile]["guids"]);
     profiledata.instance = _json[profile]["instance"].asString();
     if (!_json[profile]["interval"].isNull())
     {
@@ -237,6 +247,7 @@ void Config::write()
     _json[profile]["access_token"] = profiledata.access_token;
     _json[profile]["append"] = profiledata.append;
     _json[profile]["feedurl"] = profiledata.feedurl;
+    _json[profile]["guids"] = stringlist_to_jsonarray(profiledata.guids);
     _json[profile]["fixes"] = stringlist_to_jsonarray(profiledata.fixes);
     _json[profile]["instance"] = profiledata.instance;
     _json[profile]["interval"] = profiledata.interval;
