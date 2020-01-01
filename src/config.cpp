@@ -52,20 +52,19 @@ std::ostream &operator <<(std::ostream &out, const ProfileData &data)
             out << ", ";
         }
     }
-    out << "guids: [";
+    out << "], "
+        << "guids: [";
     for (const auto &guid : data.guids)
     {
         out << '"' << guid << '"';
-        if (guid != *data.fixes.rbegin())
+        if (guid != *data.guids.rbegin())
         {
             out << ", ";
         }
     }
-    out << "], "
-        << "instance: \"" << data.instance << "\", "
+    out << "instance: \"" << data.instance << "\", "
         << "interval: " << data.interval << ", "
         << "keep_looking: " << data.keep_looking << ", "
-        << "last_guid: \"" << data.last_guid << "\", "
         << "max_size: " << data.max_size << ", "
         << "skip: [";
     for (const auto &skip : data.skip)
