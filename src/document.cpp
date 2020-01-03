@@ -279,8 +279,9 @@ void Document::parse_watchwords()
     }
     else
     {
-        throw FileException{"File Not found:"
-                + (_cfg.get_config_dir() /= "watchwords.json").string()};
+        BOOST_LOG_TRIVIAL(warning) << "File Not found: " <<
+            (_cfg.get_config_dir() /= "watchwords.json").string();
+        return;
     }
 
     const auto &tags_profile = json[_cfg.profile]["tags"];
