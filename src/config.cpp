@@ -20,6 +20,7 @@
 #include <boost/log/trivial.hpp>
 #include <mastodon-cpp/mastodon-cpp.hpp>
 
+#include <algorithm>
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
@@ -29,6 +30,8 @@
 
 namespace mastorss
 {
+using std::transform;
+using std::back_inserter;
 using std::stoul;
 using std::getenv;
 using std::ifstream;
@@ -272,10 +275,9 @@ void Config::write()
 list<string> Config::jsonarray_to_stringlist(const Json::Value &jsonarray) const
 {
     list<string> stringlist;
-    for (const auto &element : jsonarray)
-    {
-        stringlist.push_back(element.asString());
-    }
+    std::transform(jsonarray.begin(), jsonarray.end(), stringlist.begin(),
+                   back_inserter(stringlist));
+
     return stringlist;
 }
 
@@ -283,12 +285,9 @@ Json::Value Config::stringlist_to_jsonarray(const list<string> &stringlist)
     const
 {
     Json::Value jsonarray;
-    for (const auto &element : stringlist)
-    {
-        static Json::ArrayIndex index{0};
-        jsonarray[index] = element;
-        ++index;
-    }
+    std::transform(stringlist.begin(), stringlist.end(), jsonarray.begin(),
+                   back_inserter(jsonarray));
+
     return jsonarray;
 }
 } // namespace mastorss
