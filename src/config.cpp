@@ -234,7 +234,6 @@ void Config::parse()
             static_cast<uint32_t>(_json[profile]["interval"].asUInt64());
     }
     profiledata.keep_looking = _json[profile]["keep_looking"].asBool();
-    profiledata.last_guid = _json[profile]["last_guid"].asString();
     if (!_json[profile]["max_size"].isNull())
     {
         profiledata.max_size = _json[profile]["max_size"].asUInt64();
@@ -256,7 +255,6 @@ void Config::write()
     _json[profile]["instance"] = profiledata.instance;
     _json[profile]["interval"] = profiledata.interval;
     _json[profile]["keep_looking"] = profiledata.keep_looking;
-    _json[profile]["last_guid"] = profiledata.last_guid;
     _json[profile]["max_size"]
         = static_cast<Json::Value::UInt64>(profiledata.max_size);
     _json[profile]["skip"] = stringlist_to_jsonarray(profiledata.skip);

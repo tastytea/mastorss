@@ -109,7 +109,6 @@ int main(int argc, char *argv[])
                     for (const auto &item : doc.new_items)
                     {
                         masto.post_item(item);
-                        cfg.profiledata.last_guid = item.guid;
                         if (item != *doc.new_items.rbegin())
                         {       // Don't sleep if this is the last item.
                             sleep_for(seconds(cfg.profiledata.interval));

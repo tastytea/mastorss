@@ -48,7 +48,6 @@ struct ProfileData
     string instance;
     bool keep_looking{false};
     uint32_t interval{30};
-    string last_guid;
     size_t max_size{500};
     list<string> skip;
     bool titles_as_cw{false};
