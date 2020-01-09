@@ -275,8 +275,9 @@ void Config::write()
 list<string> Config::jsonarray_to_stringlist(const Json::Value &jsonarray) const
 {
     list<string> stringlist;
-    std::transform(jsonarray.begin(), jsonarray.end(), stringlist.begin(),
-                   back_inserter(stringlist));
+    std::transform(jsonarray.begin(), jsonarray.end(),
+                   back_inserter(stringlist), [](const Json::Value &value)
+                   { return value.asString(); });
 
     return stringlist;
 }
@@ -285,8 +286,11 @@ Json::Value Config::stringlist_to_jsonarray(const list<string> &stringlist)
     const
 {
     Json::Value jsonarray;
-    std::transform(stringlist.begin(), stringlist.end(), jsonarray.begin(),
-                   back_inserter(jsonarray));
+
+    for (const auto &entry : stringlist)
+    {
+        jsonarray.append(entry);
+    }
 
     return jsonarray;
 }
