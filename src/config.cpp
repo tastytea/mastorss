@@ -18,7 +18,7 @@
 #include "exceptions.hpp"
 
 #include <boost/log/trivial.hpp>
-#include <mastodon-cpp/mastodon-cpp.hpp>
+#include <mastodonpp/mastodonpp.hpp>
 
 #include <algorithm>
 #include <cstdlib>
@@ -192,32 +192,29 @@ string Config::get_access_token(const string &instance) const
     string client_id;
     string client_secret;
     string url;
-    Mastodon::API masto(instance, "");
+    mastodonpp::Instance masto{instance, ""};
+    mastodonpp::Instance::ObtainToken token{masto};
 
-    auto ret = masto.register_app1("mastorss", "urn:ietf:wg:oauth:2.0:oob",
-                                   "write",
-                                   "https://schlomp.space/tastytea/mastorss",
-                                   client_id, client_secret, url);
+    auto ret{token.step_1("mastorss", "write:statuses",
+                          "https://schlomp.space/tastytea/mastorss")};
 
     if (ret)
     {
         string code;
         string access_token;
 
-        cout << "Visit " << url << " to authorize this application.\n";
+        cout << "Visit " << ret << " to authorize this application.\n";
         cout << "Insert code: ";
         std::getline(cin, code);
-        ret = masto.register_app2(client_id, client_secret,
-                                  "urn:ietf:wg:oauth:2.0:oob",
-                                  code, access_token);
+        ret = token.step_2(code);
         if (ret)
         {
-            BOOST_LOG_TRIVIAL(debug) << "Got access token: " << access_token;
+            BOOST_LOG_TRIVIAL(debug) << "Got access token.";
             return access_token;
         }
     }
 
-    throw MastodonException{ret.error_code};
+    throw MastodonException{ret.curl_error_code};
 }
 
 void Config::parse()

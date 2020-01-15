@@ -6,7 +6,7 @@ find_package(jsoncpp REQUIRED CONFIG) # 1.7.4 (Debian buster) has no version.
 find_package(CURL 7.52 REQUIRED)
 find_package(Threads REQUIRED)
 find_package(restclient-cpp 0.5 CONFIG)
-find_package(mastodon-cpp REQUIRED CONFIG)
+find_package(mastodonpp 0.4 REQUIRED CONFIG)
 
 if(NOT ${restclient-cpp_FOUND})
   find_file(restclient_h NAMES "restclient-cpp/restclient.h"
@@ -31,7 +31,7 @@ file(GLOB sources *.cpp)
 add_executable(mastorss ${sources})
 target_link_libraries(mastorss
   PRIVATE
-  jsoncpp_lib restclient-cpp mastodon-cpp::mastodon-cpp
+  jsoncpp_lib restclient-cpp mastodonpp::mastodonpp
   Boost::filesystem Boost::log Boost::regex)
 if(BUILD_SHARED_LIBS)
   target_compile_definitions(mastorss PRIVATE "BOOST_ALL_DYN_LINK=1")

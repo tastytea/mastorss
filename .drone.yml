@@ -13,17 +13,17 @@ trigger:
     - tag
 
 steps:
-- name: download mastodon-cpp for buster
+- name: download mastodonpp for buster
   image: plugins/download
   settings:
-    source: https://schlomp.space/tastytea/mastodon-cpp/releases/download/0.111.5/libmastodon-cpp_0.111.5-0_buster_amd64.deb
-    destination: mastodon-cpp_buster.deb
+    source: https://schlomp.space/tastytea/mastodonpp/releases/download/0.4.0/libmastodonpp_0.4.0-0_amd64_buster.deb
+    destination: mastodonpp_buster.deb
 
-# - name: download mastodon-cpp for bionic
+# - name: download mastodonpp for bionic
 #   image: plugins/download
 #   settings:
-#     source: https://schlomp.space/tastytea/mastodon-cpp/releases/download/0.111.5/libmastodon-cpp_0.111.5-0_bionic_amd64.deb
-#     destination: mastodon-cpp_bionic.deb
+#     source: https://schlomp.space/tastytea/mastodonpp/releases/download/0.4.0/libmastodonpp_0.4.0-0_amd64_bionic.deb
+#     destination: mastodonpp_bionic.deb
 
 # Workaround until the debian packages are fixed.
 - name: download restclient-cpp source
@@ -50,7 +50,7 @@ steps:
   - apt-get update -q
   - apt-get install -qq build-essential cmake asciidoc
   - apt-get install -qq libboost-filesystem-dev libboost-log-dev libboost-regex-dev libjsoncpp-dev catch libcurl4-openssl-dev restclient-cpp libpoco-dev
-  - apt-get -qq install ./mastodon-cpp_buster.deb
+  - apt-get -qq install ./mastodonpp_buster.deb
   - tar -xf restclient-cpp.tar.gz
   - cd restclient-cpp-*
   - cmake -DCMAKE_INSTALL_PREFIX=/usr .
@@ -83,7 +83,7 @@ steps:
 #   - apt-get update -q
 #   - apt-get install -qq build-essential cmake asciidoc
 #   - apt-get install -qq libboost-filesystem-dev libboost-log-dev libboost-regex-dev libjsoncpp-dev catch libcurl4-openssl-dev restclient-cpp libpoco-dev
-#   - apt-get -qq install ./mastodon-cpp_bionic.deb
+#   - apt-get -qq install ./mastodonpp_bionic.deb
 #   - rm -rf build && mkdir -p build && cd build
 #   - cmake ..
 #   - make VERBOSE=1

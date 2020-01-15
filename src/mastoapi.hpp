@@ -20,7 +20,7 @@
 #include "config.hpp"
 #include "document.hpp"
 
-#include <mastodon-cpp/mastodon-cpp.hpp>
+#include <mastodonpp/mastodonpp.hpp>
 
 namespace mastorss
 {
@@ -33,7 +33,7 @@ public:
 
 private:
     ProfileData &_profile;
-    Mastodon::API _masto;
+    mastodonpp::Instance _instance;
     constexpr static size_t _max_guids{100};
 };
 } // namespace mastorss

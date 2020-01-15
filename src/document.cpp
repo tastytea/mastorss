@@ -22,7 +22,7 @@
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/regex.hpp>
 #include <json/json.h>
-#include <mastodon-cpp/mastodon-cpp.hpp>
+#include <mastodonpp/mastodonpp.hpp>
 #include <restclient-cpp/connection.h>
 
 #include <algorithm>
@@ -214,7 +214,7 @@ void Document::parse_rss(const pt::ptree &tree)
 
 string Document::remove_html(string html) const
 {
-    html = Mastodon::unescape_html(html); // Decode HTML entities.
+    html = mastodonpp::unescape_html(html); // Decode HTML entities.
 
     html = regex_replace(html, regex{"<p>"}, "\n\n");
 

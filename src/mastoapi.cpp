@@ -29,7 +29,7 @@ using std::string_view;
 
 MastoAPI::MastoAPI(ProfileData &data)
     : _profile{data}
-    , _masto{_profile.instance, _profile.access_token}
+    , _instance{_profile.instance, _profile.access_token}
 {
 }
 
@@ -100,20 +100,21 @@ void MastoAPI::post_item(const Item &item)
     BOOST_LOG_TRIVIAL(debug) << "Status length: " << status.size();
     BOOST_LOG_TRIVIAL(debug) << "Status: \"" << status << '"';
 
-    Mastodon::parameters params{{"status", {status}}};
+    mastodonpp::parametermap params{{"status", status}};
     if (_profile.titles_as_cw)
     {
-        params.push_back({"spoiler_text", {item.title}});
+        params.insert({"spoiler_text", item.title});
     }
 
-    const auto ret = _masto.post(Mastodon::API::v1::statuses, params);
+    mastodonpp::Connection connection{_instance};
+    const auto ret = connection.post(mastodonpp::API::v1::statuses, params);
     if (!ret)
     {
-        if (ret.http_error_code != 200)
+        if (ret.http_status != 200)
         {
-            throw HTTPException{ret.http_error_code};
+            throw HTTPException{ret.http_status};
         }
-        throw MastodonException{ret.error_code};
+        throw MastodonException{ret.curl_error_code};
     }
     BOOST_LOG_TRIVIAL(debug) << "Posted status with GUID: " << item.guid;
 
