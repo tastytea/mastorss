@@ -31,7 +31,7 @@ file(GLOB sources *.cpp)
 add_executable(mastorss ${sources})
 target_link_libraries(mastorss
   PRIVATE
-  jsoncpp restclient-cpp mastodon-cpp::mastodon-cpp
+  jsoncpp_lib restclient-cpp mastodon-cpp::mastodon-cpp
   Boost::filesystem Boost::log Boost::regex)
 if(BUILD_SHARED_LIBS)
   target_compile_definitions(mastorss PRIVATE "BOOST_ALL_DYN_LINK=1")
