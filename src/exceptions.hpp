@@ -49,17 +49,6 @@ public:
     const char *what() const noexcept override;
 };
 
-class MastodonException : public exception
-{
-public:
-    const uint16_t error_code;
-
-    explicit MastodonException(int error);
-
-    [[nodiscard]]
-    const char *what() const noexcept override;
-};
-
 class FileException : public exception
 {
 public:

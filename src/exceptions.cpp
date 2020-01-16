@@ -40,18 +40,7 @@ CURLException::CURLException(const int error)
 
 const char *CURLException::what() const noexcept
 {
-    static const string error_string{"libCURL error: " + to_string(error_code)};
-    return error_string.c_str();
-}
-
-MastodonException::MastodonException(const int error)
-    : error_code{static_cast<uint16_t>(error)}
-{}
-
-const char *MastodonException::what() const noexcept
-{
-    static const string error_string{"Mastodon error: "
-                                     + to_string(error_code)};
+    static const string error_string{"libcurl error: " + to_string(error_code)};
     return error_string.c_str();
 }
 

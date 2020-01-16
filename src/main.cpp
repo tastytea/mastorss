@@ -122,11 +122,6 @@ int main(int argc, char *argv[])
                 cerr << e.what() << '\n';
                 return error::file;
             }
-            catch (const MastodonException &e)
-            {
-                cerr << e.what() << '\n';
-                return error::mastodon;
-            }
             catch (const HTTPException &e)
             {
                 cerr << e.what() << '\n';

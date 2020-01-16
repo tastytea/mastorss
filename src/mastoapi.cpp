@@ -114,7 +114,7 @@ void MastoAPI::post_item(const Item &item)
         {
             throw HTTPException{ret.http_status};
         }
-        throw MastodonException{ret.curl_error_code};
+        throw CURLException{ret.curl_error_code};
     }
     BOOST_LOG_TRIVIAL(debug) << "Posted status with GUID: " << item.guid;
 

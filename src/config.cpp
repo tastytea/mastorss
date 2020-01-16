@@ -214,7 +214,7 @@ string Config::get_access_token(const string &instance) const
         }
     }
 
-    throw MastodonException{ret.curl_error_code};
+    throw CURLException{ret.curl_error_code};
 }
 
 void Config::parse()
