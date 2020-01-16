@@ -11,7 +11,7 @@ set(CMAKE_BUILD_TYPE "Release" CACHE STRING "The type of build.")
 option(BUILD_SHARED_LIBS "Build shared libraries." YES)
 
 project (mastorss
-  VERSION 0.10.2
+  VERSION 0.11.0
   DESCRIPTION "Another RSS to Mastodon bot."
   LANGUAGES CXX)
 
