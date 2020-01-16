@@ -2,7 +2,7 @@
 :doctype:       manpage
 :Author:        tastytea
 :Email:         tastytea@tastytea.de
-:Date:          2020-01-01
+:Date:          2020-01-16
 :Revision:      0.0.0
 :man source:    mastorss
 :man manual:    General Commands Manual
@@ -126,30 +126,16 @@ If true, only post titles, no descriptions.
 
 Currently only HTTP and HTTPS are supported.
 
-// == PROXY SERVERS
-
-// Since mastorss is built on libcurl, it respects the same proxy environment
-// variables. See *curl*(1), section _ENVIRONMENT_.
-
-// .Tunnel connections through tor.
-// ================================================================================
-// [source,shell]
-// --------------------------------------------------------------------------------
-// ALL_PROXY="socks4a://[::1]:9050" mastorss example
-// --------------------------------------------------------------------------------
-// ================================================================================
-
 == PROXY SERVERS
 
-mastorss supports HTTP proxies set via the environment variable
-_http_proxy_. Accepted format: _+++http://[user[:password]@]host[:port]/+++_. No
-SOCKS proxy support yet, sorry.
+Since mastorss is built on libcurl, it respects the same proxy environment
+variables. See *curl*(1), section _ENVIRONMENT_.
 
-.Use mastorss with a proxy server
+.Tunnel connections through tor.
 ================================================================================
 [source,shellsession]
 --------------------------------------------------------------------------------
-% http_proxy="http://localhost:3128/" mastorss example
+% ALL_PROXY="socks4a://[::1]:9050" mastorss example
 --------------------------------------------------------------------------------
 ================================================================================
 
@@ -195,4 +181,4 @@ E-mail: tastytea@tastytea.de
 
 == SEE ALSO
 
-*perlre*(1), *crontab*(1), *crontab*(5)
+*perlre*(1), *curl*(1), *crontab*(1), *crontab*(5)
