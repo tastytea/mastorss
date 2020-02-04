@@ -42,8 +42,14 @@ if(WITH_DESKTOP)
   # Needed for AppImage.
   configure_file("de.tastytea.${PROJECT_NAME}.desktop.in"
     "${CMAKE_CURRENT_BINARY_DIR}/de.tastytea.${PROJECT_NAME}.desktop" @ONLY)
-  install(FILES "${CMAKE_CURRENT_BINARY_DIR}/de.tastytea.${PROJECT_NAME}.desktop"
+  # linuxdeploy insists on an icon.
+  file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/de.tastytea.${PROJECT_NAME}.svg" "")
+
+  install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/de.tastytea.${PROJECT_NAME}.desktop"
     DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications")
+  install(FILES "${CMAKE_CURRENT_BINARY_DIR}/de.tastytea.${PROJECT_NAME}.svg"
+    "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/scalable/apps")
 endif()
 
 # include(cmake/packages.cmake)

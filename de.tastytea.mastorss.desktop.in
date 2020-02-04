@@ -4,6 +4,7 @@ Type=Application
 Name=@PROJECT_NAME@
 NoDisplay=true
 Comment=@PROJECT_DESCRIPTION@
+Icon=de.tastytea.mastorss
 Exec=@PROJECT_NAME@
 Terminal=true
 Categories=Network;
