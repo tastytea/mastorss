@@ -119,11 +119,17 @@ volumes:
     path: /var/cache/debian-package-cache
 
 steps:
-- name: download mastodon-cpp for buster
+- name: download mastodonpp for buster
   image: plugins/download
   settings:
-    source: https://schlomp.space/tastytea/mastodon-cpp/releases/download/0.111.5/libmastodon-cpp_0.111.5-0_buster_amd64.deb
-    destination: mastodon-cpp_buster.deb
+    source: https://schlomp.space/tastytea/mastodonpp/releases/download/0.4.0/libmastodonpp_0.4.0-0_amd64_buster.deb
+    destination: mastodonpp_buster.deb
+
+- name: download restclient-cpp source
+  image: plugins/download
+  settings:
+    source: https://github.com/mrtazz/restclient-cpp/archive/0.5.1.tar.gz
+    destination: restclient-cpp.tar.gz
 
 - name: download linuxdeploy
   image: plugins/download
@@ -148,8 +154,8 @@ steps:
   - curl -L https://packagecloud.io/mrtazz/restclient-cpp/gpgkey | apt-key add -
   - apt-get update -q
   - apt-get install -qq build-essential cmake asciidoc
-  - apt-get install -qq libboost-filesystem-dev libboost-log-dev libboost-regex-dev libjsoncpp-dev catch libcurl4-openssl-dev restclient-cpp libpoco-dev
-  - apt-get -qq install ./mastodon-cpp_buster.deb
+  - apt-get install -qq libboost-filesystem-dev libboost-log-dev libboost-regex-dev libjsoncpp-dev catch libcurl4-openssl-dev restclient-cpp
+  - apt-get -qq install ./mastodonpp_buster.deb
   - tar -xf restclient-cpp.tar.gz
   - cd restclient-cpp-*
   - cmake -DCMAKE_INSTALL_PREFIX=/usr .
@@ -177,7 +183,7 @@ steps:
     title: ${DRONE_TAG}
     prerelease: true
     files:
-      - mastorss-x86_64.AppImage
+      - mastorss-${DRONE_TAG}-x86_64.AppImage
     checksum:
       - sha512
 
