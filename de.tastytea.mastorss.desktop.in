@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Version=1.1
+# Version=1.1
 Name=@PROJECT_NAME@
 NoDisplay=true
 Comment=@PROJECT_DESCRIPTION@
