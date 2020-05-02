@@ -2,7 +2,8 @@ include(GNUInstallDirs)
 
 # The minimum versions should be in Debian oldstable, if possible.
 find_package(Boost 1.62 REQUIRED COMPONENTS filesystem log regex)
-find_package(jsoncpp REQUIRED CONFIG) # 1.7.4 (Debian buster) has no version.
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(jsoncpp REQUIRED IMPORTED_TARGET jsoncpp)
 find_package(CURL 7.52 REQUIRED)
 find_package(Threads REQUIRED)
 find_package(restclient-cpp 0.5 CONFIG)
@@ -31,7 +32,7 @@ file(GLOB sources *.cpp)
 add_executable(mastorss ${sources})
 target_link_libraries(mastorss
   PRIVATE
-  jsoncpp_lib restclient-cpp mastodonpp::mastodonpp
+  PkgConfig::jsoncpp restclient-cpp mastodonpp::mastodonpp
   Boost::filesystem Boost::log Boost::regex)
 if(BUILD_SHARED_LIBS)
   target_compile_definitions(mastorss PRIVATE "BOOST_ALL_DYN_LINK=1")
