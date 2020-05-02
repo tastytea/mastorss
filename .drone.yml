@@ -48,7 +48,7 @@ steps:
   - apt-get install -qq debian-archive-keyring curl gnupg apt-transport-https
   - curl -L https://packagecloud.io/mrtazz/restclient-cpp/gpgkey | apt-key add -
   - apt-get update -q
-  - apt-get install -qq build-essential cmake asciidoc
+  - apt-get install -qq build-essential cmake pkg-config asciidoc
   - apt-get install -qq libboost-filesystem-dev libboost-log-dev libboost-regex-dev libjsoncpp-dev catch libcurl4-openssl-dev restclient-cpp
   - apt-get -qq install ./mastodonpp_buster.deb
   - tar -xf restclient-cpp.tar.gz
@@ -81,7 +81,7 @@ steps:
 #   - apt-get install -qq curl gnupg apt-transport-https
 #   - curl -L https://packagecloud.io/mrtazz/restclient-cpp/gpgkey | apt-key add -
 #   - apt-get update -q
-#   - apt-get install -qq build-essential cmake asciidoc
+#   - apt-get install -qq build-essential cmake pkg-config asciidoc
 #   - apt-get install -qq libboost-filesystem-dev libboost-log-dev libboost-regex-dev libjsoncpp-dev catch libcurl4-openssl-dev restclient-cpp
 #   - apt-get -qq install ./mastodonpp_bionic.deb
 #   - rm -rf build && mkdir -p build && cd build
