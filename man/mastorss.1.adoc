@@ -2,7 +2,7 @@
 :doctype:       manpage
 :Author:        tastytea
 :Email:         tastytea@tastytea.de
-:Date:          2020-01-16
+:Date:          2020-05-10
 :Revision:      0.0.0
 :man source:    mastorss
 :man manual:    General Commands Manual
@@ -90,6 +90,11 @@ content warning) of the post.
 *titles_only*::
 If true, only post titles, no descriptions.
 
+*replacements*::
+Object with a list of regular expressions and replacements. Applies to posts,
+subjects and links, but not to the string in _append_. For information about the
+syntax see *perlre*(1).
+
 == EXAMPLES
 
 === Configuration file
@@ -117,7 +122,12 @@ If true, only post titles, no descriptions.
             "Skip me too!"
         ],
         "titles_as_cw" : true,
-        "titles_only" : false
+        "titles_only" : false,
+        "replacements" :
+        {
+            "apple" : "strawberry",
+            "(chest|wal)nut" : "hazelnut"
+        }
     }
 }
 --------------------------------------------------------------------------------

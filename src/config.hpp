@@ -1,5 +1,5 @@
 /*  This file is part of mastorss.
- *  Copyright © 2019 tastytea <tastytea@tastytea.de>
+ *  Copyright © 2019, 2020 tastytea <tastytea@tastytea.de>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 #include <list>
 #include <string>
 #include <string_view>
+#include <utility>
 
 namespace mastorss
 {
@@ -32,6 +33,7 @@ using std::uint32_t;
 using std::list;
 using std::string;
 using std::string_view;
+using std::pair;
 
 /*!
  *  @brief  The configuration for a profile as data structure.
@@ -52,6 +54,7 @@ struct ProfileData
     list<string> skip;
     bool titles_as_cw{false};
     bool titles_only{false};
+    list<pair<string, string>> replacements;
 
     friend std::ostream &operator <<(std::ostream &out,
                                      const ProfileData &data);

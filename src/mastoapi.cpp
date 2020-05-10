@@ -1,5 +1,5 @@
 /*  This file is part of mastorss.
- *  Copyright © 2019 tastytea <tastytea@tastytea.de>
+ *  Copyright © 2019, 2020 tastytea <tastytea@tastytea.de>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,12 +18,15 @@
 #include "mastoapi.hpp"
 
 #include <boost/log/trivial.hpp>
+#include <boost/regex.hpp>
 
 #include <string>
 #include <string_view>
 
 namespace mastorss
 {
+using boost::regex;
+using boost::regex_replace;
 using std::string;
 using std::string_view;
 
@@ -35,6 +38,9 @@ MastoAPI::MastoAPI(ProfileData &data)
 
 void MastoAPI::post_item(const Item &item)
 {
+    string title = replacements_apply(item.title);
+    string link = replacements_apply(item.link);
+
     string status{[&]
     {
         if (_profile.titles_as_cw)
@@ -43,13 +49,13 @@ void MastoAPI::post_item(const Item &item)
             {
                 return string{};
             }
-            return item.description;
+            return replacements_apply(item.description);
         }
 
-        string s{item.title};
+        string s{title};
         if (!_profile.titles_only)
         {
-            s.append("\n\n" + item.description);
+            s.append("\n\n" + replacements_apply(item.description));
         }
         return s;
     }()};
@@ -62,20 +68,19 @@ void MastoAPI::post_item(const Item &item)
         }
         return _profile.append.size() + 2;
     }()};
-    const size_t len_status{status.size()};
     const size_t len_max{[&]
     {
         if (_profile.titles_as_cw)
         {
             // Subjects (CWs) count into the post length.
-            return _profile.max_size - item.title.size();
+            return _profile.max_size - title.size();
         }
         return _profile.max_size;
-    }() - item.link.size() - 2 - len_append};
+    }() - link.size() - 2 - len_append};
     BOOST_LOG_TRIVIAL(debug)
         << "Maximum text (without link and appendix) length: " << len_max;
 
-    if (len_status > len_max)
+    if (status.size() > len_max)
     {
         constexpr string_view omission = " […]";
         status.resize(len_max - omission.size());
@@ -91,7 +96,7 @@ void MastoAPI::post_item(const Item &item)
         BOOST_LOG_TRIVIAL(debug) << "Status resized to: " << status.size();
     }
 
-    status.append("\n\n" + item.link);
+    status.append("\n\n" + link);
 
     if (!_profile.append.empty())
     {
@@ -103,7 +108,7 @@ void MastoAPI::post_item(const Item &item)
     mastodonpp::parametermap params{{"status", status}};
     if (_profile.titles_as_cw)
     {
-        params.insert({"spoiler_text", item.title});
+        params.insert({"spoiler_text", title});
     }
 
     mastodonpp::Connection connection{_instance};
@@ -123,5 +128,15 @@ void MastoAPI::post_item(const Item &item)
     {
         _profile.guids.pop_front();
     }
+}
+
+string MastoAPI::replacements_apply(const string &text)
+{
+    string out = text;
+    for (const auto &replacement : _profile.replacements)
+    {
+        out = regex_replace(out, regex{replacement.first}, replacement.second);
+    }
+    return out;
 }
 } // namespace mastorss

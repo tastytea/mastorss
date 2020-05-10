@@ -1,5 +1,5 @@
 /*  This file is part of mastorss.
- *  Copyright © 2019 tastytea <tastytea@tastytea.de>
+ *  Copyright © 2019, 2020 tastytea <tastytea@tastytea.de>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,8 +22,12 @@
 
 #include <mastodonpp/mastodonpp.hpp>
 
+#include <string>
+
 namespace mastorss
 {
+using std::string;
+
 class MastoAPI
 {
 public:
@@ -35,6 +39,8 @@ private:
     ProfileData &_profile;
     mastodonpp::Instance _instance;
     constexpr static size_t _max_guids{100};
+
+    string replacements_apply(const string &text);
 };
 } // namespace mastorss
 

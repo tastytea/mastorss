@@ -1,5 +1,5 @@
 /*  This file is part of mastorss.
- *  Copyright © 2019 tastytea <tastytea@tastytea.de>
+ *  Copyright © 2019, 2020 tastytea <tastytea@tastytea.de>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -80,7 +80,18 @@ std::ostream &operator <<(std::ostream &out, const ProfileData &data)
     }
     out << "], "
         << "titles_as_cw: " << data.titles_as_cw << ", "
-        << "titles_only: " << data.titles_only;
+        << "titles_only: " << data.titles_only << ", ";
+    out << "replacements: [";
+    for (const auto &replacement : data.replacements)
+    {
+        out << '"' << replacement.first << "\": \""
+            << replacement.second << '"';
+        if (replacement != *data.replacements.rbegin())
+        {
+            out << ", ";
+        }
+    }
+    out << "]";
 
     return out;
 }
@@ -238,6 +249,11 @@ void Config::parse()
     profiledata.skip = jsonarray_to_stringlist(_json[profile]["skip"]);
     profiledata.titles_as_cw = _json[profile]["titles_as_cw"].asBool();
     profiledata.titles_only = _json[profile]["titles_only"].asBool();
+    for (const auto &search : _json[profile]["replacements"].getMemberNames())
+    {
+        profiledata.replacements.push_back({search,
+                _json[profile]["replacements"][search].asString()});
+    }
 
     BOOST_LOG_TRIVIAL(debug) << "Read config: " << profiledata;
 }
@@ -257,6 +273,10 @@ void Config::write()
     _json[profile]["skip"] = stringlist_to_jsonarray(profiledata.skip);
     _json[profile]["titles_as_cw"] = profiledata.titles_as_cw;
     _json[profile]["titles_only"] = profiledata.titles_only;
+    for (const auto &replacement : profiledata.replacements)
+    {
+        _json[profile]["replacements"][replacement.first] = replacement.second;
+    }
 
     ofstream file{get_filename().c_str()};
     if (file.good())
