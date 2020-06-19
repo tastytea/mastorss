@@ -1,5 +1,5 @@
 /*  This file is part of mastorss.
- *  Copyright © 2019 tastytea <tastytea@tastytea.de>
+ *  Copyright © 2019, 2020 tastytea <tastytea@tastytea.de>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -198,7 +198,7 @@ void Document::parse_rss(const pt::ptree &tree)
             }();
             item.guid = move(guid);
             item.link = rssitem.get<string>("link");
-            item.title = move(title);
+            item.title = mastodonpp::unescape_html(title);
             new_items.push_front(item);
 
             BOOST_LOG_TRIVIAL(debug) << "Found GUID: " << item.guid;
