@@ -15,6 +15,7 @@
  */
 
 #include "document.hpp"
+
 #include "exceptions.hpp"
 #include "version.hpp"
 
@@ -36,14 +37,14 @@ namespace mastorss
 using boost::regex;
 using boost::regex_replace;
 using std::any_of;
-using std::transform;
 using std::ifstream;
 using std::istringstream;
-using std::stringstream;
-using std::string;
 using std::move;
+using std::string;
+using std::stringstream;
+using std::transform;
 
-bool operator !=(const Item &a, const Item &b)
+bool operator!=(const Item &a, const Item &b)
 {
     return a.guid != b.guid;
 }
@@ -91,8 +92,10 @@ void Document::download(const string &uri, const bool temp_redirect)
             throw HTTPException{response.code};
         }
 
+        // clang-format off
         BOOST_LOG_TRIVIAL(debug) << "Feed has new location (permanent): "
                                  << _profiledata.feedurl;
+        // clang-format on
         _cfg.write();
         download();
         break;
@@ -108,8 +111,10 @@ void Document::download(const string &uri, const bool temp_redirect)
             throw HTTPException{response.code};
         }
 
+        // clang-format off
         BOOST_LOG_TRIVIAL(debug) << "Feed has new location (temporary): "
                                  << newuri;
+        // clang-format on
         download(newuri, true);
         break;
     }
@@ -144,7 +149,6 @@ void Document::parse()
     else
     {
         throw ParseException{"Could not detect type of feed."};
-
     }
 }
 
@@ -157,16 +161,17 @@ void Document::parse_rss(const pt::ptree &tree)
             const auto &rssitem = child.second;
 
             string guid{rssitem.get<string>("guid", "")};
-            if (guid.empty())   // We hope either <guid> or <link> are present.
+            if (guid.empty()) // We hope either <guid> or <link> are present.
             {
                 guid = rssitem.get<string>("link");
             }
             if (any_of(_profiledata.guids.begin(), _profiledata.guids.end(),
-                       [&](const auto &old_guid)
-                       { return guid == old_guid; }))
+                       [&](const auto &old_guid) { return guid == old_guid; }))
             {
+                // clang-format off
                 BOOST_LOG_TRIVIAL(debug) << "Found already posted GUID: "
                                          << guid;
+                // clang-format on
                 if (_profiledata.keep_looking)
                 {
                     continue;
@@ -179,7 +184,9 @@ void Document::parse_rss(const pt::ptree &tree)
             string title{rssitem.get<string>("title")};
             if (any_of(_profiledata.skip.begin(), _profiledata.skip.end(),
                        [&title](const string &skip)
+                       // clang-format off
                        { return title.substr(0, skip.size()) == skip; }))
+            // clang-format on
             {
                 BOOST_LOG_TRIVIAL(debug) << "Skipped GUID: " << guid;
                 continue;
@@ -187,6 +194,7 @@ void Document::parse_rss(const pt::ptree &tree)
 
             Item item;
             item.description = [&]
+            // clang-format off
             {
                 string desc{rssitem.get<string>("description")};
                 for (const auto &fix : _profiledata.fixes)
@@ -196,6 +204,7 @@ void Document::parse_rss(const pt::ptree &tree)
                 desc = remove_html(desc);
                 return add_hashtags(desc);
             }();
+            // clang-format on
             item.guid = move(guid);
             item.link = rssitem.get<string>("link");
             item.title = mastodonpp::unescape_html(title);
@@ -218,15 +227,12 @@ string Document::remove_html(string html) const
 
     html = regex_replace(html, regex{"<p>"}, "\n\n");
 
-    const list re_list
-        {
-            regex{R"(<!\[CDATA\[)"},      // CDATA beginning.
-            regex{R"(\]\]>)"},            // CDATA end.
-            regex{"<[^>]+>"},             // HTML tags.
-            regex{R"(\r)"},               // Carriage return.
-            regex{"\\n[ \\t\u00a0]+\\n"}, // Whitespace between newlines.
-            regex{R"(^\n+)"}              // Newlines at the beginning.
-        };
+    const list re_list{regex{R"(<!\[CDATA\[)"},      // CDATA beginning.
+                       regex{R"(\]\]>)"},            // CDATA end.
+                       regex{"<[^>]+>"},             // HTML tags.
+                       regex{R"(\r)"},               // Carriage return.
+                       regex{"\\n[ \\t\u00a0]+\\n"}, // Space between newlines.
+                       regex{R"(^\n+)"}};            // Newlines at beginning.
     for (const regex &re : re_list)
     {
         html = regex_replace(html, re, "");
@@ -257,8 +263,9 @@ string Document::add_hashtags(const string &text)
     string out{text};
     for (const auto &tag : _watchwords)
     {
-        regex re_tag("([[:space:]\u200b]|^)("
-            + tag + ")([[:space:]\u200b[:punct:]]|$)", regex::icase);
+        regex re_tag("([[:space:]\u200b]|^)(" + tag
+                         + ")([[:space:]\u200b[:punct:]]|$)",
+                     regex::icase);
         out = regex_replace(out, re_tag, "$1#$2$3", boost::format_first_only);
     }
 
@@ -279,8 +286,9 @@ void Document::parse_watchwords()
     }
     else
     {
-        BOOST_LOG_TRIVIAL(warning) << "File Not found: " <<
-            (_cfg.get_config_dir() /= "watchwords.json").string();
+        BOOST_LOG_TRIVIAL(warning)
+            << "File Not found: "
+            << (_cfg.get_config_dir() /= "watchwords.json").string();
         return;
     }
 
@@ -293,6 +301,5 @@ void Document::parse_watchwords()
               std::back_inserter(_watchwords),
               [](const Json::Value &value) { return value.asString(); });
 }
-
 
 } // namespace mastorss
