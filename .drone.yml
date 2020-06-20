@@ -96,7 +96,7 @@ steps:
   image: drillster/drone-email
   pull: always
   settings:
-    host: cryptoparty-celle.de
+    host: mail.tzend.de
     from: drone@tzend.de
     username:
       from_secret: email_username
