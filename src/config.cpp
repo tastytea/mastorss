@@ -30,19 +30,19 @@
 
 namespace mastorss
 {
-using std::transform;
 using std::back_inserter;
-using std::stoul;
-using std::getenv;
-using std::ifstream;
-using std::ofstream;
 using std::cin;
 using std::cout;
-using std::stringstream;
+using std::getenv;
 using std::getline;
+using std::ifstream;
 using std::move;
+using std::ofstream;
+using std::stoul;
+using std::stringstream;
+using std::transform;
 
-std::ostream &operator <<(std::ostream &out, const ProfileData &data)
+std::ostream &operator<<(std::ostream &out, const ProfileData &data)
 {
     out << "append: \"" << data.append << "\", "
         << "feedurl: \"" << data.feedurl << "\", "
@@ -84,8 +84,8 @@ std::ostream &operator <<(std::ostream &out, const ProfileData &data)
     out << "replacements: [";
     for (const auto &replacement : data.replacements)
     {
-        out << '"' << replacement.first << "\": \""
-            << replacement.second << '"';
+        out << '"' << replacement.first << "\": \"" << replacement.second
+            << '"';
         if (replacement != *data.replacements.rbegin())
         {
             out << ", ";
@@ -251,8 +251,8 @@ void Config::parse()
     profiledata.titles_only = _json[profile]["titles_only"].asBool();
     for (const auto &search : _json[profile]["replacements"].getMemberNames())
     {
-        profiledata.replacements.push_back({search,
-                _json[profile]["replacements"][search].asString()});
+        profiledata.replacements.push_back(
+            {search, _json[profile]["replacements"][search].asString()});
     }
 
     BOOST_LOG_TRIVIAL(debug) << "Read config: " << profiledata;
@@ -268,8 +268,8 @@ void Config::write()
     _json[profile]["instance"] = profiledata.instance;
     _json[profile]["interval"] = profiledata.interval;
     _json[profile]["keep_looking"] = profiledata.keep_looking;
-    _json[profile]["max_size"]
-        = static_cast<Json::Value::UInt64>(profiledata.max_size);
+    _json[profile]["max_size"] =
+        static_cast<Json::Value::UInt64>(profiledata.max_size);
     _json[profile]["skip"] = stringlist_to_jsonarray(profiledata.skip);
     _json[profile]["titles_as_cw"] = profiledata.titles_as_cw;
     _json[profile]["titles_only"] = profiledata.titles_only;
@@ -291,14 +291,14 @@ list<string> Config::jsonarray_to_stringlist(const Json::Value &jsonarray) const
 {
     list<string> stringlist;
     std::transform(jsonarray.begin(), jsonarray.end(),
-                   back_inserter(stringlist), [](const Json::Value &value)
-                   { return value.asString(); });
+                   back_inserter(stringlist),
+                   [](const Json::Value &value) { return value.asString(); });
 
     return stringlist;
 }
 
-Json::Value Config::stringlist_to_jsonarray(const list<string> &stringlist)
-    const
+Json::Value
+Config::stringlist_to_jsonarray(const list<string> &stringlist) const
 {
     Json::Value jsonarray;
 
