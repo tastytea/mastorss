@@ -29,11 +29,11 @@
 namespace mastorss
 {
 namespace fs = boost::filesystem;
-using std::uint32_t;
 using std::list;
+using std::pair;
 using std::string;
 using std::string_view;
-using std::pair;
+using std::uint32_t;
 
 /*!
  *  @brief  The configuration for a profile as data structure.
@@ -56,8 +56,7 @@ struct ProfileData
     bool titles_only{false};
     list<pair<string, string>> replacements;
 
-    friend std::ostream &operator <<(std::ostream &out,
-                                     const ProfileData &data);
+    friend std::ostream &operator<<(std::ostream &out, const ProfileData &data);
 };
 
 /*!
@@ -74,21 +73,18 @@ public:
     ProfileData profiledata;
 
     void write();
-    [[nodiscard]]
-    fs::path get_config_dir() const;
+    [[nodiscard]] fs::path get_config_dir() const;
 
 private:
     Json::Value _json;
 
-    [[nodiscard]]
-    fs::path get_filename() const;
+    [[nodiscard]] fs::path get_filename() const;
     void generate();
-    [[nodiscard]]
-    string get_access_token(const string &instance) const;
+    [[nodiscard]] string get_access_token(const string &instance) const;
     void parse();
     list<string> jsonarray_to_stringlist(const Json::Value &jsonarray) const;
     Json::Value stringlist_to_jsonarray(const list<string> &stringlist) const;
 };
 } // namespace mastorss
 
-#endif  // MASTORSS_CONFIG_HPP
+#endif // MASTORSS_CONFIG_HPP
