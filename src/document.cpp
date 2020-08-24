@@ -29,6 +29,7 @@
 #include <algorithm>
 #include <fstream>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <utility>
 
@@ -259,11 +260,23 @@ string Document::remove_html(string html) const
 
 string Document::extract_location(const RestClient::HeaderFields &headers) const
 {
-    string location{headers.at("Location")};
-    if (location.empty())
+    string location;
+    try
     {
-        location = headers.at("location");
+        location = headers.at("Location");
     }
+    catch (const std::out_of_range &)
+    {
+        try
+        {
+            location = headers.at("location");
+        }
+        catch (const std::out_of_range &)
+        {
+            throw std::runtime_error{"Could not extract new feed location."};
+        }
+    }
+
     return location;
 }
 
