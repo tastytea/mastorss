@@ -78,7 +78,8 @@ void Document::download(const string &uri, const bool temp_redirect)
     BOOST_LOG_TRIVIAL(debug) << "Got Headers:";
     for (const auto &header : response.headers)
     {
-        BOOST_LOG_TRIVIAL(debug) << header.first << ": " << header.second;
+        BOOST_LOG_TRIVIAL(debug)
+            << "  " << header.first << ": " << header.second;
     }
 
     switch (response.code)
