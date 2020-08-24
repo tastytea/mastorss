@@ -34,8 +34,8 @@
 
 namespace mastorss
 {
-using std::cout;
 using std::cerr;
+using std::cout;
 
 namespace error
 {
@@ -53,13 +53,14 @@ void print_help(const string_view &command);
 
 void print_version()
 {
-    cout << "mastorss " << version << "\n"
-        "Copyright (C) 2019 tastytea <tastytea@tastytea.de>\n"
-        "License GPLv3: GNU GPL version 3 "
-        "<https://www.gnu.org/licenses/gpl-3.0.html>.\n"
-        "This program comes with ABSOLUTELY NO WARRANTY. "
-        "This is free software,\n"
-        "and you are welcome to redistribute it under certain conditions.\n";
+    cout
+        << "mastorss " << version
+        << "\nCopyright (C) 2019, 2020 tastytea <tastytea@tastytea.de>\n"
+           "License GPLv3: GNU GPL version 3 "
+           "<https://www.gnu.org/licenses/gpl-3.0.html>.\n"
+           "This program comes with ABSOLUTELY NO WARRANTY. "
+           "This is free software,\n"
+           "and you are welcome to redistribute it under certain conditions.\n";
 }
 
 void print_help(const string_view &command)
@@ -71,25 +72,25 @@ void print_help(const string_view &command)
 int main(int argc, char *argv[])
 {
     using namespace mastorss;
-    using std::chrono::seconds;
-    using std::getenv;
     using std::cerr;
+    using std::getenv;
     using std::runtime_error;
     using std::string_view;
     using std::vector;
+    using std::chrono::seconds;
     using std::this_thread::sleep_for;
 
     const vector<string_view> args(argv, argv + argc);
 
     if (getenv("MASTORSS_DEBUG") == nullptr)
     {
-        boost::log::core::get()->set_filter
-            (boost::log::trivial::severity >= boost::log::trivial::info);
+        boost::log::core::get()->set_filter(boost::log::trivial::severity
+                                            >= boost::log::trivial::info);
     }
     else
     {
-        boost::log::core::get()->set_filter
-            (boost::log::trivial::severity >= boost::log::trivial::debug);
+        boost::log::core::get()->set_filter(boost::log::trivial::severity
+                                            >= boost::log::trivial::debug);
     }
 
     if (args.size() == 1)
@@ -126,7 +127,7 @@ int main(int argc, char *argv[])
                     {
                         masto.post_item(item);
                         if (item != *doc.new_items.rbegin())
-                        {       // Don't sleep if this is the last item.
+                        { // Don't sleep if this is the last item.
                             sleep_for(seconds(cfg.profiledata.interval));
                         }
                     }
