@@ -54,6 +54,7 @@ Document::Document(Config &cfg)
     , _profiledata{_cfg.profiledata}
 {
     RestClient::init();
+    BOOST_LOG_TRIVIAL(debug) << "Initialized RestClient.";
 
     download();
 }
@@ -65,11 +66,19 @@ Document::~Document()
 
 void Document::download(const string &uri, const bool temp_redirect)
 {
+    BOOST_LOG_TRIVIAL(debug) << "Downloading <" << uri << "> …";
     RestClient::Connection connection{uri};
     connection.SetUserAgent(string("mastorss/").append(version));
     connection.FollowRedirects(false);
 
     RestClient::Response response{connection.get("")};
+
+    BOOST_LOG_TRIVIAL(debug) << "Got response: " << response.code;
+    BOOST_LOG_TRIVIAL(debug) << "Got Headers:";
+    for (const auto &header : response.headers)
+    {
+        BOOST_LOG_TRIVIAL(debug) << header.first << ": " << header.second;
+    }
 
     switch (response.code)
     {
@@ -104,7 +113,7 @@ void Document::download(const string &uri, const bool temp_redirect)
     case 303:
     case 307:
     {
-    temporary_redirect:
+temporary_redirect:
         const string newuri{extract_location(response.headers)};
         if (newuri.empty())
         {
