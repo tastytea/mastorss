@@ -55,6 +55,7 @@ struct ProfileData
     bool titles_as_cw{false};
     bool titles_only{false};
     list<pair<string, string>> replacements;
+    bool add_hashtags{true};
 
     friend std::ostream &operator<<(std::ostream &out, const ProfileData &data);
 };

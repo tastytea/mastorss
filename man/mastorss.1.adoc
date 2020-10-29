@@ -2,7 +2,7 @@
 :doctype:       manpage
 :Author:        tastytea
 :Email:         tastytea@tastytea.de
-:Date:          2020-05-10
+:Date:          2020-10-29
 :Revision:      0.0.0
 :man source:    mastorss
 :man manual:    General Commands Manual
@@ -32,8 +32,9 @@ Show version, copyright and license.
 
 Put `watchwords.json` into `${XDG_CONFIG_HOME}/mastorss/`. Launch with profile
 name. The first occurence of every watchword in an RSS item will be turned into
-a hashtag. For profile-specific watchwords see the example in
-`watchwords.json`. In the first run only the newest entry is posted.
+a hashtag (unless *add_hashtags* is set to false). For profile-specific
+watchwords see the example in `watchwords.json`. In the first run only the
+newest entry is posted unless *keep_looking* is set to true.
 
 The profile is the identifier for a feed and can't be named "global".
 
@@ -94,6 +95,9 @@ If true, only post titles, no descriptions.
 Object with a list of regular expressions and replacements. Applies to posts,
 subjects and links, but not to the string in _append_. For information about the
 syntax see *perlre*(1).
+
+*add_hashtags*::
+If true, replace words with hashtags according to `watchwords.json`.
 
 == EXAMPLES
 

@@ -91,7 +91,8 @@ std::ostream &operator<<(std::ostream &out, const ProfileData &data)
             out << ", ";
         }
     }
-    out << "]";
+    out << "], ";
+    out << "add_hashtags: " << data.add_hashtags;
 
     return out;
 }
@@ -194,6 +195,10 @@ void Config::generate()
     }
     profiledata.max_size = stoul(line);
 
+    cout << "Add hashtags according to watchwords.json? [y/n]: ";
+    std::getline(cin, line);
+    profiledata.add_hashtags = (line[0] == 'y');
+
     BOOST_LOG_TRIVIAL(debug) << "Generated configuration.";
     write();
 }
@@ -254,6 +259,7 @@ void Config::parse()
         profiledata.replacements.push_back(
             {search, _json[profile]["replacements"][search].asString()});
     }
+    profiledata.add_hashtags = _json[profile]["add_hashtags"].asBool();
 
     BOOST_LOG_TRIVIAL(debug) << "Read config: " << profiledata;
 }
@@ -277,6 +283,7 @@ void Config::write()
     {
         _json[profile]["replacements"][replacement.first] = replacement.second;
     }
+    _json[profile]["add_hashtags"] = profiledata.add_hashtags;
 
     ofstream file{get_filename().c_str()};
     if (file.good())

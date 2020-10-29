@@ -213,7 +213,11 @@ void Document::parse_rss(const pt::ptree &tree)
                     desc = regex_replace(desc, regex{fix}, "");
                 }
                 desc = remove_html(desc);
-                return add_hashtags(desc);
+                if (_profiledata.add_hashtags)
+                {
+                    desc = add_hashtags(desc);
+                }
+                return desc;
             }();
             // clang-format on
             item.guid = move(guid);
