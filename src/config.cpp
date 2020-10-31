@@ -15,6 +15,7 @@
  */
 
 #include "config.hpp"
+
 #include "exceptions.hpp"
 
 #include <boost/log/trivial.hpp>
@@ -217,7 +218,6 @@ string Config::get_access_token(const string &instance) const
     if (ret)
     {
         string code;
-        string access_token;
 
         cout << "Visit " << ret << " to authorize this application.\n";
         cout << "Insert code: ";
@@ -225,8 +225,8 @@ string Config::get_access_token(const string &instance) const
         ret = token.step_2(code);
         if (ret)
         {
-            BOOST_LOG_TRIVIAL(debug) << "Got access token.";
-            return access_token;
+            BOOST_LOG_TRIVIAL(debug) << "Got access token: " << ret.body;
+            return ret.body;
         }
     }
 
@@ -243,8 +243,8 @@ void Config::parse()
     profiledata.instance = _json[profile]["instance"].asString();
     if (!_json[profile]["interval"].isNull())
     {
-        profiledata.interval =
-            static_cast<uint32_t>(_json[profile]["interval"].asUInt64());
+        profiledata.interval = static_cast<uint32_t>(
+            _json[profile]["interval"].asUInt64());
     }
     profiledata.keep_looking = _json[profile]["keep_looking"].asBool();
     if (!_json[profile]["max_size"].isNull())
@@ -274,8 +274,8 @@ void Config::write()
     _json[profile]["instance"] = profiledata.instance;
     _json[profile]["interval"] = profiledata.interval;
     _json[profile]["keep_looking"] = profiledata.keep_looking;
-    _json[profile]["max_size"] =
-        static_cast<Json::Value::UInt64>(profiledata.max_size);
+    _json[profile]["max_size"] = static_cast<Json::Value::UInt64>(
+        profiledata.max_size);
     _json[profile]["skip"] = stringlist_to_jsonarray(profiledata.skip);
     _json[profile]["titles_as_cw"] = profiledata.titles_as_cw;
     _json[profile]["titles_only"] = profiledata.titles_only;
