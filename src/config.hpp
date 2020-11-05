@@ -72,6 +72,7 @@ public:
 
     const string profile;
     ProfileData profiledata;
+    constexpr static size_t max_guids{100};
 
     void write();
     [[nodiscard]] fs::path get_config_dir() const;

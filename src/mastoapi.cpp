@@ -128,7 +128,7 @@ void MastoAPI::post_item(const Item &item)
     BOOST_LOG_TRIVIAL(debug) << "Posted status with GUID: " << item.guid;
 
     _profile.guids.push_back(item.guid);
-    if (_profile.guids.size() > _max_guids)
+    if (_profile.guids.size() > Config::max_guids)
     {
         _profile.guids.pop_front();
     }

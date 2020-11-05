@@ -165,8 +165,16 @@ void Document::parse()
 
 void Document::parse_rss(const pt::ptree &tree)
 {
+    size_t counter{0};
     for (const auto &child : tree.get_child("rss.channel"))
     {
+        if (counter == Config::max_guids)
+        {
+            BOOST_LOG_TRIVIAL(debug)
+                << "Maximum number of items reached. Stopped parsing.";
+            break;
+        }
+        ++counter;
         if (child.first == "item")
         {
             const auto &rssitem = child.second;

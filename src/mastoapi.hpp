@@ -38,7 +38,6 @@ public:
 private:
     ProfileData &_profile;
     mastodonpp::Instance _instance;
-    constexpr static size_t _max_guids{100};
 
     string replacements_apply(const string &text);
 };
