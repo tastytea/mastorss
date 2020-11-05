@@ -44,4 +44,4 @@ private:
 };
 } // namespace mastorss
 
-#endif  // MASTORSS_MASTOAPI_HPP
+#endif // MASTORSS_MASTOAPI_HPP

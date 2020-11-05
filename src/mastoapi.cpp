@@ -14,8 +14,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "exceptions.hpp"
 #include "mastoapi.hpp"
+
+#include "exceptions.hpp"
 
 #include <boost/log/trivial.hpp>
 #include <boost/regex.hpp>
@@ -33,14 +34,14 @@ using std::string_view;
 MastoAPI::MastoAPI(ProfileData &data)
     : _profile{data}
     , _instance{_profile.instance, _profile.access_token}
-{
-}
+{}
 
 void MastoAPI::post_item(const Item &item)
 {
     string title = replacements_apply(item.title);
     string link = replacements_apply(item.link);
 
+    // clang-format off
     string status{[&]
     {
         if (_profile.titles_as_cw)
@@ -59,7 +60,9 @@ void MastoAPI::post_item(const Item &item)
         }
         return s;
     }()};
+    // clang-format on
 
+    // clang-format off
     const size_t len_append{[&]
     {
         if (_profile.append.empty())
@@ -77,6 +80,7 @@ void MastoAPI::post_item(const Item &item)
         }
         return _profile.max_size;
     }() - link.size() - 2 - len_append};
+    // clang-format off
     BOOST_LOG_TRIVIAL(debug)
         << "Maximum text (without link and appendix) length: " << len_max;
 
