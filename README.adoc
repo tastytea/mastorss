@@ -28,7 +28,7 @@ before 2019-12-28, please update your git settings accordingly.
 * C++ compiler (tested: link:{uri-gcc}[gcc] 7/8/9)
 * link:{uri-cmake}[cmake] (at least: 3.9)
 * link:{uri-boost}[boost] (at least: 1.62)
-* link:{uri-mastodonpp}[mastodonpp] (at least: 0.4)
+* link:{uri-mastodonpp}[mastodonpp] (at least: 0.5.6)
 * link:{uri-jsoncpp}[jsoncpp] (at least: 1.7)
 * link:{uri-restclient-cpp}[restclient-cpp] (at least: 0.5.1)
 

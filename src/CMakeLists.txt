@@ -7,7 +7,7 @@ pkg_check_modules(jsoncpp REQUIRED IMPORTED_TARGET jsoncpp)
 find_package(CURL 7.52 REQUIRED)
 find_package(Threads REQUIRED)
 find_package(restclient-cpp 0.5 CONFIG)
-find_package(mastodonpp 0.4 REQUIRED CONFIG)
+find_package(mastodonpp 0.5.6 REQUIRED CONFIG)
 
 if(NOT ${restclient-cpp_FOUND})
   find_file(restclient_h NAMES "restclient-cpp/restclient.h"
