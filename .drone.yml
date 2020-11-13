@@ -16,7 +16,7 @@ steps:
 - name: download mastodonpp for buster
   image: plugins/download
   settings:
-    source: https://schlomp.space/tastytea/mastodonpp/releases/download/0.4.0/libmastodonpp_0.4.0-0_amd64_buster.deb
+    source: https://schlomp.space/tastytea/mastodonpp/releases/download/0.5.7/libmastodonpp_0.5.7-0_amd64_buster.deb
     destination: mastodonpp_buster.deb
 
 # - name: download mastodonpp for bionic
