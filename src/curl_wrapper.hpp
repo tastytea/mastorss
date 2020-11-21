@@ -154,6 +154,22 @@ public:
      */
     [[nodiscard]] answer make_http_request(http_method method, string_view uri);
 
+    /*!
+     *  @brief  Set maximum redirections to follow.
+     *
+     *  For more information consult [CURLOPT_MAXREDIRS(3)]
+     *  (https://curl.haxx.se/libcurl/c/CURLOPT_MAXREDIRS.html) and
+     *  [CURLOPT_FOLLOWLOCATION(3)]
+     *  (https://curl.haxx.se/libcurl/c/CURLOPT_FOLLOWLOCATION.html).
+     *
+     *  @param redirections  Number of allowed redirections. If set to 0,
+     *                       CURLOPT_FOLLOWLOCATION is set to 0L. Set it to -1
+     *                       for an infinite number of redirects.
+     *
+     *  @since  0.1.2
+     */
+    void set_maxredirs(long redirections); // NOLINT(google-runtime-int)
+
 private:
     CURL *_connection{};
     char _buffer_error[CURL_ERROR_SIZE]{};

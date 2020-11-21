@@ -190,6 +190,18 @@ answer CURLWrapper::make_http_request(http_method method, string_view uri)
             _buffer_body};
 }
 
+void CURLWrapper::set_maxredirs(long redirections) // NOLINT(google-runtime-int)
+{
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg)
+    curl_easy_setopt(_connection, CURLOPT_MAXREDIRS, redirections);
+
+    if (redirections == 0)
+    {
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg)
+        check(curl_easy_setopt(_connection, CURLOPT_FOLLOWLOCATION, 0L));
+    }
+}
+
 size_t CURLWrapper::writer_body(char *data, size_t size, size_t nmemb)
 {
     if (data == nullptr)
