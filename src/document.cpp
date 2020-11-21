@@ -290,7 +290,7 @@ void Document::parse_watchwords()
 {
     Json::Value json;
     const auto filepath = _cfg.get_config_dir() /= "watchwords.json";
-    ifstream file(filepath);
+    ifstream file(filepath.c_str());
     if (file.good())
     {
         stringstream rawjson;
