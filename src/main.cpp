@@ -47,14 +47,14 @@ namespace error
 constexpr int noprofile = 1;
 constexpr int network = 2;
 constexpr int file = 3;
-constexpr int mastodon = 4;
+// constexpr int mastodon = 4;
 constexpr int json = 5;
 constexpr int parse = 6;
 constexpr int unknown = 9;
 } // namespace error
 
 void print_version();
-void print_help(const string_view &command);
+void print_help(string_view command);
 int run(string_view profile_name, bool dry_run);
 
 void print_version()
@@ -69,7 +69,7 @@ void print_version()
            "and you are welcome to redistribute it under certain conditions.\n";
 }
 
-void print_help(const string_view &command)
+void print_help(const string_view command)
 {
     cerr << "Usage: " << command << " [--version|--help] <profile>\n";
 }
