@@ -262,7 +262,7 @@ string Document::remove_html(string html) const
 
 string Document::extract_location(const curl_wrapper::answer &answer)
 {
-    const string location = answer.get_header("Location");
+    string location{answer.get_header("Location")};
 
     if (location.empty())
     {
