@@ -16,10 +16,6 @@
 *mastorss* reads RSS feeds and posts the items via the Mastodon API. Does not
 support Atom at the moment.
 
-[IMPORTANT]
-The branch `master` has been renamed to `main`. If you have cloned this repo
-before 2019-12-28, please update your git settings accordingly.
-
 == Install
 
 === Dependencies
