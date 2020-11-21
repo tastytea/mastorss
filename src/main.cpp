@@ -34,8 +34,13 @@
 
 namespace mastorss
 {
+
 using std::cerr;
 using std::cout;
+using std::runtime_error;
+using std::string_view;
+using std::chrono::seconds;
+using std::this_thread::sleep_for;
 
 namespace error
 {
@@ -50,6 +55,7 @@ constexpr int unknown = 9;
 
 void print_version();
 void print_help(const string_view &command);
+int run(string_view profile_name, bool dry_run);
 
 void print_version()
 {
@@ -67,18 +73,84 @@ void print_help(const string_view &command)
 {
     cerr << "Usage: " << command << " [--version|--help] <profile>\n";
 }
+
+int run(const string_view profile_name, const bool dry_run)
+{
+    const string_view profilename{profile_name};
+    BOOST_LOG_TRIVIAL(debug) << "Using profile: " << profilename;
+
+    try
+    {
+        Config cfg{profilename.data()};
+        Document doc{cfg};
+        doc.parse();
+
+        MastoAPI masto{cfg.profiledata};
+        if (!doc.new_items.empty())
+        {
+            for (const auto &item : doc.new_items)
+            {
+                masto.post_item(item, dry_run);
+                if (item != *doc.new_items.rbegin())
+                { // Don't sleep if this is the last item.
+                    if (!dry_run)
+                    {
+                        sleep_for(seconds(cfg.profiledata.interval));
+                    }
+                    else
+                    {
+                        sleep_for(seconds(1));
+                    }
+                }
+            }
+            if (!dry_run)
+            {
+                cfg.write();
+            }
+        }
+    }
+    catch (const FileException &e)
+    {
+        cerr << e.what() << '\n';
+        return error::file;
+    }
+    catch (const HTTPException &e)
+    {
+        cerr << e.what() << '\n';
+        return error::network;
+    }
+    catch (const CURLException &e)
+    {
+        cerr << e.what() << '\n';
+        return error::network;
+    }
+    catch (const Json::RuntimeError &e)
+    {
+        cerr << "JSON error:\n" << e.what() << '\n';
+        return error::json;
+    }
+    catch (const ParseException &e)
+    {
+        cerr << e.what() << '\n';
+        return error::parse;
+    }
+    catch (const runtime_error &e)
+    {
+        cerr << e.what() << '\n';
+        return error::unknown;
+    }
+
+    return 0;
+}
+
 } // namespace mastorss
 
 int main(int argc, char *argv[])
 {
     using namespace mastorss;
-    using std::cerr;
     using std::getenv;
-    using std::runtime_error;
     using std::string_view;
     using std::vector;
-    using std::chrono::seconds;
-    using std::this_thread::sleep_for;
 
     const vector<string_view> args(argv, argv + argc);
 
@@ -109,61 +181,13 @@ int main(int argc, char *argv[])
         {
             print_help(args[0]);
         }
+        else if (args[1] == "--dry-run")
+        {
+            return run(args[2], true);
+        }
         else
         {
-            const string_view profilename{args[1]};
-            BOOST_LOG_TRIVIAL(debug) << "Using profile: " << profilename;
-
-            try
-            {
-                Config cfg{profilename.data()};
-                Document doc{cfg};
-                doc.parse();
-
-                MastoAPI masto{cfg.profiledata};
-                if (!doc.new_items.empty())
-                {
-                    for (const auto &item : doc.new_items)
-                    {
-                        masto.post_item(item);
-                        if (item != *doc.new_items.rbegin())
-                        { // Don't sleep if this is the last item.
-                            sleep_for(seconds(cfg.profiledata.interval));
-                        }
-                    }
-                    cfg.write();
-                }
-            }
-            catch (const FileException &e)
-            {
-                cerr << e.what() << '\n';
-                return error::file;
-            }
-            catch (const HTTPException &e)
-            {
-                cerr << e.what() << '\n';
-                return error::network;
-            }
-            catch (const CURLException &e)
-            {
-                cerr << e.what() << '\n';
-                return error::network;
-            }
-            catch (const Json::RuntimeError &e)
-            {
-                cerr << "JSON error:\n" << e.what() << '\n';
-                return error::json;
-            }
-            catch (const ParseException &e)
-            {
-                cerr << e.what() << '\n';
-                return error::parse;
-            }
-            catch (const runtime_error &e)
-            {
-                cerr << e.what() << '\n';
-                return error::unknown;
-            }
+            return run(args[1], false);
         }
     }
 

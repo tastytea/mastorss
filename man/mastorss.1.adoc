@@ -2,7 +2,7 @@
 :doctype:       manpage
 :Author:        tastytea
 :Email:         tastytea@tastytea.de
-:Date:          2020-10-29
+:Date:          2020-11-21
 :Revision:      0.0.0
 :man source:    mastorss
 :man manual:    General Commands Manual
@@ -21,6 +21,11 @@ mastorss - Another RSS to Mastodon bot.
 support Atom at the moment.
 
 == OPTIONS
+
+*--dry-run*::
+Do everything like normal, but don't post anything and don't update the config
+file. The initial config file is still created, if the profile doesn't
+exist. The interval between posts is set to 1 second.
 
 *--help*::
 Show help message.

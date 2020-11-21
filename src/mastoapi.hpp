@@ -33,7 +33,7 @@ class MastoAPI
 public:
     explicit MastoAPI(ProfileData &data);
 
-    void post_item(const Item &item);
+    void post_item(const Item &item, bool dry_run);
 
 private:
     ProfileData &_profile;
