@@ -104,7 +104,7 @@ Config::Config(string profile_name)
     const fs::path filename = get_filename();
     BOOST_LOG_TRIVIAL(debug) << "Config filename is: " << filename;
 
-    ifstream file{filename.c_str()};
+    ifstream file(filename.c_str());
     if (file.good())
     {
         stringstream rawjson;
@@ -285,7 +285,7 @@ void Config::write()
     }
     _json[profile]["add_hashtags"] = profiledata.add_hashtags;
 
-    ofstream file{get_filename().c_str()};
+    ofstream file(get_filename().c_str());
     if (file.good())
     {
         file << _json.toStyledString();
