@@ -4,7 +4,6 @@ include(GNUInstallDirs)
 find_package(Boost 1.62 REQUIRED COMPONENTS filesystem log regex)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(jsoncpp REQUIRED IMPORTED_TARGET jsoncpp)
-find_package(Threads REQUIRED)
 find_package(mastodonpp 0.5.6 REQUIRED CONFIG)
 
 add_subdirectory(curl_wrapper)
