@@ -6,7 +6,7 @@ if(${CMAKE_VERSION} VERSION_LESS 3.12)
 endif()
 
 project(curl_wrapper
-  VERSION 0.1.1
+  VERSION 0.1.2
   DESCRIPTION "Light libcurl wrapper."
   LANGUAGES CXX)
 
