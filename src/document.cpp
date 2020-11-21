@@ -147,7 +147,10 @@ void Document::download()
 
 void Document::parse()
 {
-    parse_watchwords();
+    if (_profiledata.add_hashtags)
+    {
+        parse_watchwords();
+    }
     pt::ptree tree;
     istringstream iss{_raw_doc};
     pt::read_xml(iss, tree);
