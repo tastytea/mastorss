@@ -1,0 +1,119 @@
+# -*- fill-column: 1000 -*-
+kind: pipeline
+name: Build x86_64
+
+platform:
+  os: linux
+  arch:
+
+volumes:
+- name: debian-package-cache
+  host:
+    path: /var/cache/debian-package-cache
+
+trigger:
+  event:
+    exclude:
+    - tag
+
+steps:
+- name: GCC 9 & 10 / clang 10
+  image: ubuntu:focal
+  pull: always
+  environment:
+    CXX: g++-9
+    CXXFLAGS: -pipe -O2
+    DEBIAN_FRONTEND: noninteractive
+    LANG: C.utf8
+  commands:
+  - rm /etc/apt/apt.conf.d/docker-clean
+  - alias apt-get='rm -f /var/cache/apt/archives/lock && apt-get'
+  - apt-get update -q
+  - apt-get install -qq build-essential cmake g++-10 clang
+  - apt-get install -qq catch libcurl4-openssl-dev
+  - rm -rf build && mkdir -p build && cd build
+  - cmake -G "Unix Makefiles" -DWITH_CURL_WRAPPER_TESTS=YES ..
+  - make VERBOSE=1
+  - cd tests && ctest -V
+  - cd ../../
+  - rm -rf build && mkdir -p build && cd build
+  - CXX="g++-10" cmake -G "Unix Makefiles" -DWITH_CURL_WRAPPER_TESTS=YES ..
+  - make VERBOSE=1
+  - cd tests && ctest -V
+  - cd ../../
+  - rm -rf build && mkdir -p build && cd build
+  - CXX="clang++" cmake -G "Unix Makefiles" -DWITH_CURL_WRAPPER_TESTS=YES ..
+  - make VERBOSE=1
+  - cd tests && ctest -V
+  volumes:
+  - name: debian-package-cache
+    path: /var/cache/apt/archives
+
+- name: GCC 8 / clang 7
+  image: debian:buster-slim
+  pull: always
+  environment:
+    CXX: g++-8
+    CXXFLAGS: -pipe -O2
+    DEBIAN_FRONTEND: noninteractive
+    LANG: C.utf8
+  commands:
+  - rm /etc/apt/apt.conf.d/docker-clean
+  - alias apt-get='rm -f /var/cache/apt/archives/lock && apt-get'
+  - apt-get update -q
+  - apt-get install -qq build-essential cmake clang
+  - apt-get install -qq catch libcurl4-openssl-dev
+  - rm -rf build && mkdir -p build && cd build
+  - cmake -G "Unix Makefiles" -DWITH_CURL_WRAPPER_TESTS=YES ..
+  - make VERBOSE=1
+  - cd tests && ctest -V
+  - cd ../../
+  - rm -rf build && mkdir -p build && cd build
+  - CXX="clang++" cmake -G "Unix Makefiles" -DWITH_CURL_WRAPPER_TESTS=YES ..
+  - make VERBOSE=1
+  - cd tests && ctest -V
+  volumes:
+  - name: debian-package-cache
+    path: /var/cache/apt/archives
+
+- name: GCC 7 / clang 6
+  image: ubuntu:bionic
+  pull: always
+  environment:
+    CXX: g++-7
+    CXXFLAGS: -pipe -O2
+    DEBIAN_FRONTEND: noninteractive
+    LANG: C.utf8
+    nlohmann_json_DIR: "/usr/lib/cmake"
+    pugixml_DIR: "/usr/share/libpugixml-dev/cmake"
+  commands:
+  - rm /etc/apt/apt.conf.d/docker-clean
+  - alias apt-get='rm -f /var/cache/apt/archives/lock && apt-get'
+  - apt-get update -q
+  - apt-get install -qq build-essential cmake clang pkg-config
+  - apt-get install -qq catch libcurl4-gnutls-dev
+  - rm -rf build && mkdir -p build && cd build
+  - cmake -G "Unix Makefiles" -DWITH_CURL_WRAPPER_TESTS=YES ..
+  - make VERBOSE=1
+  - cd tests && ctest -V
+  - cd ../../
+  - rm -rf build && mkdir -p build && cd build
+  - CXX="clang++" cmake -G "Unix Makefiles" -DWITH_CURL_WRAPPER_TESTS=YES ..
+  - make VERBOSE=1
+  - cd tests && ctest -V
+  volumes:
+  - name: debian-package-cache
+    path: /var/cache/apt/archives
+
+- name: notify
+  image: drillster/drone-email
+  pull: always
+  settings:
+    host: mail.tzend.de
+    from: drone@tzend.de
+    username:
+      from_secret: email_username
+    password:
+      from_secret: email_password
+  when:
+    status: [ changed, failure ]
