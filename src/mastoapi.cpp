@@ -133,7 +133,10 @@ void MastoAPI::post_item(const Item &item, bool dry_run)
     {
         using std::cout;
         cout << "  WOULD POST: \n";
-        cout << "Subject: " << title << '\n';
+        if (_profile.titles_as_cw)
+        {
+            cout << "Subject: " << title << '\n';
+        }
         cout << "Status:\n" << status << '\n';
     }
     BOOST_LOG_TRIVIAL(debug) << "Posted status with GUID: " << item.guid;
