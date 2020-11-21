@@ -11,7 +11,7 @@
 :uri-boost: https://www.boost.org/
 :uri-mastodonpp: https://schlomp.space/tastytea/mastodonpp
 :uri-jsoncpp: https://github.com/open-source-parsers/jsoncpp
-:uri-restclient-cpp: http://code.mrtazz.com/restclient-cpp/
+:uri-libcurl: https://curl.haxx.se/libcurl/
 
 *mastorss* reads RSS feeds and posts the items via the Mastodon API. Does not
 support Atom at the moment.
@@ -30,7 +30,7 @@ before 2019-12-28, please update your git settings accordingly.
 * link:{uri-boost}[boost] (at least: 1.62)
 * link:{uri-mastodonpp}[mastodonpp] (at least: 0.5.6)
 * link:{uri-jsoncpp}[jsoncpp] (at least: 1.7)
-* link:{uri-restclient-cpp}[restclient-cpp] (at least: 0.5.1)
+* link:{uri-libcurl}[libcurl] (at least: 7.52)
 
 === Get sourcecode
 
