@@ -1,5 +1,5 @@
 /*  This file is part of mastorss.
- *  Copyright © 2019 tastytea <tastytea@tastytea.de>
+ *  Copyright © 2019, 2020 tastytea <tastytea@tastytea.de>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,18 +18,18 @@
 #define MASTORSS_DOCUMENT_HPP
 
 #include "config.hpp"
+#include "curl_wrapper.hpp"
 
 #include <boost/property_tree/ptree.hpp>
-#include <restclient-cpp/restclient.h>
 
-#include <string>
 #include <list>
+#include <string>
 
 namespace mastorss
 {
 namespace pt = boost::property_tree;
-using std::string;
 using std::list;
+using std::string;
 
 /*!
  *  @brief  An Item of a feed.
@@ -43,7 +43,7 @@ struct Item
     string link;
     string title;
 
-    friend bool operator !=(const Item &a, const Item &b);
+    friend bool operator!=(const Item &a, const Item &b);
 };
 
 /*!
@@ -55,7 +55,6 @@ class Document
 {
 public:
     explicit Document(Config &cfg);
-    ~Document();
     Document(const Document &other) = default;
     Document &operator=(const Document &other) = delete;
     Document(Document &&other) = default;
@@ -83,15 +82,14 @@ private:
      *
      *  @since  0.10.0
      */
-    void download(const string &uri, const bool temp_redirect = false);
+    void download(const string &uri, bool temp_redirect = false);
     void parse_rss(const pt::ptree &tree);
-    [[nodiscard]]
-    string remove_html(string html) const;
-    [[nodiscard]]
-    string extract_location(const RestClient::HeaderFields &headers) const;
+    [[nodiscard]] string remove_html(string html) const;
+    [[nodiscard]] static string
+    extract_location(const curl_wrapper::answer &answer);
     string add_hashtags(const string &text);
     void parse_watchwords();
 };
 } // namespace mastorss
 
-#endif  // MASTORSS_DOCUMENT_HPP
+#endif // MASTORSS_DOCUMENT_HPP

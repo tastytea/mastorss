@@ -16,6 +16,7 @@
 
 #include "document.hpp"
 
+#include "curl_wrapper.hpp"
 #include "exceptions.hpp"
 #include "version.hpp"
 
@@ -24,7 +25,6 @@
 #include <boost/regex.hpp>
 #include <json/json.h>
 #include <mastodonpp/mastodonpp.hpp>
-#include <restclient-cpp/connection.h>
 
 #include <algorithm>
 #include <fstream>
@@ -54,39 +54,29 @@ Document::Document(Config &cfg)
     : _cfg{cfg}
     , _profiledata{_cfg.profiledata}
 {
-    RestClient::init();
-    BOOST_LOG_TRIVIAL(debug) << "Initialized RestClient.";
-
     download();
-}
-
-Document::~Document()
-{
-    RestClient::disable();
 }
 
 void Document::download(const string &uri, const bool temp_redirect)
 {
+    namespace cw = curl_wrapper;
+
     BOOST_LOG_TRIVIAL(debug) << "Downloading <" << uri << "> …";
-    RestClient::Connection connection{uri};
-    connection.SetUserAgent(string("mastorss/").append(version));
-    connection.FollowRedirects(false);
+    cw::CURLWrapper curl;
+    curl.set_useragent(string("mastorss/") += version);
+    curl.set_maxredirs(0);
 
-    RestClient::Response response{connection.get("")};
+    const auto answer{curl.make_http_request(cw::http_method::GET, uri)};
 
-    BOOST_LOG_TRIVIAL(debug) << "Got response: " << response.code;
+    BOOST_LOG_TRIVIAL(debug) << "Got response: " << answer.status;
     BOOST_LOG_TRIVIAL(debug) << "Got Headers:";
-    for (const auto &header : response.headers)
-    {
-        BOOST_LOG_TRIVIAL(debug)
-            << "  " << header.first << ": " << header.second;
-    }
+    BOOST_LOG_TRIVIAL(debug) << answer.headers;
 
-    switch (response.code)
+    switch (answer.status)
     {
     case 200:
     {
-        _raw_doc = response.body;
+        _raw_doc = answer.body;
         BOOST_LOG_TRIVIAL(debug) << "Downloaded feed: " << _profiledata.feedurl;
         break;
     }
@@ -97,10 +87,10 @@ void Document::download(const string &uri, const bool temp_redirect)
         {
             goto temporary_redirect; // NOLINT(cppcoreguidelines-avoid-goto)
         }
-        _profiledata.feedurl = extract_location(response.headers);
+        _profiledata.feedurl = extract_location(answer);
         if (_profiledata.feedurl.empty())
         {
-            throw HTTPException{response.code};
+            throw HTTPException{answer.status};
         }
 
         // clang-format off
@@ -116,10 +106,10 @@ void Document::download(const string &uri, const bool temp_redirect)
     case 307:
     {
 temporary_redirect:
-        const string newuri{extract_location(response.headers)};
+        const string newuri{extract_location(answer)};
         if (newuri.empty())
         {
-            throw HTTPException{response.code};
+            throw HTTPException{answer.status};
         }
 
         // clang-format off
@@ -129,13 +119,9 @@ temporary_redirect:
         download(newuri, true);
         break;
     }
-    case -1:
-    {
-        throw CURLException{errno};
-    }
     default:
     {
-        throw HTTPException{response.code};
+        throw HTTPException{answer.status};
     }
     }
 }
@@ -274,23 +260,13 @@ string Document::remove_html(string html) const
     return html;
 }
 
-string Document::extract_location(const RestClient::HeaderFields &headers) const
+string Document::extract_location(const curl_wrapper::answer &answer)
 {
-    string location;
-    try
+    const string location = answer.get_header("Location");
+
+    if (location.empty())
     {
-        location = headers.at("Location");
-    }
-    catch (const std::out_of_range &)
-    {
-        try
-        {
-            location = headers.at("location");
-        }
-        catch (const std::out_of_range &)
-        {
-            throw std::runtime_error{"Could not extract new feed location."};
-        }
+        throw std::runtime_error{"Could not extract new feed location."};
     }
 
     return location;
