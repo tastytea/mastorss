@@ -18,7 +18,24 @@ support Atom at the moment.
 
 == Install
 
-=== Dependencies
+=== Gentoo
+
+[source,shell]
+--------------------------------------------------------------------------------
+eselect repository enable tastytea
+echo 'net-misc/mastorss' >> /etc/portage/package.accept_keywords/mastorss
+emaint sync -r tastytea
+emerge -a net-misc/mastorss
+--------------------------------------------------------------------------------
+
+=== Arch
+
+The git-version is available via the AUR:
+<https://aur.archlinux.org/packages/mastorss-git/>.
+
+=== From source
+
+==== Dependencies
 
 * Tested OS: Linux
 * C++ compiler (tested: link:{uri-gcc}[gcc] 7/8/9)
@@ -28,20 +45,20 @@ support Atom at the moment.
 * link:{uri-jsoncpp}[jsoncpp] (at least: 1.7)
 * link:{uri-libcurl}[libcurl] (at least: 7.52)
 
-=== Get sourcecode
+==== Get sourcecode
 
-==== Release
+===== Release
 
 Download the current release at link:{uri-base}/releases[schlomp.space].
 
-==== Development version
+===== Development version
 
 [source,shell]
 --------------------------------------------------------------------------------
 git clone https://schlomp.space/tastytea/mastorss.git
 --------------------------------------------------------------------------------
 
-=== Compile
+==== Compile
 
 [source,shell]
 --------------------------------------------------------------------------------
