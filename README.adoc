@@ -22,9 +22,9 @@ support Atom at the moment.
 
 [source,shell]
 --------------------------------------------------------------------------------
-eselect repository enable tastytea
+eselect repository enable guru
 echo 'net-misc/mastorss' >> /etc/portage/package.accept_keywords/mastorss
-emaint sync -r tastytea
+emaint sync -r guru
 emerge -a net-misc/mastorss
 --------------------------------------------------------------------------------
 
