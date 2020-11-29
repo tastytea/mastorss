@@ -15,6 +15,7 @@
  */
 
 #include "config.hpp"
+#include "curl_wrapper.hpp"
 #include "document.hpp"
 #include "exceptions.hpp"
 #include "mastoapi.hpp"
@@ -120,6 +121,11 @@ int run(const string_view profile_name, const bool dry_run)
         return error::network;
     }
     catch (const CURLException &e)
+    {
+        cerr << e.what() << '\n';
+        return error::network;
+    }
+    catch (const curl_wrapper::CURLException &e)
     {
         cerr << e.what() << '\n';
         return error::network;
