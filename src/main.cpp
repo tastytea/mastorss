@@ -72,7 +72,8 @@ void print_version()
 
 void print_help(const string_view command)
 {
-    cerr << "Usage: " << command << " [--version|--help] <profile>\n";
+    cerr << "Usage: " << command << " [--version|--help|--dry-run] <profile>\n"
+         << "See manpage for details.\n";
 }
 
 int run(const string_view profile_name, const bool dry_run)
