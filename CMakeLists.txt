@@ -16,11 +16,12 @@ project (mastorss
   LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+include(GNUInstallDirs)
 
 # Project build options.
 option(WITH_MAN "Compile and install manpage." YES)
 option(WITH_COMPLETIONS "Install Zsh completions." YES)
-set(ZSH_COMPLETION_DIR "share/zsh/site-functions"
+set(ZSH_COMPLETION_DIR "${CMAKE_INSTALL_DATAROOTDIR}/zsh/site-functions"
   CACHE STRING "Installation directory for Zsh completions.")
 
 set(CMAKE_CXX_STANDARD 17)
