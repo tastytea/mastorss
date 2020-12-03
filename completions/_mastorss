@@ -1,0 +1,26 @@
+# -*- mode: shell-script; -*-
+#compdef mastorss
+
+local context state state_descr line
+typeset -A opt_args
+
+_arguments \
+    "(- *)--dry-run[Do everything like normal, but don't post anything and don't update the config file.]" \
+    "(- *)--help[Show a short help message.]" \
+    "(- *)--version[Show version, copyright and license.]" \
+    "::Profile:->profiles"
+
+case "$state" in
+    profiles)
+        # Find config dir.
+        local config_dir="${XDG_CONFIG_HOME}"
+        [[ -z "${config_dir}" ]] && config_dir="${HOME}/.config"
+        config_dir+="/mastorss"
+
+        # Extract profile names from config files.
+        for file in "${config_dir}"/config-*; do
+            profile="${file/*config-/}"
+            compadd ${profile%.json}
+        done
+        ;;
+esac
