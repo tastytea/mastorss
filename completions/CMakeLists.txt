@@ -1,0 +1,1 @@
+install(FILES "_mastorss" DESTINATION "${ZSH_COMPLETION_DIR}")

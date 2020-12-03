@@ -8,7 +8,6 @@ endif()
 
 # Global build options.
 set(CMAKE_BUILD_TYPE "Release" CACHE STRING "The type of build.")
-option(BUILD_SHARED_LIBS "Build shared libraries." YES)
 
 project (mastorss
   VERSION 0.13.0
@@ -19,6 +18,9 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 # Project build options.
 option(WITH_MAN "Compile and install manpage." YES)
+option(WITH_COMPLETIONS "Install Zsh completions." YES)
+set(ZSH_COMPLETION_DIR "share/zsh/site-functions"
+  CACHE STRING "Installation directory for Zsh completions.")
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -32,6 +34,10 @@ add_subdirectory(src)
 
 if(WITH_MAN)
   add_subdirectory(man)
+endif()
+
+if(WITH_COMPLETIONS)
+  add_subdirectory(completions)
 endif()
 
 install(FILES watchwords.json
