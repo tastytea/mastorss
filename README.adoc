@@ -68,6 +68,12 @@ cmake ..
 cmake --build .
 --------------------------------------------------------------------------------
 
+.CMake options:
+* `-DCMAKE_BUILD_TYPE=Debug` Debug build.
+* `-DWITH_MAN=NO` Don't install manpage.
+* `-DWITH_COMPLETIONS=NO` Don't install completions.
+* `-DZSH_COMPLETION_DIR` Change installation directory for Zsh completions.
+
 Install with `make install`.
 
 == Usage
