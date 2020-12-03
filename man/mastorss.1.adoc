@@ -2,7 +2,7 @@
 :doctype:       manpage
 :Author:        tastytea
 :Email:         tastytea@tastytea.de
-:Date:          2020-11-21
+:Date:          2020-12-03
 :Revision:      0.0.0
 :man source:    mastorss
 :man manual:    General Commands Manual
@@ -28,7 +28,7 @@ file. The initial config file is still created, if the profile doesn't
 exist. The interval between posts is set to 1 second.
 
 *--help*::
-Show help message.
+Show a short help message.
 
 *--version*::
 Show version, copyright and license.
