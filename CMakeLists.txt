@@ -8,6 +8,7 @@ endif()
 
 # Global build options.
 set(CMAKE_BUILD_TYPE "Release" CACHE STRING "The type of build.")
+option(BUILD_SHARED_LIBS "Build shared libraries." YES) # Needed for boost.
 
 project (mastorss
   VERSION 0.13.0
