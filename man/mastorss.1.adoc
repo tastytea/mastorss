@@ -2,7 +2,7 @@
 :doctype:       manpage
 :Author:        tastytea
 :Email:         tastytea@tastytea.de
-:Date:          2020-12-03
+:Date:          2021-01-16
 :Revision:      0.0.0
 :man source:    mastorss
 :man manual:    General Commands Manual
@@ -67,8 +67,9 @@ This string will be appended to every post.
 The URI of the source feed.
 
 *fixes*::
-Array of regular expressions that should be deleted from the text. For
-information about the syntax see *perlre*(1).
+Array of regular expressions that should be deleted from the text. Applies to
+RSS descriptions (after the HTML is stripped). For information about the syntax
+see *perlre*(1).
 
 *instance*::
 Hostname of the instance you're using to post.
@@ -97,9 +98,9 @@ content warning) of the post.
 If true, only post titles, no descriptions.
 
 *replacements*::
-Object with a list of regular expressions and replacements. Applies to posts,
-subjects and links, but not to the string in _append_. For information about the
-syntax see *perlre*(1).
+Object with a list of regular expressions and replacements. Applies to posts
+(after the HTML is stripped), subjects and links, but not to the string in
+_append_. For information about the syntax see *perlre*(1).
 
 *add_hashtags*::
 If true, replace words with hashtags according to `watchwords.json`.
