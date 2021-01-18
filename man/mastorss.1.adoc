@@ -2,7 +2,7 @@
 :doctype:       manpage
 :Author:        tastytea
 :Email:         tastytea@tastytea.de
-:Date:          2021-01-16
+:Date:          2021-01-18
 :Revision:      0.0.0
 :man source:    mastorss
 :man manual:    General Commands Manual
@@ -68,7 +68,7 @@ The URI of the source feed.
 
 *fixes*::
 Array of regular expressions that should be deleted from the text. Applies to
-RSS descriptions (after the HTML is stripped). For information about the syntax
+RSS descriptions (before the HTML is stripped). For information about the syntax
 see *perlre*(1).
 
 *instance*::
