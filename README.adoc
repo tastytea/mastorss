@@ -18,6 +18,9 @@ support Atom at the moment.
 
 == Install
 
+[alt="Packaging status" link=https://repology.org/project/mastorss/versions]
+image::https://repology.org/badge/vertical-allrepos/mastorss.svg[]
+
 === Gentoo
 
 [source,shell]
