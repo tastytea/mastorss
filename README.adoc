@@ -16,6 +16,10 @@
 *mastorss* reads RSS feeds and posts the items via the Mastodon API. Does not
 support Atom at the moment.
 
+== Usage
+
+See link:{uri-branch-main}/man/mastorss.1.adoc[manpage].
+
 == Install
 
 [alt="Packaging status" link=https://repology.org/project/mastorss/versions]
@@ -78,9 +82,5 @@ cmake --build .
 * `-DZSH_COMPLETION_DIR` Change installation directory for Zsh completions.
 
 Install with `make install`.
-
-== Usage
-
-See link:{uri-branch-main}/man/mastorss.1.adoc[manpage].
 
 include::{uri-base}/raw/branch/main/CONTRIBUTING.adoc[]
