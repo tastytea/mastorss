@@ -1,5 +1,5 @@
 /*  This file is part of mastorss.
- *  Copyright © 2019, 2020 tastytea <tastytea@tastytea.de>
+ *  Copyright © 2019-2021 tastytea <tastytea@tastytea.de>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -84,7 +84,7 @@ private:
      */
     void download(const string &uri, bool temp_redirect = false);
     void parse_rss(const pt::ptree &tree);
-    [[nodiscard]] string remove_html(string html) const;
+    [[nodiscard]] static string remove_html(string html);
     [[nodiscard]] static string
     extract_location(const curl_wrapper::answer &answer);
     string add_hashtags(const string &text);

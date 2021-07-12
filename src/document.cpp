@@ -233,7 +233,7 @@ void Document::parse_rss(const pt::ptree &tree)
     }
 }
 
-string Document::remove_html(string html) const
+string Document::remove_html(string html)
 {
     html = mastodonpp::unescape_html(html); // Decode HTML entities.
 
