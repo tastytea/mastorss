@@ -1,5 +1,5 @@
 /*  This file is part of mastorss.
- *  Copyright © 2019, 2020 tastytea <tastytea@tastytea.de>
+ *  Copyright © 2019-2021 tastytea <tastytea@tastytea.de>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -238,6 +238,7 @@ string Document::remove_html(string html) const
     html = mastodonpp::unescape_html(html); // Decode HTML entities.
 
     html = regex_replace(html, regex{"<p>"}, "\n\n");
+    html = regex_replace(html, regex{"<br>"}, "\n");
 
     const list re_list{regex{R"(<!\[CDATA\[)"},      // CDATA beginning.
                        regex{R"(\]\]>)"},            // CDATA end.
