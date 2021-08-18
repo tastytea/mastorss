@@ -1,5 +1,5 @@
 /*  This file is part of mastorss.
- *  Copyright © 2019, 2020 tastytea <tastytea@tastytea.de>
+ *  Copyright © 2019-2021 tastytea <tastytea@tastytea.de>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -124,6 +124,8 @@ void MastoAPI::post_item(const Item &item, bool dry_run)
         {
             if (ret.http_status != 200)
             {
+                BOOST_LOG_TRIVIAL(debug) << "Error message from server: "
+                                         << ret.body;
                 throw HTTPException{ret.http_status};
             }
             throw CURLException{ret.curl_error_code};
